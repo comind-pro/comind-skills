@@ -10,7 +10,7 @@ needs lives **inside this folder**:
 .
 ├── .claude/                # standard Claude Code config — ONLY system assets Claude discovers
 │   ├── settings.json       # hooks + permissions
-│   ├── skills/             # 22 lifecycle skills + project-generated skills
+│   ├── skills/             # 23 lifecycle skills + project-generated skills
 │   ├── agents/             # 3 personas + 6 meta-agents + project-generated agents
 │   ├── commands/           # 7 lifecycle + 4 meta (/init-project, /extend-domain, …)
 │   └── hooks/              # session-start, sdd-cache, simplify-ignore
@@ -22,17 +22,10 @@ needs lives **inside this folder**:
 │   │   ├── daily/          # daily journal
 │   │   ├── index/          # MOC notes
 │   │   └── _obsidian-templates/task.md
-│   ├── docs/               # Template setup guides + project-generated docs (/init-project output)
-│   ├── references/         # Supplementary checklists pulled in by skills on demand
-│   ├── db/index.sqlite     # auto-rebuilt index of the vault (gitignored)
-│   ├── routines/routines.json  # cron rules
-│   ├── runs/<routine>-<ts>.jsonl  # raw stream-json per headless run (gitignored)
-│   ├── digests/            # reporter outputs (gitignored)
-│   ├── dashboard/          # local web dashboard
-│   ├── source/             # agent work artifacts
-│   └── bin/                # reindex.js, run-routine.sh, cron-block.sh, …
+│   ├── docs/               # skill-anatomy spec
+│   └── references/         # Supplementary checklists pulled in by skills on demand
 ├── CLAUDE.md / README.md
-├── Justfile                # every command this project knows
+├── Makefile                # convenience targets (stats, tasks, validate)
 └── .gitignore
 ```
 
@@ -50,25 +43,18 @@ claude
 # init-project asks ≤4 questions, then customizes agents/skills/routines.
 
 # 3. Use the project
-just                              # list all commands
-just dashboard                    # http://localhost:7878
-just cron-show                    # print crontab block to install
-just cron-install                 # … or install it directly
+make help                         # list available targets
+make stats                        # vault note counts by type
+make tasks                        # list in-progress task notes
 ```
 
 ## Everyday commands
 
 ```bash
-just dashboard          # local web dashboard on :7878
-just run hourly-status  # run a routine right now
-just routines           # list routines from routines.json
-just status             # human-readable status check (delegates to /status)
-just reindex            # rebuild the SQLite index from the vault
-just logs hourly-status # show the latest run log
-just cron-show          # print the crontab block this project wants
-just cron-install       # install/refresh the crontab block (idempotent)
-just cron-uninstall     # remove this project's crontab block
-just db "SELECT * FROM tasks WHERE status='in_progress'"
+make help      # list available targets
+make stats     # vault note counts by type
+make tasks     # list in-progress task notes
+make validate  # sanity-check SKILL.md frontmatter on every skill
 ```
 
 ## How things work
@@ -81,34 +67,17 @@ just db "SELECT * FROM tasks WHERE status='in_progress'"
    frontmatter that includes `status:`. The full schema is in the
    `task-management` skill.
 
-3. **SQLite index** at `_workspace/db/index.sqlite` is a derived
-   cache. `_workspace/bin/reindex.js` rebuilds it from the vault. A
-   PostToolUse hook refreshes it after every vault write. The
-   dashboard reads from it.
-
-4. **Routines** in `_workspace/routines/routines.json` are scheduled
-   headless Claude runs. `just cron-install` writes one crontab line
-   per enabled routine, marked with this project's absolute path so
-   multiple projects coexist.
-
-5. **Each cron tick** invokes `_workspace/bin/run-routine.sh`, which
-   runs `claude -p --output-format stream-json --json-schema …`. The
-   raw JSONL goes to `_workspace/runs/`. `store-run-summary.js` writes
-   a summary row to the `runs` table. The dashboard tails the JSONL
-   live via SSE.
-
-6. **The dashboard** at `http://localhost:7878` (started with
-   `just dashboard`) reads SQLite, lists agents/routines/tasks/runs,
-   streams live JSONL events, and has run/pause/resume buttons.
+3. **No agent-only indirection layer.** Claude reads vault notes with
+   the same Read/Glob/Grep tools you use; writes them with Write/Edit.
+   No database, no embeddings, no hooks reindexing on every write. If
+   you want infrastructure on top of this template, build it in your
+   own project — don't bake it into the boilerplate.
 
 ## Requirements
 
-- Node 18+ (Node 22+ recommended — no native compile needed thanks to
-  the `node:sqlite` fallback shim)
-- [`just`](https://github.com/casey/just) command runner
-- `claude` CLI (Claude Code) for the agent runs
-- A `cron` daemon if you want scheduled routines (everything else
-  works without one)
+- `make` (GNU or BSD — both work for the targets in this Makefile)
+- `claude` CLI (Claude Code) for agent runs
+- Obsidian (optional, for graph view + backlinks over `_workspace/memory/`)
 
 ## What `/init-project` does
 
@@ -116,10 +85,10 @@ just db "SELECT * FROM tasks WHERE status='in_progress'"
 once after you clone. It interviews you about the project (≤ 4
 questions), then customizes:
 
-- Each agent's system prompt to mention this project's data sources.
-- The skills' taxonomies (tags, areas) to match the domain.
-- `_workspace/routines/routines.json` with project-specific routines.
-- This README — replacing the boilerplate intro with your real one.
+- `CLAUDE.md` — replacing the placeholder "What this project is" with a real description.
+- `.claude/settings.json` — adding MCP servers for the project's external systems.
+- `README.md` — replacing the boilerplate intro with your real one.
+- `_workspace/memory/index/README.md` — the vault MOC, tailored to project terminology.
 
 After `/init-project` you have a workspace tailored to your project, while
 the underlying mechanics (vault → SQLite → dashboard → cron) stay
@@ -176,9 +145,9 @@ claude
 
 ---
 
-## All 22 Skills
+## All 23 Skills
 
-The commands above are entry points. The pack includes 22 skills total — 21 lifecycle skills plus the `using-agent-skills` meta-skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
+The commands above are entry points. The pack includes 23 skills total — 21 lifecycle skills plus the `using-agent-skills` meta-skill and the `interview-me` Define-phase skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
 
 ### Meta - Discover which skill applies
 
@@ -301,7 +270,8 @@ Every skill follows a consistent anatomy:
 comind-skills/
 ├── .claude/
 │   ├── settings.json                  # hooks + plugin config
-│   ├── skills/                        # 22 skills (21 lifecycle + 1 meta)
+│   ├── skills/                        # 23 skills (21 lifecycle + 1 meta + 1 elicitation)
+│   │   ├── interview-me/                  #   Define (elicitation)
 │   │   ├── idea-refine/                   #   Define
 │   │   ├── spec-driven-development/       #   Define
 │   │   ├── planning-and-task-breakdown/   #   Plan
@@ -324,16 +294,14 @@ comind-skills/
 │   │   ├── documentation-and-adrs/        #   Ship
 │   │   ├── shipping-and-launch/           #   Ship
 │   │   └── using-agent-skills/            #   Meta: how to use this pack
-│   ├── agents/                        # 3 specialist personas + 6 meta-agents
-│   ├── commands/                      # 11 slash commands (lifecycle + meta)
+│   ├── agents/                        # 5 project personas + 6 _meta (maintainer-only)
+│   ├── commands/                      # 11 slash commands (lifecycle + maintainer)
 │   └── hooks/                         # Session lifecycle hook scripts
 ├── _workspace/                        # Reference + working content (Claude reads on demand)
-│   ├── docs/                          # Template setup guides + /init-project output
+│   ├── docs/                          # skill-anatomy spec
 │   ├── references/                    # 4 supplementary checklists used by skills
-│   ├── memory/                        # Obsidian vault (tasks, decisions, research, daily)
-│   ├── routines/                      # Cron-scheduled headless Claude runs
-│   ├── dashboard/ db/ runs/ digests/ bin/ source/   # Operational support
-└── Justfile                           # Every command this project knows
+│   └── memory/                        # Obsidian vault (tasks, decisions, research, daily)
+└── Makefile                           # Convenience targets (stats, tasks, validate)
 ```
 
 ---

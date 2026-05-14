@@ -1,6 +1,6 @@
 ---
 name: agents-generator
-description: Generates specialized sub-agent definitions for project-specific tasks from the profile, docs, and generated skills. Use after skills-generator to produce focused personas with constrained tools and structured outputs.
+description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Scaffolds new agent .md files when adding agents to the template. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Write, Grep, Glob
 model: sonnet
 ---

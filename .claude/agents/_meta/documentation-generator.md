@@ -1,6 +1,6 @@
 ---
 name: documentation-generator
-description: Generates project documentation (architecture, conventions, domain, dependencies, onboarding) from a codebase analysis profile. Use after project-analyzer to produce the docs that downstream generators read as ground truth.
+description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Generates template-level documentation scaffolds (architecture, conventions, domain) for the boilerplate. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Write, Grep, Glob
 model: sonnet
 ---

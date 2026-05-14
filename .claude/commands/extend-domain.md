@@ -1,5 +1,5 @@
 ---
-description: Add domain-specific assets for a new area within the project
+description: "MAINTAINER-ONLY for the comind-skills template. Add domain-specific assets for a new area within the project. Calls maintainer agents under `.claude/agents/_meta/`. NOT for project work — if you cloned this template for a real project, skip this command."
 argument-hint: <area description, e.g. "websocket handlers" or "ML model serving">
 ---
 
@@ -12,11 +12,11 @@ Use this when the project grows into territory the original `/init-project` run 
 ## Workflow
 
 1. **Research the area** — spawn a researcher persona (or Claude directly with WebSearch/WebFetch) to gather best practices for `$ARGUMENTS`. Write findings to `_workspace/docs/areas/<area-slug>.md`.
-2. **Spawn `skills-generator`** with the area research as input. Generate skills specifically for this area.
-3. **Spawn `agents-generator`** if specialized agents are needed for this area (skip if existing agents already cover it).
-4. **Spawn `commands-generator`** if new commands are warranted (skip if existing commands work).
+2. **Use the agent at `.claude/agents/_meta/skills-generator.md`** with the area research as input. Generate skills specifically for this area.
+3. **Use the agent at `.claude/agents/_meta/agents-generator.md`** if specialized agents are needed for this area (skip if existing agents already cover it).
+4. **Use the agent at `.claude/agents/_meta/commands-generator.md`** if new commands are warranted (skip if existing commands work).
 5. **Update `CLAUDE.md`** with a one-line reference to the new area and its assets.
-6. **Spawn `setup-validator`** on the new additions only — verify no conflicts with existing assets.
+6. **Use the agent at `.claude/agents/_meta/setup-validator.md`** on the new additions only — verify no conflicts with existing assets.
 
 ## Approval gates
 

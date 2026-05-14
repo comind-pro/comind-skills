@@ -1,6 +1,6 @@
 ---
 name: commands-generator
-description: Generates slash commands for frequent project workflows from the profile, skills, and agents. Invoked by `/extend-domain` (new area) and `/regenerate-domain-assets` (drift). Not used by `/init-project` — bootstrap does not add new commands beyond the templated set.
+description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Scaffolds new slash command .md files when adding commands to the template. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Write, Grep, Glob
 model: sonnet
 ---

@@ -16,45 +16,34 @@ Claude Code loads this file automatically. Read it once per session.
 | `_workspace/docs/`                  | `/init-project`-generated project docs (architecture, conventions, …) + `skill-anatomy.md` spec. |
 | `_workspace/references/`            | Supplementary checklists pulled in by skills on demand. |
 | `_workspace/memory/`                | Obsidian vault. Long-term memory.         |
-| `_workspace/memory/tasks/`          | Tasks as `.md`. See `task-management` skill. |
+| `_workspace/memory/tasks/`          | Tasks as `.md`. See `planning-and-task-breakdown` skill. |
 | `_workspace/memory/decisions/`      | ADRs.                                      |
 | `_workspace/memory/research/`       | Researcher agent output.                   |
 | `_workspace/memory/daily/`          | Daily journal.                             |
-| `_workspace/db/index.sqlite`        | Auto-rebuilt index of the vault.          |
-| `_workspace/routines/routines.json` | Scheduled headless runs.                  |
-| `_workspace/runs/`                  | Per-run JSONL logs (cron output).         |
-| `_workspace/bin/`                   | reindex.js, run-routine.sh, cron-block.sh |
-| `_workspace/dashboard/`             | Local web dashboard.                       |
-| `Justfile`                          | Every command this project knows.         |
+| `Makefile`                          | Convenience targets (vault stats, task list, SKILL.md validation). |
 
 ## Conventions
 
-1. **Memory is markdown.** Source of truth = the `.md` files. SQLite
-   is a rebuildable cache. Never write directly to `index.sqlite`;
-   always edit the markdown and let `reindex.js` catch up.
+1. **Memory is markdown.** Source of truth = the `.md` files in
+   `_workspace/memory/`. Read them with Read/Glob/Grep; write them
+   with Write/Edit. No agent-only indirection layer.
 2. **Tasks are notes, not rows.** Status changes mean editing the
    frontmatter of `_workspace/memory/tasks/<file>.md`. See the
-   `task-management` skill for the full schema.
+   `planning-and-task-breakdown` skill for the full schema.
 3. **Wikilinks matter.** Use `[[other-note]]` between vault notes.
    Obsidian's graph view depends on it; isolated notes are wasted.
-4. **Status-checker, task-keeper, reporter are mandatory** subagents.
-   The dashboard relies on them.
-5. **Match model to task.** Haiku for cheap polls and reconciliation.
+4. **Match model to task.** Haiku for cheap polls and reconciliation.
    Sonnet for real work and digests. Opus only on explicit request.
-6. **Quiet by default.** Daily and weekly cadence first. Hourly only
+5. **Quiet by default.** Daily and weekly cadence first. Hourly only
    when warranted.
-7. **No secrets in files.** Use env vars (`${GITHUB_TOKEN}`),
-   `_workspace/dashboard/.env`, or a separate secret manager.
-8. **MCP filesystem is scoped to this project.** Never broaden it.
+6. **No secrets in files.** Use env vars (`${GITHUB_TOKEN}`) or a
+   separate secret manager.
+7. **MCP filesystem is scoped to this project.** Never broaden it.
    Project sealing is the point.
 
 ## How to run things
 
-- Open the dashboard: `just dashboard`
-- Run a routine now: `just run <routine-name>`
-- Schedule routines: `just cron-install` (idempotent)
-- Rebuild the index: `just reindex`
-- See all commands: `just`
+Run `make help` to see all available targets (`stats`, `tasks`, `validate`).
 
 ## How to add things
 
@@ -64,8 +53,6 @@ Claude Code loads this file automatically. Read it once per session.
 - **New skill.** Drop `.claude/skills/<name>/SKILL.md`. Skills should
   describe *how* to do a thing; agents describe *who* does it.
 - **New slash command.** Drop `.claude/commands/<name>.md`.
-- **New routine.** Append to `_workspace/routines/routines.json`, then
-  `just cron-install` to update crontab.
 
 ## Bootstrap & maintenance commands
 
@@ -94,7 +81,7 @@ unchanged — domain assets are added on top.
 - The MOC: `_workspace/memory/index/README.md`.
 - The most recent daily note (for context): newest in
   `_workspace/memory/daily/`.
-- Any in-progress tasks: query the index.
+- Any in-progress tasks: `grep -l 'status: in_progress' _workspace/memory/tasks/*.md`.
 
 # agent-skills
 
@@ -113,7 +100,7 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 
 ## Skills by Phase
 
-**Define:** spec-driven-development
+**Define:** interview-me, idea-refine, spec-driven-development
 **Plan:** planning-and-task-breakdown
 **Build:** incremental-implementation, test-driven-development, context-engineering, source-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
 **Verify:** browser-testing-with-devtools, debugging-and-error-recovery
@@ -139,3 +126,17 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 - Always: Follow the `_workspace/docs/skill-anatomy.md` format for new skills
 - Never: Add skills that are vague advice instead of actionable processes
 - Never: Duplicate content between skills — reference other skills instead
+
+---
+
+## Maintainer mode
+
+Agents under `.claude/agents/_meta/` are maintainer-only — they exist
+for editing this template repository itself, not for project work.
+Claude Code doesn't list them in the agent picker (subfolders aren't
+scanned), so they only run when invoked explicitly:
+
+> Use the agent at `.claude/agents/_meta/skills-generator.md` to scaffold a new skill named "...".
+
+If you cloned `comind-skills` to start a real project, ignore this
+section.

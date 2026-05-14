@@ -1,6 +1,6 @@
 ---
 name: skills-generator
-description: Generates domain-specific Claude Code skills (SKILL.md files) from the project profile and documentation. Use after documentation-generator to produce the reactive rules Claude will follow when working in this codebase.
+description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Scaffolds new SKILL.md files when adding skills to the template. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Write, Grep, Glob
 model: sonnet
 ---

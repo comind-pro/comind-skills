@@ -1,6 +1,6 @@
 ---
 name: setup-validator
-description: Validates a generated Claude Code setup for consistency and correctness — frontmatter, cross-references, coverage, smoke tests. Use after any generation phase or as part of /audit-setup.
+description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Validates the template's own consistency (frontmatter, cross-references, coverage) when shipping template changes. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

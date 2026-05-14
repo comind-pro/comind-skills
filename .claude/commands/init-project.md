@@ -66,18 +66,24 @@ for the user to confirm.
 
 If the user picked option 2, run the **interview** flow.
 
-Ask up to **4 questions, one at a time**. Skip any that `$ARGUMENTS`
-already answered.
+Invoke the `interview-me` skill (from `.claude/skills/interview-me/`).
+That skill does one-question-at-a-time elicitation with hypothesis
++ confidence until ~95% certainty about intent — better than a fixed
+question list. Seed it with the four dimensions bootstrap needs:
 
 1. **Project name & one-sentence pitch.** What's it called? What does
    it do? Who's it for?
 2. **Stack & external systems.** What language/framework? What
    external systems (GitHub, Notion, Postgres, an API)? This decides
-   which MCP servers and plugins to add.
+   which MCP servers to add to `.claude/settings.json`.
 3. **Current state.** Brand-new, or migrating from somewhere? Any
    constraints already in place?
 4. **House style.** Any conventions worth pinning (code style, doc
    tone, naming)?
+
+Skip any dimension already answered by `$ARGUMENTS`. Stop as soon as
+you have enough to write Step 4 — don't grill the user past the
+point of usefulness.
 
 Then customize files (see Step 4).
 
@@ -108,20 +114,19 @@ about the project to fill in the same files as the from-scratch flow.
 
 Use **Write** and **Edit**, not Bash heredocs.
 
-- **`.claude/CLAUDE.md`** — replace the "What this project is"
-  placeholder with a real description (1–3 paragraphs). Add a
-  "Stack" section if warranted. Keep it short — this loads on every
-  session.
-- **`.claude/agents/researcher.md`** and **`.claude/agents/planner.md`**
-  — only touch them if the project domain genuinely changes how they
-  should work (e.g. add domain-specific sources to consult).
-  Otherwise leave the generic prompts.
-- **`.claude/skills/*/SKILL.md`** — same. Touch the tag/area taxonomy
-  only if the project warrants it.
+- **`CLAUDE.md`** (project root, loaded automatically every session) —
+  replace the "What this project is" placeholder with a real
+  description (1–3 paragraphs). Add a "Stack" section if warranted.
+  Keep it short.
+- **`.claude/skills/*/SKILL.md`** — leave alone unless the project
+  domain genuinely changes how a skill should work. Touch the
+  tag/area taxonomy only if the project warrants it. New skills come
+  later via `/extend-domain`.
 - **`.claude/settings.json`** — add MCP servers for the external
-  systems named in the interview/scan. Read `PLUGINS.md` and ask
-  which plugins to install; run `claude plugin install ...` only for
-  confirmed ones.
+  systems named in the interview/scan (one entry per service under
+  `mcpServers`). Do not install plugins from bootstrap; that's a
+  separate, user-driven step (`claude plugin install …`) when a
+  concrete need arises.
 - **`README.md`** at project root — replace the template description
   with the project's real intro. Remove the "Use this template"
   section (the template has been used).
@@ -177,7 +182,7 @@ Print exactly this shape:
 ✨ comind bootstrapped <project-name>.
 
 Customized:
-  .claude/CLAUDE.md
+  CLAUDE.md
   .claude/settings.json   (+N MCP servers, if any)
   README.md
   _workspace/memory/index/README.md

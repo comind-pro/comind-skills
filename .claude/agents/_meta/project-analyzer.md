@@ -1,6 +1,6 @@
 ---
 name: project-analyzer
-description: Deep analysis of an already-bootstrapped codebase to detect drift in architecture, patterns, domain, or conventions. Use from `/extend-domain` or `/regenerate-domain-assets` to produce the JSON profile that drives generator updates. Not used by `/init-project` — bootstrap is a lightweight, interview-driven flow that does not spawn sub-agents.
+description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Profiles the template's own structure when planning template-level changes. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

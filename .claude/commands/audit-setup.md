@@ -1,17 +1,17 @@
 ---
-description: Audit current Claude Code setup for outdated content, missing coverage, and dead assets
+description: "MAINTAINER-ONLY for the comind-skills template. Audit current Claude Code setup for outdated content, missing coverage, and dead assets. Calls maintainer agents under `.claude/agents/_meta/`. NOT for project work — if you cloned this template for a real project, skip this command."
 ---
 
 # Audit Setup Quality
 
 Periodically evaluate whether the generated Claude Code assets still match the project. Recommended monthly or after any major refactor.
 
-Spawn `setup-validator` first for structural checks (frontmatter, cross-references, smoke tests), then a separate review pass for quality and coverage.
+Use the agent at `.claude/agents/_meta/setup-validator.md` first for structural checks (frontmatter, cross-references, smoke tests), then a separate review pass for quality and coverage.
 
 ## Checks
 
 ### 1. Skill freshness
-- Spawn `project-analyzer` to get a fresh profile
+- Use the agent at `.claude/agents/_meta/project-analyzer.md` to get a fresh profile
 - Compare against the assumptions baked into each `.claude/skills/<name>/SKILL.md`
 - Flag skills referencing modules, frameworks, or conventions that no longer exist in the codebase
 - Flag new patterns in code that aren't covered by any skill
