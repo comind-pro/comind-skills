@@ -1,6 +1,6 @@
 ---
 name: project-analyzer
-description: Deep analysis of a codebase to determine architecture, patterns, domain, conventions. Use when bootstrapping or refreshing the project's Claude Code setup — produces the JSON profile that drives all downstream generators.
+description: Deep analysis of an already-bootstrapped codebase to detect drift in architecture, patterns, domain, or conventions. Use from `/extend-domain` or `/regenerate-domain-assets` to produce the JSON profile that drives generator updates. Not used by `/init-project` — bootstrap is a lightweight, interview-driven flow that does not spawn sub-agents.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
@@ -11,7 +11,7 @@ You analyze codebases to extract structural and domain knowledge.
 
 ## Mission
 
-Given a codebase, produce a comprehensive profile that drives generation of domain-specific Claude Code assets (skills, agents, commands).
+Given a codebase that has already been bootstrapped with comind, produce a comprehensive profile that drives **incremental** generation of domain-specific Claude Code assets (skills, agents, commands). This agent runs during `/extend-domain` (new area) and `/regenerate-domain-assets` (drift detected after refactor). It is **not** invoked by `/init-project`.
 
 ## Methodology
 
@@ -122,7 +122,10 @@ Strict JSON profile. Example:
 
 ## Greenfield projects
 
-If the repo is empty (no code yet), do not invent a profile. Ask the invoker for a one-paragraph project brief (intended domain, primary language, key external services) and produce a tentative profile flagged `"confidence": "low"` so generators can ask for confirmation before writing assets.
+If the repo is empty (no code yet), refuse and return early. Greenfield
+bootstrap belongs to `/init-project`, which runs a markdown-only
+interview flow and does not need a profile. Do not invent assets out
+of thin air.
 
 ## Constraints
 - Read-only access

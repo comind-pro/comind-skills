@@ -1,85 +1,219 @@
 ---
-description: Bootstrap project with auto-generated documentation, skills, agents, and commands based on codebase analysis
-argument-hint: [optional project type hint, e.g. "smart-contracts", "python-backend", "react-app"]
+name: init-project
+description: Bootstrap a project. Detects whether cwd is the comind template itself (self-init forbidden) or a fresh clone, asks one routing question (scan existing vs. create from scratch), then customizes CLAUDE.md, skills, agents, and commands to match.
+argument-hint: "<optional: short project description>"
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
-# Initialize Project Agentic Setup
+You are bootstrapping a fresh project. Run **once** per repo.
 
-This is the project's first-run command. It analyses the codebase (or asks for a brief if the repo is empty), then generates a complete domain-specific Claude Code setup on top of the boilerplate's universal layer.
+## Step 1: refuse if we're inside the template itself
 
-Boilerplate lifecycle skills/commands (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`) and generic personas (`code-reviewer`, `security-auditor`, `test-engineer`) stay in place — `/init-project` only **adds** project-specific assets on top.
+Check whether this cwd is the comind template repo, not a clone of it:
 
-## Phase 1: Project Discovery
+```bash
+# Signal A: origin remote points exactly at the canonical template.
+# Tightened to the full name; substring matches on other comind-pro/comind-*
+# repos must NOT fire.
+git remote get-url origin 2>/dev/null \
+  | grep -qE '[:/]comind-pro/comind-skills(\.git)?/?$' \
+  && echo "TEMPLATE_REMOTE"
 
-Spawn the `project-analyzer` agent (via the Task tool) with this brief:
+# Signal B: README still contains the template's boilerplate marker.
+# Step 4 of /init-project replaces the README, so a clone that has
+# already been bootstrapped won't trigger this.
+grep -q '^# BOILERPLATE' README.md 2>/dev/null && echo "TEMPLATE_README"
+```
 
-> Analyse this codebase comprehensively. Determine: primary language(s) and frameworks; architectural patterns; domain; key technologies; coding conventions; testing strategy; documentation state. Return the structured JSON profile.
+If **both** signals fire, this is the template repo and bootstrap
+has not yet happened. Stop and say:
 
-If `$ARGUMENTS` is provided, pass it as a hint but verify against actual code. Greenfield repos: ask the user for a one-paragraph project brief before running the analyzer.
+> This looks like the comind template repo itself, not a project
+> created from it. `/init-project` is meant to run **once, inside a
+> clone**. To start a new project:
+>
+> ```bash
+> gh repo create my-project --template comind-pro/comind --clone
+> cd my-project
+> claude
+> > /init-project
+> ```
+>
+> If you really intended to run it here (e.g. you're editing the
+> template), tell me explicitly: "yes, run it on the template anyway".
 
-## Phase 2: Documentation Generation
+Do **not** proceed without that explicit override. No self-scanning,
+no meta-mode, no multi-phase pipelines.
 
-Spawn `documentation-generator` with the Phase 1 profile. It writes:
-- `_workspace/docs/architecture.md`
-- `_workspace/docs/conventions.md`
-- `_workspace/docs/domain.md`
-- `_workspace/docs/dependencies.md`
-- `_workspace/docs/getting-started.md`
-- Appends a project-context section to `CLAUDE.md` (does not overwrite existing template rules)
+## Step 2: ask the routing question
 
-**[APPROVAL GATE]** Show generated docs to the user. Ask: `approve / iterate / abort`. On `iterate`, re-spawn with the user's notes.
+Exactly one question, two options:
 
-## Phase 3: Skills Generation
+> Are we **scanning an existing codebase** (cwd already has source code
+> that I should profile), or **creating a project from scratch** (cwd
+> is empty apart from the comind boilerplate)?
+>
+> 1. Scan existing code
+> 2. Create from scratch
 
-Spawn `skills-generator` with profile + approved docs. It writes domain-specific `SKILL.md` files to `.claude/skills/`, skipping anything already covered by the boilerplate's lifecycle pack.
+Heuristic for the default suggestion: if cwd has more than ~5 source
+files outside `.claude/` and `_workspace/` (any of `*.py`, `*.js`,
+`*.ts`, `*.go`, `*.rs`, `Cargo.toml`, `package.json`, `pyproject.toml`,
+`go.mod`), suggest option 1. Otherwise suggest option 2. Still wait
+for the user to confirm.
 
-Baseline skills always considered (skip if duplicate):
-- `project-architecture` — from `_workspace/docs/architecture.md`
-- `code-style` — from `_workspace/docs/conventions.md`
-- `security-rules` — security baseline for this domain
+## Step 3a: branch — Create from scratch
 
-Domain skills come from `recommended_skills` in the profile.
+If the user picked option 2, run the **interview** flow.
 
-**[APPROVAL GATE]** Show generated skills list (name + 1-line purpose). Ask: `approve / modify / add more / drop some`.
+Ask up to **4 questions, one at a time**. Skip any that `$ARGUMENTS`
+already answered.
 
-## Phase 4: Agents Generation
+1. **Project name & one-sentence pitch.** What's it called? What does
+   it do? Who's it for?
+2. **Stack & external systems.** What language/framework? What
+   external systems (GitHub, Notion, Postgres, an API)? This decides
+   which MCP servers and plugins to add.
+3. **Current state.** Brand-new, or migrating from somewhere? Any
+   constraints already in place?
+4. **House style.** Any conventions worth pinning (code style, doc
+   tone, naming)?
 
-Spawn `agents-generator` with profile + skills. It writes domain-specific agents to `.claude/agents/`.
+Then customize files (see Step 4).
 
-Baseline agents always considered (skip if duplicate):
-- `architect` — system design decisions
-- `implementer` — code writing
-- `tester` — test creation
+## Step 3b: branch — Scan existing code
 
-Domain agents come from `recommended_agents` in the profile.
+If the user picked option 1, run the **scan** flow.
 
-**[APPROVAL GATE]** Show generated agents list. Ask: `approve / modify`.
+Keep it bounded — this is not a 30-minute pipeline.
 
-## Phase 5: Commands Generation
+1. **Detect stack** (one bash batch, max ~5 commands):
+   - `cat package.json 2>/dev/null | head -50`
+   - `cat pyproject.toml 2>/dev/null | head -50`
+   - `cat Cargo.toml 2>/dev/null | head -30`
+   - `cat go.mod 2>/dev/null | head -20`
+   - `ls -la` for top-level orientation
+2. **Detect entry points** with `Glob`: `src/**/main.*`,
+   `src/**/index.*`, `cmd/**/main.go`, etc.
+3. **Read the existing README.md** if present.
+4. **Summarize** what you found in 5–8 bullets and confirm with the
+   user. Ask one clarifying question if the project's purpose isn't
+   obvious from the code.
 
-Spawn `commands-generator` with profile + skills + agents. It writes domain-specific slash commands to `.claude/commands/`.
+Do **not** spawn sub-agents for this. Do **not** open a git branch.
+Do **not** generate per-skill analyses. The goal is to learn enough
+about the project to fill in the same files as the from-scratch flow.
 
-Do not regenerate the boilerplate lifecycle commands (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`). Domain commands come from `recommended_commands` in the profile.
+## Step 4: customize files (both branches converge here)
 
-**[APPROVAL GATE]** Show generated commands list. Ask: `approve / modify`.
+Use **Write** and **Edit**, not Bash heredocs.
 
-## Phase 6: Validation
+- **`.claude/CLAUDE.md`** — replace the "What this project is"
+  placeholder with a real description (1–3 paragraphs). Add a
+  "Stack" section if warranted. Keep it short — this loads on every
+  session.
+- **`.claude/agents/researcher.md`** and **`.claude/agents/planner.md`**
+  — only touch them if the project domain genuinely changes how they
+  should work (e.g. add domain-specific sources to consult).
+  Otherwise leave the generic prompts.
+- **`.claude/skills/*/SKILL.md`** — same. Touch the tag/area taxonomy
+  only if the project warrants it.
+- **`.claude/settings.json`** — add MCP servers for the external
+  systems named in the interview/scan. Read `PLUGINS.md` and ask
+  which plugins to install; run `claude plugin install ...` only for
+  confirmed ones.
+- **`README.md`** at project root — replace the template description
+  with the project's real intro. Remove the "Use this template"
+  section (the template has been used).
+- **`_workspace/memory/index/README.md`** — vault homepage (the MOC
+  Obsidian opens to). Replace the generic intro with one tied to this
+  project. Mention project-specific terms readers should know. Keep
+  the "Folders" and "Conventions" sections; only the intro changes.
 
-Spawn `setup-validator`. On `warnings`: show report, let user iterate per asset. On `failed`: route fixes back to the appropriate generator and re-validate. On `passed`: continue.
+## Step 5: seed initial vault content
 
-## Phase 7: Onboarding summary
+Write a first **decision** capturing the bootstrap:
 
-Write `setup-summary.md` at the repo root with:
-- What was created (skills, agents, commands — counts and names)
-- How to use the new commands (with one example invocation each)
-- Recommended first tasks to verify the setup works
-- Where to extend later (`/extend-domain`, `/regenerate-domain-assets`)
+`_workspace/memory/decisions/<today>-bootstrap.md`:
 
-Suggest the user commit each generation phase as a separate commit for easy review.
+```markdown
+---
+type: decision
+date: <today>
+status: accepted
+tags: [bootstrap]
+---
 
-## Constraints
+# Project bootstrap
 
-- Total runtime budget cap: $5 (Sonnet) or $20 (Opus for high-stakes domains like security audits)
-- Maximum 30 minutes total
-- Every phase has an approval gate — the user can iterate or abort
-- All generated files should land on a fresh branch (`init-project/init` by default) so the user reviews everything before merging
+## Decision
+This project is <name>: <pitch>.
+
+## Context
+- Stack: ...
+- External systems: ...
+- Constraints: ...
+- Style: ...
+- (If scan branch) Existing codebase summary: ...
+
+## Consequences
+- These choices shape the agents in `.claude/agents/` and the MCP
+  servers in `.claude/settings.json`.
+- Revisit if the project changes direction.
+```
+
+**Delete** the two example files from the template:
+- `_workspace/memory/decisions/2026-05-13-example-decision.md`
+- `_workspace/memory/research/2026-05-13-example-research.md`
+
+(Verify they exist first with `ls`; some users may have already
+deleted them by hand.)
+
+## Step 6: hand off
+
+Print exactly this shape:
+
+```
+✨ comind bootstrapped <project-name>.
+
+Customized:
+  .claude/CLAUDE.md
+  .claude/settings.json   (+N MCP servers, if any)
+  README.md
+  _workspace/memory/index/README.md
+  _workspace/memory/decisions/<today>-bootstrap.md  (new)
+
+Removed:
+  _workspace/memory/decisions/2026-05-13-example-decision.md
+  _workspace/memory/research/2026-05-13-example-research.md
+
+Next:
+  → /note "first impressions"   (add to today's daily)
+  → /task new "<first task>"
+  → /research "<first question>" (delegates to researcher)
+  → /decision "<title>"          (open an ADR draft)
+```
+
+## Rules
+
+- **Never self-init.** If we're in the template repo, refuse. See Step 1.
+- **Never overwrite** content that's clearly been customized already.
+  Ask.
+- **No new agents or skills** unless the user explicitly asked. Stick
+  with the templated set. New ones are easy to add later via
+  `/extend-domain`.
+- **No new directories** in `_workspace/`. The five
+  (decisions/research/daily/notes/tasks + docs) are enough.
+- **No code, no scripts, no daemons, no sub-agents, no git branches.**
+  This is a markdown boilerplate. Anything beyond markdown is out of
+  scope.
+- **No secrets in files.** Use env vars.
+- **No "multi-phase pipelines"**, no `project-analyzer`, no
+  `commands-generator` invocations from this command. Those agents
+  still exist — they're tools for `/extend-domain` and
+  `/regenerate-domain-assets`, not for bootstrap. If a previous
+  version of this command spawned sub-agents or made elaborate
+  plans — that's exactly the scope creep we removed.
+
+Begin by running Step 1 (template-detection check). If it passes, ask
+the routing question from Step 2.

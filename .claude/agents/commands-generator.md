@@ -1,6 +1,6 @@
 ---
 name: commands-generator
-description: Generates slash commands for frequent project workflows from the profile, skills, and agents. Use after agents-generator to package multi-step workflows behind single invocations with proper approval gates.
+description: Generates slash commands for frequent project workflows from the profile, skills, and agents. Invoked by `/extend-domain` (new area) and `/regenerate-domain-assets` (drift). Not used by `/init-project` — bootstrap does not add new commands beyond the templated set.
 tools: Read, Write, Grep, Glob
 model: sonnet
 ---
@@ -17,12 +17,17 @@ Commands package multi-step workflows into single invocations. Generate commands
 3. Coordinate multiple agents
 4. Include appropriate human approval gates
 
+This agent runs **only** when the user has explicitly asked to add or
+refresh commands for an established project — via `/extend-domain`
+(narrow scope, single area) or `/regenerate-domain-assets` (broader
+refresh). It is **not** part of the `/init-project` flow.
+
 ## Inputs
 
 - JSON profile from `project-analyzer`
 - Generated skills in `.claude/skills/`
 - Generated agents in `.claude/agents/`
-- Existing `.claude/commands/` (to avoid clobbering lifecycle commands `/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`)
+- Existing `.claude/commands/` (to avoid clobbering lifecycle commands `/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`, or the meta-commands `/init-project`, `/extend-domain`, `/regenerate-domain-assets`, `/audit-setup`)
 
 ## Command template
 
