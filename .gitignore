@@ -1,0 +1,24 @@
+# IDEs and editors
+.idea
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.*
+*.env
+*.log
+
+# claude
+.claude/.simplify-ignore-cache/
+.claude/sdd-cache/
+
+# Obsidian — shared config commit, personal state ignore
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
