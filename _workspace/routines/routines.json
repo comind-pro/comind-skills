@@ -1,5 +1,5 @@
 {
-  "_comment": "Cron-scheduled headless Claude runs. Each routine becomes one crontab line via `just cron-install`. /orchid will append project-specific routines.",
+  "_comment": "Cron-scheduled headless Claude runs. Each routine becomes one crontab line via `just cron-install`. /init-project will append project-specific routines.",
   "routines": [
     {
       "name": "hourly-status",

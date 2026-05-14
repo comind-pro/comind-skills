@@ -13,7 +13,7 @@ Claude Code loads this file automatically. Read it once per session.
 | `.claude/agents/`                   | Subagents you can delegate to via Task.   |
 | `.claude/commands/`                 | Slash commands.                            |
 | `.claude/hooks/`                    | Hook scripts wired up in `settings.json`. |
-| `_workspace/docs/`                  | `/orchid`-generated project docs (architecture, conventions, …) + `skill-anatomy.md` spec. |
+| `_workspace/docs/`                  | `/init-project`-generated project docs (architecture, conventions, …) + `skill-anatomy.md` spec. |
 | `_workspace/references/`            | Supplementary checklists pulled in by skills on demand. |
 | `_workspace/memory/`                | Obsidian vault. Long-term memory.         |
 | `_workspace/memory/tasks/`          | Tasks as `.md`. See `task-management` skill. |
@@ -73,7 +73,7 @@ The boilerplate ships with a meta-tools layer that **generates** domain-specific
 skills, agents, and commands for whatever project this template gets cloned
 into. Run them via Claude Code:
 
-- `/orchid [type-hint]` — first-run bootstrap. Analyses the codebase, generates
+- `/init-project [type-hint]` — first-run bootstrap. Analyses the codebase, generates
   docs, then domain skills/agents/commands with approval gates per phase.
 - `/extend-domain <area>` — add assets for a new bounded context (e.g. "webhook
   handlers", "ML model serving").
@@ -108,7 +108,7 @@ This is the agent-skills project — a collection of production-grade engineerin
 .claude/commands/       → Slash commands (/spec, /plan, /build, /test, /review, /code-simplify, /ship)
 .claude/hooks/          → Session lifecycle hook scripts (wired up via .claude/settings.json)
 _workspace/references/  → Supplementary checklists (testing, performance, security, accessibility)
-_workspace/docs/        → `/orchid`-generated project docs (architecture, conventions, …) + skill-anatomy spec
+_workspace/docs/        → `/init-project`-generated project docs (architecture, conventions, …) + skill-anatomy spec
 ```
 
 ## Skills by Phase

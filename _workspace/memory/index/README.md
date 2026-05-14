@@ -33,5 +33,5 @@ Templater.
 
 ---
 
-*Edit this freely. `/orchid` will tweak it on first run to mention
+*Edit this freely. `/init-project` will tweak it on first run to mention
 project-specific terminology.*

@@ -7,7 +7,7 @@ argument-hint: [optional project type hint, e.g. "smart-contracts", "python-back
 
 This is the project's first-run command. It analyses the codebase (or asks for a brief if the repo is empty), then generates a complete domain-specific Claude Code setup on top of the boilerplate's universal layer.
 
-Boilerplate lifecycle skills/commands (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`) and generic personas (`code-reviewer`, `security-auditor`, `test-engineer`) stay in place — `/orchid` only **adds** project-specific assets on top.
+Boilerplate lifecycle skills/commands (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`) and generic personas (`code-reviewer`, `security-auditor`, `test-engineer`) stay in place — `/init-project` only **adds** project-specific assets on top.
 
 ## Phase 1: Project Discovery
 
@@ -82,4 +82,4 @@ Suggest the user commit each generation phase as a separate commit for easy revi
 - Total runtime budget cap: $5 (Sonnet) or $20 (Opus for high-stakes domains like security audits)
 - Maximum 30 minutes total
 - Every phase has an approval gate — the user can iterate or abort
-- All generated files should land on a fresh branch (`orchid/init` by default) so the user reviews everything before merging
+- All generated files should land on a fresh branch (`init-project/init` by default) so the user reviews everything before merging

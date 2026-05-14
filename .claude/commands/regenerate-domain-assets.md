@@ -15,7 +15,7 @@ Re-analyse the project and update domain-specific assets when the codebase has d
    - `skills` → spawn `skills-generator` for affected skills only
    - `agents` → spawn `agents-generator` for affected agents only
    - `commands` → spawn `commands-generator` for affected commands only
-   - `all` → run all three in order, like `/orchid` phases 3–5
+   - `all` → run all three in order, like `/init-project` phases 3–5
 4. **Show diffs per asset** — for each updated `SKILL.md`, agent, or command, display a unified diff against the prior version.
 5. **[APPROVAL GATE]** — user accepts/rejects/edits per asset.
 6. **Validate** — spawn `setup-validator` on the updated set.

@@ -1,6 +1,6 @@
 # BOILERPLATE
 
-> This README is the boilerplate's own README. `/orchid` will replace
+> This README is the boilerplate's own README. `/init-project` will replace
 > this with your actual project intro on first run.
 
 A self-contained Claude Code workspace. Everything an agent ecosystem
@@ -12,7 +12,7 @@ needs lives **inside this folder**:
 │   ├── settings.json       # hooks + permissions
 │   ├── skills/             # 22 lifecycle skills + project-generated skills
 │   ├── agents/             # 3 personas + 6 meta-agents + project-generated agents
-│   ├── commands/           # 7 lifecycle + 4 meta (/orchid, /extend-domain, …)
+│   ├── commands/           # 7 lifecycle + 4 meta (/init-project, /extend-domain, …)
 │   └── hooks/              # session-start, sdd-cache, simplify-ignore
 ├── _workspace/             # Everything Claude REFERENCES (not auto-loaded by harness)
 │   ├── memory/             # Obsidian vault — long-term project memory
@@ -22,7 +22,7 @@ needs lives **inside this folder**:
 │   │   ├── daily/          # daily journal
 │   │   ├── index/          # MOC notes
 │   │   └── _obsidian-templates/task.md
-│   ├── docs/               # Template setup guides + project-generated docs (/orchid output)
+│   ├── docs/               # Template setup guides + project-generated docs (/init-project output)
 │   ├── references/         # Supplementary checklists pulled in by skills on demand
 │   ├── db/index.sqlite     # auto-rebuilt index of the vault (gitignored)
 │   ├── routines/routines.json  # cron rules
@@ -44,10 +44,10 @@ cp -r path/to/boilerplate ./my-new-project
 cd my-new-project
 rm -rf .git && git init           # if you cloned via git
 
-# 2. Open in Claude Code, run /orchid
+# 2. Open in Claude Code, run /init-project
 claude
-> /orchid "A SaaS that does X for Y users"
-# Orchid asks ≤4 questions, then customizes agents/skills/routines.
+> /init-project "A SaaS that does X for Y users"
+# init-project asks ≤4 questions, then customizes agents/skills/routines.
 
 # 3. Use the project
 just                              # list all commands
@@ -110,9 +110,9 @@ just db "SELECT * FROM tasks WHERE status='in_progress'"
 - A `cron` daemon if you want scheduled routines (everything else
   works without one)
 
-## What `/orchid` does
+## What `/init-project` does
 
-`/orchid` is a slash-command (`.claude/commands/orchid.md`) that runs
+`/init-project` is a slash-command (`.claude/commands/init-project.md`) that runs
 once after you clone. It interviews you about the project (≤ 4
 questions), then customizes:
 
@@ -121,7 +121,7 @@ questions), then customizes:
 - `_workspace/routines/routines.json` with project-specific routines.
 - This README — replacing the boilerplate intro with your real one.
 
-After `/orchid` you have a workspace tailored to your project, while
+After `/init-project` you have a workspace tailored to your project, while
 the underlying mechanics (vault → SQLite → dashboard → cron) stay
 generic.
 
@@ -169,10 +169,10 @@ cd my-new-project
 
 # 2. Open in Claude Code and bootstrap the project
 claude
-> /orchid "<short description of what you're building>"
+> /init-project "<short description of what you're building>"
 ```
 
-`/orchid` analyses the codebase (or asks for a brief if greenfield), then generates project-specific skills, agents, and slash commands on top of the lifecycle pack. See [.claude/commands/orchid.md](.claude/commands/orchid.md) for the full phased workflow.
+`/init-project` analyses the codebase (or asks for a brief if greenfield), then generates project-specific skills, agents, and slash commands on top of the lifecycle pack. See [.claude/commands/init-project.md](.claude/commands/init-project.md) for the full phased workflow.
 
 ---
 
@@ -328,7 +328,7 @@ comind-skills/
 │   ├── commands/                      # 11 slash commands (lifecycle + meta)
 │   └── hooks/                         # Session lifecycle hook scripts
 ├── _workspace/                        # Reference + working content (Claude reads on demand)
-│   ├── docs/                          # Template setup guides + /orchid output
+│   ├── docs/                          # Template setup guides + /init-project output
 │   ├── references/                    # 4 supplementary checklists used by skills
 │   ├── memory/                        # Obsidian vault (tasks, decisions, research, daily)
 │   ├── routines/                      # Cron-scheduled headless Claude runs

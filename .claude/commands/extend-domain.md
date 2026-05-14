@@ -7,7 +7,7 @@ argument-hint: <area description, e.g. "websocket handlers" or "ML model serving
 
 Add Claude Code assets for a new domain area: `$ARGUMENTS`.
 
-Use this when the project grows into territory the original `/orchid` run didn't cover — a new external service, a new bounded context, an unrelated feature area. Smaller than `/regenerate-domain-assets` (targeted, not project-wide).
+Use this when the project grows into territory the original `/init-project` run didn't cover — a new external service, a new bounded context, an unrelated feature area. Smaller than `/regenerate-domain-assets` (targeted, not project-wide).
 
 ## Workflow
 
