@@ -1,0 +1,9 @@
+{
+  "name": "agentic-os-hooks",
+  "version": "0.1.0",
+  "description": "Claude Code PostToolUse hook that appends tool-call summaries to today's daily note.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}

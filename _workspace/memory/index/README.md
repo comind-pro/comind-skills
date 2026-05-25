@@ -23,13 +23,10 @@ Templater.
 - Filename: `YYYY-MM-DD-kebab-slug.md`.
 - Every note has frontmatter with at least `type`, `date`, `tags`.
 - Use `[[wikilinks]]` between notes — the graph view depends on it.
-- After bulk edits, run `node _workspace/bin/reindex.js`.
 
-## Dashboards
+## Browsing
 
-- Local web dashboard: `just dashboard` → http://localhost:7878
-- Obsidian for graph + backlinks
-- SQLite at `_workspace/db/index.sqlite` for ad-hoc queries
+- Open `_workspace/memory/` in **Obsidian** for graph view + backlinks.
 
 ---
 

@@ -1,0 +1,16 @@
+{
+  "_comment": "Snippet for ~/.claude/settings.json — merge this into your existing settings. Adjust the absolute path if you installed the hook outside ~/.claude/hooks/.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/hooks/activity-log.js\""
+          }
+        ]
+      }
+    ]
+  }
+}

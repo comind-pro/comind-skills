@@ -22,3 +22,7 @@ node_modules/
 # Obsidian — shared config commit, personal state ignore
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
+
+# Python
+__pycache__/
+*.pyc
