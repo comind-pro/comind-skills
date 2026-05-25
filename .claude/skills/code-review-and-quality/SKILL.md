@@ -312,8 +312,8 @@ Part of code review is dependency review:
 ```
 ## See Also
 
-- For detailed security review guidance, see `_workspace/references/security-checklist.md`
-- For performance review checks, see `_workspace/references/performance-checklist.md`
+- For detailed security review guidance, see `_workspace/docs/references/security-checklist.md`
+- For performance review checks, see `_workspace/docs/references/performance-checklist.md`
 
 ## Common Rationalizations
 

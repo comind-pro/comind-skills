@@ -1,5 +1,5 @@
 ---
-description: Regenerate domain-specific skills/agents/commands when project architecture changes significantly
+description: "MAINTAINER-ONLY for the comind-skills template. Regenerate domain-specific skills/agents/commands when project architecture changes significantly. Calls maintainer agents under `.claude/agents/_meta/`. NOT for project work — if you cloned this template for a real project, skip this command."
 argument-hint: <scope: skills | agents | commands | all>
 ---
 
@@ -9,16 +9,16 @@ Re-analyse the project and update domain-specific assets when the codebase has d
 
 ## Workflow
 
-1. **Detect drift** — spawn `project-analyzer` and diff its fresh profile against the previous one (`_workspace/docs/.profile.json` if it exists, otherwise treat everything as new).
+1. **Detect drift** — use the agent at `.claude/agents/_meta/project-analyzer.md` and diff its fresh profile against the previous one (`_workspace/docs/.profile.json` if it exists, otherwise treat everything as new).
 2. **Show the diff** — print new languages/frameworks/modules/external services detected since last setup.
 3. **Determine assets to update** — based on `$ARGUMENTS`:
-   - `skills` → spawn `skills-generator` for affected skills only
-   - `agents` → spawn `agents-generator` for affected agents only
-   - `commands` → spawn `commands-generator` for affected commands only
-   - `all` → run all three in order, like `/init-project` phases 3–5
+   - `skills` → use the agent at `.claude/agents/_meta/skills-generator.md` for affected skills only
+   - `agents` → use the agent at `.claude/agents/_meta/agents-generator.md` for affected agents only
+   - `commands` → use the agent at `.claude/agents/_meta/commands-generator.md` for affected commands only
+   - `all` → run all three in order
 4. **Show diffs per asset** — for each updated `SKILL.md`, agent, or command, display a unified diff against the prior version.
 5. **[APPROVAL GATE]** — user accepts/rejects/edits per asset.
-6. **Validate** — spawn `setup-validator` on the updated set.
+6. **Validate** — use the agent at `.claude/agents/_meta/setup-validator.md` on the updated set.
 7. **Commit** — one commit per asset type for easy review.
 
 ## Typical use cases

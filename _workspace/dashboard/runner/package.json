@@ -1,0 +1,13 @@
+{
+  "name": "comind-dashboard-runner",
+  "version": "0.3.0",
+  "description": "Background daemon that watches an Obsidian vault's intent queue and spawns headless Claude Code skill subprocesses.",
+  "type": "module",
+  "main": "runner.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node runner.js"
+  }
+}

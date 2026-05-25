@@ -1,0 +1,31 @@
+import esbuild from "esbuild";
+import { copyFileSync, mkdirSync } from "node:fs";
+import { join } from "node:path";
+
+// CUSTOMIZE: absolute path to your vault's plugin folder.
+// Build output drops here; Hot Reload picks up changes automatically.
+const VAULT_PLUGIN_DIR = "C:\\Users\\YOU\\your-vault\\.obsidian\\plugins\\my-dashboard";
+mkdirSync(VAULT_PLUGIN_DIR, { recursive: true });
+
+const opts = {
+  entryPoints: ["src/main.ts"],
+  bundle: true,
+  format: "cjs",
+  target: "es2018",
+  platform: "browser",
+  external: ["obsidian", "electron", "child_process"],
+  outfile: join(VAULT_PLUGIN_DIR, "main.js"),
+  jsxFactory: "h",
+  jsxFragment: "Fragment",
+};
+
+if (process.argv.includes("production")) {
+  opts.minify = true;
+  await esbuild.build(opts);
+} else {
+  const ctx = await esbuild.context(opts);
+  await ctx.watch();
+}
+
+copyFileSync("manifest.json", join(VAULT_PLUGIN_DIR, "manifest.json"));
+copyFileSync("styles.css", join(VAULT_PLUGIN_DIR, "styles.css"));

@@ -22,3 +22,13 @@ node_modules/
 # Obsidian — shared config commit, personal state ignore
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
+
+# Dashboard plugin build output (built by `make dashboard`)
+.obsidian/plugins/dashboard/
+
+# Runner working dirs (created on first run, vault-local)
+_workspace/system/
+
+# Python
+__pycache__/
+*.pyc

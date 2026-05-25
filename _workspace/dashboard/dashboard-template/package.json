@@ -1,0 +1,20 @@
+{
+  "name": "dashboard",
+  "version": "0.1.0",
+  "description": "Obsidian plugin: comind-dashboard, built in-place against this project's vault.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "esbuild": "^0.21",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "obsidian": "latest",
+    "preact": "^10"
+  }
+}
