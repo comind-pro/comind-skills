@@ -161,7 +161,9 @@ claude --version        # any recent
 Then check Obsidian:
 - Is Obsidian installed? If not, install from https://obsidian.md before continuing.
 - **Obsidian version must be 1.9.10+** (Bases is core from that release — Phase 9 requires it). Check via Help → About. If older, update before continuing.
-- Note the path to your future vault root (e.g. `~/the-vault`). All paths below assume vault root is `~/the-vault`. Substitute your own.
+- The vault **is the project** — the repo you're setting the dashboard up in. There is no separate `$VAULT` to create or search for. Throughout this guide `$VAULT` = your project root. Set it once before running any block:
+  - **macOS / Linux:** `export VAULT="$(pwd)"` (run from the project root)
+  - **Windows (PowerShell):** `$vault = (Get-Location).Path`
 
 > [VERIFY] All five tools respond with a version. Obsidian is 1.9.10+.
 
@@ -204,17 +206,17 @@ Whenever a later phase says "copy `<path>` from the repo," it refers to `_worksp
 **macOS / Linux (bash):**
 
 ```bash
-mkdir -p ~/the-vault/{inbox,projects,content,wiki,daily-notes,ops,system,_archive-vault}
-mkdir -p ~/the-vault/inbox/{notes,research,reports,personal,demo-assets,archive}
-mkdir -p ~/the-vault/inbox/reports/{morning,weekly,cascades,inbox-briefs,plan-tomorrow,vault-cleanup,metrics}
-mkdir -p ~/the-vault/system/{schemas,templates,metrics,queue,runs,bases,dashboards}
-mkdir -p ~/the-vault/.claude/skills
+mkdir -p "$VAULT"/{inbox,projects,content,wiki,daily-notes,ops,system,_archive-vault}
+mkdir -p "$VAULT"/inbox/{notes,research,reports,personal,demo-assets,archive}
+mkdir -p "$VAULT"/inbox/reports/{morning,weekly,cascades,inbox-briefs,plan-tomorrow,vault-cleanup,metrics}
+mkdir -p "$VAULT"/system/{schemas,templates,metrics,queue,runs,bases,dashboards}
+mkdir -p "$VAULT"/.claude/skills
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-$vault = "$env:USERPROFILE\the-vault"
+$vault = (Get-Location).Path   # the project root — the vault IS the project
 "inbox","projects","content","wiki","daily-notes","ops","system","_archive-vault" | % { New-Item -ItemType Directory -Force "$vault\$_" | Out-Null }
 "notes","research","reports","personal","demo-assets","archive" | % { New-Item -ItemType Directory -Force "$vault\inbox\$_" | Out-Null }
 "morning","weekly","cascades","inbox-briefs","plan-tomorrow","vault-cleanup","metrics" | % { New-Item -ItemType Directory -Force "$vault\inbox\reports\$_" | Out-Null }
@@ -224,7 +226,7 @@ New-Item -ItemType Directory -Force "$vault\.claude\skills" | Out-Null
 
 Then create the vault conventions doc.
 
-> [ACTION] Write `~/the-vault/CLAUDE.md` with the vault conventions. Use this template — adapt the Tools / About sections to user's domain.
+> [ACTION] Write `$VAULT/CLAUDE.md` with the vault conventions. Use this template — adapt the Tools / About sections to user's domain.
 
 ```markdown
 # Vault Conventions
@@ -261,7 +263,7 @@ Mental model — Karpathy 3-stage: `inbox → projects → content` (staging →
 
 Then create the root index.
 
-> [ACTION] Write `~/the-vault/_index.md`:
+> [ACTION] Write `$VAULT/_index.md`:
 
 ```markdown
 # Vault — top-level map
@@ -276,11 +278,11 @@ Then create the root index.
 - system/ — plumbing
 ```
 
-> [VERIFY] Run `ls ~/the-vault/` and confirm 8 folders + 2 .md files (CLAUDE.md + _index.md).
+> [VERIFY] Run `ls $VAULT/` and confirm 8 folders + 2 .md files (CLAUDE.md + _index.md).
 
 > [FIX] If a mkdir failed, check parent directory write permissions. On Windows, ensure no path contains `OneDrive` redirects.
 
-> [VERIFY] Open the vault root in Obsidian: File → Open vault → pick `~/the-vault`. Confirm sidebar shows 8 folders + 2 root docs.
+> [VERIFY] Open the vault root in Obsidian: File → Open vault → pick `$VAULT`. Confirm sidebar shows 8 folders + 2 root docs.
 
 ---
 
@@ -288,7 +290,7 @@ Then create the root index.
 
 **Goal:** Lock the daily-note format. Every writer (skills, hooks, plugin) and every reader (plugin) honors this contract. Schema-first discipline is what lets all the pieces compose without coordinating.
 
-> [ACTION] Write `~/the-vault/system/schemas/daily-note.md`:
+> [ACTION] Write `$VAULT/system/schemas/daily-note.md`:
 
 ```markdown
 ---
@@ -339,7 +341,7 @@ Parser rules:
 - Schedule lines match `/^- (\d{2}:\d{2}) — (.+)$/`.
 ```
 
-> [ACTION] Write `~/the-vault/system/templates/daily.md` — Templater template that creates a new daily note from this schema.
+> [ACTION] Write `$VAULT/system/templates/daily.md` — Templater template that creates a new daily note from this schema.
 
 ```markdown
 ---
@@ -422,12 +424,12 @@ cd ~/projects/my-dashboard
 ```javascript
 import esbuild from "esbuild";
 import { copyFileSync, mkdirSync } from "node:fs";
-import { homedir } from "node:os";
 import { join } from "node:path";
 
-// Node string literals don't expand ~ — resolve via os.homedir().
-// If your vault lives elsewhere, hardcode the absolute path here.
-const VAULT_PLUGIN_DIR = join(homedir(), "the-vault", ".obsidian", "plugins", "my-dashboard");
+// The vault IS the project — resolve its root from COMIND_VAULT, else cwd.
+// (esbuild runs from the project root, so process.cwd() is the vault.)
+const VAULT_ROOT = process.env.COMIND_VAULT || process.cwd();
+const VAULT_PLUGIN_DIR = join(VAULT_ROOT, ".obsidian", "plugins", "my-dashboard");
 mkdirSync(VAULT_PLUGIN_DIR, { recursive: true });
 
 const opts = {
@@ -516,7 +518,7 @@ export function Dashboard({ plugin }: { plugin: any }) {
 }
 ```
 
-> [ACTION] Install Obsidian's [Hot Reload](https://github.com/pjeby/hot-reload) plugin (drop into `~/the-vault/.obsidian/plugins/hot-reload/`, enable in Community Plugins).
+> [ACTION] Install Obsidian's [Hot Reload](https://github.com/pjeby/hot-reload) plugin (drop into `$VAULT/.obsidian/plugins/hot-reload/`, enable in Community Plugins).
 
 > [ACTION] Build the plugin:
 
@@ -528,7 +530,7 @@ npm run build
 
 > [VERIFY] In Obsidian → Settings → Community Plugins → enable "My Dashboard". Click the ribbon dashboard icon. Confirm pane opens with "Command Center" header.
 
-> [FIX] If the plugin doesn't appear in Community Plugins, check that `manifest.json` landed in `~/the-vault/.obsidian/plugins/my-dashboard/`. If yes but still missing, restart Obsidian.
+> [FIX] If the plugin doesn't appear in Community Plugins, check that `manifest.json` landed in `$VAULT/.obsidian/plugins/my-dashboard/`. If yes but still missing, restart Obsidian.
 
 ---
 
@@ -598,7 +600,7 @@ $METRIC_API_KEY=...
 $METRIC_HANDLE=...
 ```
 
-> [VERIFY] Run one script manually: `python ~/.claude/skills/metrics-pull/scripts/pull_<metric>.py`. Check `~/the-vault/system/metrics/metrics.csv` has a new row + `last-pull.json` has the source listed with `status: ok`.
+> [VERIFY] Run one script manually: `python ~/.claude/skills/metrics-pull/scripts/pull_<metric>.py`. Check `$VAULT/system/metrics/metrics.csv` has a new row + `last-pull.json` has the source listed with `status: ok`.
 
 > [FIX] If `status: error`, read the error string from `last-pull.json` — usually a missing env var or wrong API endpoint. Common: rate-limit (429), bad auth (401), wrong field in JSON response.
 
@@ -635,7 +637,7 @@ chmod +x ~/.claude/comind-dashboard-runner/start-runner.sh                      
 
 ### Tell the runner where your vault lives
 
-The runner resolves the vault root via this priority order: `COMIND_VAULT` environment variable → `COMIND_VAULT` entry in `~/.claude/.env` → fallback `~/the-vault`. If your vault is at the fallback, no action needed. Otherwise:
+The runner resolves the vault root via this priority order: `COMIND_VAULT` environment variable → `COMIND_VAULT` entry in `~/.claude/.env` → fallback: the project root the runner script lives in (the dir containing `_workspace/`, found by walking up). Since the vault IS the project, the fallback already points at the right place when the runner runs in-place — no action needed. Only set `COMIND_VAULT` if the runner is relocated outside the project:
 
 > [ACTION] Add a line to `~/.claude/.env`:
 
@@ -670,7 +672,7 @@ wscript.exe "$env:USERPROFILE\.claude\comind-dashboard-runner\start-runner.vbs"
 bash ~/.claude/comind-dashboard-runner/start-runner.sh
 ```
 
-> [VERIFY] Wait ~5 seconds. Check `~/the-vault/system/runner-status.json` exists with fields `pid`, `ts`, `active: 0`, `pending: 0`, `max_concurrent: 3`.
+> [VERIFY] Wait ~5 seconds. Check `$VAULT/system/runner-status.json` exists with fields `pid`, `ts`, `active: 0`, `pending: 0`, `max_concurrent: 3`.
 
 > [FIX] If `runner-status.json` doesn't appear, tail `~/.claude/comind-dashboard-runner/runner.log`. Common causes: wrong Node version (need 20+), `COMIND_VAULT` points at a path that doesn't exist, or another runner is already alive holding the singleton lock (check `runner.pid` + `ps aux | grep runner.js`).
 
@@ -725,7 +727,7 @@ Thin wrapper around a deterministic script. No AI judgment. Runner spawns direct
 
 ### Example: a `plan-today` skill
 
-> [ACTION] Write `~/the-vault/.claude/skills/plan-today/SKILL.md`:
+> [ACTION] Write `$VAULT/.claude/skills/plan-today/SKILL.md`:
 
 ```markdown
 ---
@@ -746,7 +748,7 @@ description: "Opinionated start-of-day planner. Creates today's daily note from 
 End your reply with: `SAVED daily-notes/<date>.md`
 ```
 
-> [ACTION] **Claude: write a SKILL.md for each `$SKILL` from Phase 0 using one of the 4 archetypes. Save to `~/the-vault/.claude/skills/<skill-name>/SKILL.md` (vault-scoped) or `~/.claude/skills/<skill-name>/SKILL.md` (user-global, available across all projects).**
+> [ACTION] **Claude: write a SKILL.md for each `$SKILL` from Phase 0 using one of the 4 archetypes. Save to `$VAULT/.claude/skills/<skill-name>/SKILL.md` (vault-scoped) or `~/.claude/skills/<skill-name>/SKILL.md` (user-global, available across all projects).**
 
 ### Add to the runner
 
@@ -812,7 +814,7 @@ If your `settings.json` already has a `hooks` section, merge the `PostToolUse` a
 2. **Allowlist** — only logs `Bash`, `Edit`, `Write`, `Skill`, `Agent`, `Task`. Read/Grep/Glob are too noisy and would bury the signal.
 3. **Self-exclusion** — if the tool call's target IS today's daily note, skip it. Otherwise the hook recurses on its own appends.
 
-The hook also resolves `COMIND_VAULT` the same way the runner does (env var → `.env` → fallback `~/the-vault`), so it auto-finds your vault.
+The hook also resolves `COMIND_VAULT` the same way the runner does (env var → `.env` → fallback `$VAULT`), so it auto-finds your vault.
 
 > [VERIFY] In a Claude Code session inside your vault, run a Bash command (e.g. `ls`). Then open today's daily note. The `## Activity Log` section should contain a line like `- 14:32 → Bash → ls`.
 
@@ -826,7 +828,7 @@ The hook also resolves `COMIND_VAULT` the same way the runner does (env var → 
 
 Prereq: Obsidian 1.9.10+ (verified in pre-flight).
 
-> [ACTION] Write `~/the-vault/system/bases/projects-active.base`:
+> [ACTION] Write `$VAULT/system/bases/projects-active.base`:
 
 ```yaml
 filters:
@@ -847,7 +849,7 @@ views:
         direction: DESC
 ```
 
-> [ACTION] Optionally write `~/the-vault/system/bases/content-pipeline.base` if you have a `content/` folder with pipeline-staged drafts:
+> [ACTION] Optionally write `$VAULT/system/bases/content-pipeline.base` if you have a `content/` folder with pipeline-staged drafts:
 
 ```yaml
 filters:
@@ -876,7 +878,7 @@ views:
 
 > [ACTION] Install Iconize: Settings → Community Plugins → Browse → "Iconize" → install + enable.
 
-> [ACTION] Configure colors via `~/the-vault/.obsidian/plugins/obsidian-icon-folder/data.json`. Reference layout matching the Karpathy 3-stage model:
+> [ACTION] Configure colors via `$VAULT/.obsidian/plugins/obsidian-icon-folder/data.json`. Reference layout matching the Karpathy 3-stage model:
 
 ```json
 {
@@ -938,13 +940,12 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 
 ### 11.2 Customize the four swap-points
 
-> [ACTION] **Swap-point 1 — `esbuild.config.mjs`**: edit `VAULT_PLUGIN_DIR` to point at your vault. On Windows use double-backslashes; on macOS/Linux use forward slashes.
+> [ACTION] **Swap-point 1 — `esbuild.config.mjs`**: `VAULT_PLUGIN_DIR` resolves automatically from the project root (`process.env.COMIND_VAULT || process.cwd()`), so when you build from the project root there's nothing to edit. Only override if the plugin must land in a vault outside the project — then hardcode an absolute path. On Windows use double-backslashes; on macOS/Linux use forward slashes.
 >
 > ```javascript
-> // Windows example:
-> const VAULT_PLUGIN_DIR = "C:\\Users\\you\\the-vault\\.obsidian\\plugins\\my-dashboard";
-> // macOS / Linux example:
-> // const VAULT_PLUGIN_DIR = process.env.HOME + "/the-vault/.obsidian/plugins/my-dashboard";
+> // Default — vault is the project, no edit needed:
+> const VAULT_PLUGIN_DIR = join(process.env.COMIND_VAULT || process.cwd(), ".obsidian", "plugins", "my-dashboard");
+> // Override example (Windows): const VAULT_PLUGIN_DIR = "C:\\path\\to\\vault\\.obsidian\\plugins\\my-dashboard";
 > ```
 
 > [ACTION] **Swap-point 2 — `src/components/Dashboard.tsx` `CARDS` array**: one entry per `$METRIC` from Phase 0 Q2. The `key` field MUST match the `<source>:<metric>` your `pull_*.py` scripts emit (look at `system/metrics/metrics.csv` for the actual keys). Drop entries for metrics you don't have; add new ones in the same shape.
@@ -997,7 +998,7 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 > [ACTION] Drop a marker so Hot Reload re-builds the plugin whenever you re-run `npm run build`:
 >
 > ```bash
-> touch ~/the-vault/.obsidian/plugins/my-dashboard/.hotreload
+> touch $VAULT/.obsidian/plugins/my-dashboard/.hotreload
 > ```
 
 ### 11.4 Verify
@@ -1032,9 +1033,9 @@ After all 11 phases, run this validation sequence:
 1. Open Obsidian → dashboard pane opens automatically.
 2. Footer should show `● runner online` (your runner heartbeat is fresh).
 3. Click the metrics-pull button — wait ~30s — Activity Feed shows a `metrics-pull` row with status `ok`.
-4. Open `~/the-vault/system/metrics/metrics.csv` — confirm new rows appended.
+4. Open `$VAULT/system/metrics/metrics.csv` — confirm new rows appended.
 5. Click `plan-today` button — wait ~30s — Activity Feed shows a `plan-today` row.
-6. Open `~/the-vault/daily-notes/<today>.md` — confirm Top 3 + Schedule populated.
+6. Open `$VAULT/daily-notes/<today>.md` — confirm Top 3 + Schedule populated.
 7. Open Claude Code in vault root, run a Bash command → close → reopen today's daily note → `## Activity Log` has new entry.
 8. Right sidebar Bases queries render your project files + content pipeline.
 
@@ -1054,7 +1055,7 @@ After all 11 phases, run this validation sequence:
 | Skill `/foo` doesn't fire from runner | Skill is project-scoped (`vault/.claude/skills/`) but runner spawned from `~/.claude/comind-dashboard-runner/` — fix: `cwd: VAULT_ROOT` on spawn |
 | Multi-line activity-log entries don't append | `## Activity Log` heading missing from daily note. Phase 2 schema requires it |
 | Bases query returns empty | Frontmatter status values don't match canonical taxonomy. Check YAML, not inline markdown |
-| Plugin can't load | Check `~/the-vault/.obsidian/plugins/my-dashboard/manifest.json` exists. Restart Obsidian |
+| Plugin can't load | Check `$VAULT/.obsidian/plugins/my-dashboard/manifest.json` exists. Restart Obsidian |
 | Iconize icons missing | `lucideIconPackType: native` not set in data.json settings, or icon name has wrong prefix (must be `Li`) |
 
 ---

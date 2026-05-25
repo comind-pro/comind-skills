@@ -19,7 +19,8 @@ import {
   unlinkSync,
   appendFileSync,
 } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { homedir, platform } from "node:os";
 import { watch } from "node:fs/promises";
 
@@ -27,7 +28,8 @@ import { watch } from "node:fs/promises";
 // Resolution order:
 //   1. COMIND_VAULT env var (set in shell or ~/.claude/.env)
 //   2. ~/.claude/.env file's COMIND_VAULT entry
-//   3. fallback ~/the-vault (template default)
+//   3. fallback: the project root this script lives in (dir containing _workspace/),
+//      found by walking up from the script — the vault IS the project, no separate vault.
 function loadEnvFile() {
   const envPath = join(homedir(), ".claude", ".env");
   if (!existsSync(envPath)) return {};
@@ -47,11 +49,24 @@ function loadEnvFile() {
   return out;
 }
 
+// Walk up from this script's dir to the vault root (dir containing _workspace/).
+// Lets the dashboard run in-place inside the project with zero config.
+function findProjectRoot() {
+  let dir = dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 8; i++) {
+    if (existsSync(join(dir, "_workspace"))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return process.cwd();
+}
+
 const _env = loadEnvFile();
 const VAULT_ROOT =
   process.env.COMIND_VAULT ||
   _env.COMIND_VAULT ||
-  join(homedir(), "the-vault");
+  findProjectRoot();
 // Timezone for "today"/"tomorrow" date math + calendar windows.
 // Resolution: COMIND_TZ env → ~/.claude/.env → fallback UTC.
 // Use an IANA name (e.g. "America/Chicago", "Europe/Kyiv", "Asia/Tokyo").

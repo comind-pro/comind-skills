@@ -62,15 +62,18 @@ follow it exactly. The stages below are the contract.
 
 ## Vault Path
 
-The runner and hook resolve the vault root in this order:
+The vault **is the project** — there is no separate `~/the-vault` to create or
+search for. The runner and hook resolve the vault root in this order:
 
 1. `COMIND_VAULT` environment variable
 2. `COMIND_VAULT` in `~/.claude/.env`
-3. Fallback `~/the-vault`
+3. Fallback: the project root the script lives in — the dir containing
+   `_workspace/`, found by walking up from the script
 
-Set `COMIND_VAULT` once to the user's chosen vault and the whole stack picks
-it up. The plugin reads vault-relative paths through Obsidian's adapter; only its
-`esbuild.config.mjs` `VAULT_PLUGIN_DIR` needs an absolute path.
+Running in-place inside the project, the fallback already points at the right
+place. Only set `COMIND_VAULT` if a script is relocated outside the project.
+The plugin reads vault-relative paths through Obsidian's adapter; its
+`esbuild.config.mjs` `VAULT_PLUGIN_DIR` resolves from `process.cwd()` the same way.
 
 ## The Process
 

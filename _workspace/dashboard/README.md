@@ -46,7 +46,8 @@ Both `runner.js` and `activity-log.js` resolve the vault root in this order:
 
 1. `COMIND_VAULT` environment variable
 2. `COMIND_VAULT` entry inside `~/.claude/.env`
-3. Fallback: `~/the-vault`
+3. Fallback: the project root the script lives in (dir containing `_workspace/`,
+   found by walking up) — the vault IS the project, no separate vault to set up
 
 The runner also reads `COMIND_TZ` (env → `~/.claude/.env` → fallback `UTC`)
 for "today"/"tomorrow" date math and calendar windows. Use an IANA name, e.g.

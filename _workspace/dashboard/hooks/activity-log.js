@@ -33,13 +33,15 @@ import {
   unlinkSync,
 } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 
 // --- Path resolution — cross-platform + env-var overridable.
 // Resolution order:
 //   1. COMIND_VAULT env var
 //   2. ~/.claude/.env file's COMIND_VAULT entry
-//   3. fallback ~/the-vault (template default)
+//   3. fallback: the project root this script lives in (dir containing _workspace/),
+//      found by walking up from the script — the vault IS the project, no separate vault.
 function loadEnvFile() {
   const envPath = join(homedir(), ".claude", ".env");
   if (!existsSync(envPath)) return {};
@@ -59,11 +61,24 @@ function loadEnvFile() {
   return out;
 }
 
+// Walk up from this script's dir to the vault root (dir containing _workspace/).
+// Lets the hook run in-place inside the project with zero config.
+function findProjectRoot() {
+  let dir = dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 8; i++) {
+    if (existsSync(join(dir, "_workspace"))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return process.cwd();
+}
+
 const _env = loadEnvFile();
 const VAULT_ROOT =
   process.env.COMIND_VAULT ||
   _env.COMIND_VAULT ||
-  join(homedir(), "the-vault");
+  findProjectRoot();
 const DAILY_DIR = join(VAULT_ROOT, "daily-notes");
 const ERROR_LOG = join(homedir(), ".claude", "hooks", "activity-log-errors.log");
 
