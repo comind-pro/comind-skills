@@ -1,10 +1,10 @@
 ---
-description: Design and build your Claude Code skill library through a cyclical, one-area-at-a-time interview (agentic-OS Part 1)
+description: Design and build your Claude Code skill library through a cyclical, one-area-at-a-time interview (comind-dashboard Part 1)
 ---
 
 Invoke the `skill-architecture` skill.
 
-This is Part 1 of the agentic-OS build (skills → memory → dashboard). Your job
+This is Part 1 of the comind-dashboard build (skills → memory → dashboard). Your job
 ends at skills — do not design the memory layer or dashboard here.
 
 Before starting, confirm Anthropic's skill-creator is installed (the build step

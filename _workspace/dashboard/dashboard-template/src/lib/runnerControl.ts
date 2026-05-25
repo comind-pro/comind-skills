@@ -9,7 +9,7 @@ import { spawn } from "child_process";
 // user's profile is sourced and PATH matches what `make dashboard-runner` sees in
 // a terminal — that's what lets the spawned runner find `node` and `claude`.
 
-const RUNNER_PID_PATH = "system/runner/runner.pid";
+const RUNNER_PID_PATH = "_workspace/system/runner/runner.pid";
 
 function vaultBasePath(app: App): string | null {
 	const a = app.vault.adapter;
@@ -38,7 +38,7 @@ function spawnRunner(base: string, scriptRel: string): void {
 	const scriptAbs = resolveScript(base, scriptRel);
 	const shell = process.env.SHELL || "/bin/zsh";
 	// Login shell (-l) sources the profile → full PATH. -c runs the command.
-	const cmd = `AGENTIC_OS_VAULT=${JSON.stringify(base)} node ${JSON.stringify(scriptAbs)}`;
+	const cmd = `COMIND_VAULT=${JSON.stringify(base)} node ${JSON.stringify(scriptAbs)}`;
 	const child = spawn(shell, ["-lc", cmd], {
 		cwd: base,
 		detached: true,

@@ -3,7 +3,7 @@
   "name": "My Dashboard",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Agentic-OS dashboard. Reads vault metrics, daily notes, run logs; fires Claude Code skills via system/queue/.",
+  "description": "comind-dashboard.  Reads vault metrics, daily notes, run logs; fires Claude Code skills via system/queue/.",
   "author": "your-name-here",
   "isDesktopOnly": true
 }

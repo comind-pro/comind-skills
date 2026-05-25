@@ -1,5 +1,5 @@
 {
-  "name": "agentic-os-hooks",
+  "name": "comind-dashboard-hooks",
   "version": "0.1.0",
   "description": "Claude Code PostToolUse hook that appends tool-call summaries to today's daily note.",
   "type": "module",

@@ -1,6 +1,6 @@
 # dashboard-template
 
-Drop-in Preact + esbuild Obsidian plugin that renders the agentic-OS dashboard.
+Drop-in Preact + esbuild Obsidian plugin that renders the comind-dashboard.
 In this template it builds **in-place** against the project vault — run
 `make dashboard` from the repo root. The standalone external-vault flow (Phase 11
 of the build guide) still works too.
@@ -14,8 +14,8 @@ of the build guide) still works too.
 - **Schedule list** — today's events from the daily note's `## Schedule` section (overview)
 - **Focus + Top 3** — current focus and editable top-3 priorities (tasks tab)
 - **Daily Drivers checklist** — interactive toggles that write back to the daily note
-- **Action bar** — buttons that queue intent JSON to `system/queue/`. Skills needing args open `IntentArgModal`
-- **Activity Feed** — recent runs from `system/runs/` with clickable deliverables (activity tab)
+- **Action bar** — buttons that queue intent JSON to `_workspace/system/queue/`. Skills needing args open `IntentArgModal`
+- **Activity Feed** — recent runs from `_workspace/system/runs/` with clickable deliverables (activity tab)
 - **Footer** — online/offline runner status, last-pull metadata, next-pull ETA
 
 Aesthetic: **native Obsidian theme**. All design tokens map onto Obsidian's CSS
@@ -40,7 +40,7 @@ Then open the project as an Obsidian vault and enable the **Dashboard** plugin.
 ### 1. `src/components/Dashboard.tsx` — pick which metrics show
 
 Find the `CARDS` array (search `// CUSTOMIZE`). Each entry's `key` MUST match a
-`<source>:<metric>` your pull scripts emit (see `system/metrics/metrics.csv`).
+`<source>:<metric>` your pull scripts emit (see `_workspace/system/metrics/metrics.csv`).
 Drop cards you don't have; add new ones. Each card also lists which `tabs` it shows on.
 
 ```typescript
@@ -77,7 +77,7 @@ your own colors instead of the Obsidian variables.
 dashboard-template/
 ├── src/
 │   ├── main.ts              # plugin entry (DashboardPlugin class)
-│   ├── view.tsx             # ItemView wrapper (view type: agentic-dashboard)
+│   ├── view.tsx             # ItemView wrapper (view type: comind-dashboard)
 │   ├── settings.ts          # settings tab (vault path, token budget, pull cadence)
 │   ├── components/
 │   │   ├── Dashboard.tsx           # top-level shell — header, tabs, layout
@@ -115,12 +115,12 @@ All classes use the `dash-` prefix. Functional — won't collide with anything.
 
 The dashboard reads these paths (the runner + a metrics-pull skill create them):
 
-- `system/metrics/metrics.csv` — metric rows
-- `system/metrics/last-pull.json` — pull snapshot
-- `system/runner-status.json` — runner heartbeat
-- `system/runs/*.json` — one per skill completion
+- `_workspace/system/metrics/metrics.csv` — metric rows
+- `_workspace/system/metrics/last-pull.json` — pull snapshot
+- `_workspace/system/runner-status.json` — runner heartbeat
+- `_workspace/system/runs/*.json` — one per skill completion
 - `daily-notes/YYYY-MM-DD.md` — daily note, frontmatter `schema_version: 1`
-- `system/queue/` — plugin writes intents here (runner creates the dir)
+- `_workspace/system/queue/` — plugin writes intents here (runner creates the dir)
 
 If any are missing, the dashboard renders empty-state placeholders instead of crashing.
 

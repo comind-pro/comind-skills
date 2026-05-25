@@ -1,13 +1,13 @@
 ---
 name: skill-architecture
-description: Designs and builds a user's Claude Code skill library through a cyclical, one-area-at-a-time interview. Use when a user wants to turn their recurring workflows into invokable skills, when they ask "help me build my skills" / "design my skill architecture" / "what should be a skill", or as Part 1 of the agentic-OS build (skills → memory → dashboard). Hands off each confirmed skill to Anthropic's skill-creator for the actual file scaffold.
+description: Designs and builds a user's Claude Code skill library through a cyclical, one-area-at-a-time interview. Use when a user wants to turn their recurring workflows into invokable skills, when they ask "help me build my skills" / "design my skill architecture" / "what should be a skill", or as Part 1 of the comind-dashboard build (skills → memory → dashboard). Hands off each confirmed skill to Anthropic's skill-creator for the actual file scaffold.
 ---
 
 # Skill Architecture
 
 ## Overview
 
-Most of the leverage in an agentic OS lives in the skills, not the dashboard or
+Most of the leverage in an comind-dashboard lives in the skills, not the dashboard or
 the memory layer. A skill is a small, specific, repeatable unit of work — one
 verb, one input shape, one output shape — that any Claude Code session can fire
 by trigger phrase. The hard part is not writing `SKILL.md` files; it is finding
@@ -20,7 +20,7 @@ back the tasks you heard and propose which become skills, the user confirms, you
 triage each by execution mode, then hand off to `skill-creator` to build the
 files. Loop until the user wraps.
 
-It is the entry point of the 3-part agentic-OS build:
+It is the entry point of the 3-part comind-dashboard build:
 
 1. **Part 1 — Skills (this skill).** Build the invokable workflow units.
 2. **Part 2 — Memory layer.** Vault structure so skills compound across sessions
@@ -36,7 +36,7 @@ Apply this skill when:
 - The user wants to convert recurring work into Claude Code skills
 - The user invokes: "design my skill architecture", "help me build skills",
   "what should be a skill", "/skill-architecture"
-- Starting the agentic-OS masterclass build (this is Part 1)
+- Starting the comind-dashboard build guide build (this is Part 1)
 - The user has a pile of repetitive tasks and no skills yet, or has ad-hoc
   skills they want rationalized
 

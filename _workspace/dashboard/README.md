@@ -1,14 +1,13 @@
-# dashboard — agentic-OS dashboard code
+# dashboard — comind-dashboard code
 
-Vendored build code for the `dashboard-build` skill (`/build-dashboard`, agentic-OS
+Vendored build code for the `dashboard-build` skill (`/build-dashboard`, comind-dashboard
 Part 3). The full phase-by-phase build guide lives at
 `_workspace/docs/references/dashboard-build-guide.md`; this directory holds the code
 each phase installs.
 
-Adapted from the upstream `cth9191/agentic-os-runner` (MIT) and neutralized for
-this boilerplate: the runner's reference-creator domain skills (YouTube /
-content-cascade) were removed and the hardcoded `America/Chicago` timezone made
-configurable. The remaining runner cases (`plan-today`, `refresh-schedule`,
+Neutralized for this boilerplate: domain-specific demo skills were removed and the
+hardcoded timezone made configurable (`COMIND_TZ`). The remaining runner cases
+(`plan-today`, `refresh-schedule`,
 `plan-tomorrow`, `morning-report`, `inbox-brief`, `deep-research`,
 `weekly-review`, `vault-cleanup`, `metrics-pull`) are generic defaults — extend
 them per user in Phase 7.
@@ -45,11 +44,11 @@ dashboard-template/        # Obsidian plugin (Preact + esbuild) — installed in
 
 Both `runner.js` and `activity-log.js` resolve the vault root in this order:
 
-1. `AGENTIC_OS_VAULT` environment variable
-2. `AGENTIC_OS_VAULT` entry inside `~/.claude/.env`
+1. `COMIND_VAULT` environment variable
+2. `COMIND_VAULT` entry inside `~/.claude/.env`
 3. Fallback: `~/the-vault`
 
-The runner also reads `AGENTIC_OS_TZ` (env → `~/.claude/.env` → fallback `UTC`)
+The runner also reads `COMIND_TZ` (env → `~/.claude/.env` → fallback `UTC`)
 for "today"/"tomorrow" date math and calendar windows. Use an IANA name, e.g.
 `Europe/Kyiv`, `America/Chicago`, `Asia/Tokyo`.
 

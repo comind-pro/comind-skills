@@ -1,7 +1,7 @@
 # Makefile — comind-skills boilerplate
 #
 # Markdown-first project. Most targets just inspect the vault and validate
-# template structure. The optional agentic-OS dashboard (an Obsidian plugin +
+# template structure. The optional comind-dashboard (an Obsidian plugin +
 # queue runner) is internal infra: it builds in-place against THIS project as
 # its vault — `make dashboard`. The vault root is the project root (where
 # `.obsidian/` lives); override with `VAULT=/path make dashboard`.
@@ -69,7 +69,7 @@ dashboard-dev:
 	@cd $(PLUGIN_SRC) && DASHBOARD_PLUGIN_DIR="$(PLUGIN_OUT)" npm run dev
 
 dashboard-runner:
-	@AGENTIC_OS_VAULT="$(VAULT)" node $(RUNNER)
+	@COMIND_VAULT="$(VAULT)" node $(RUNNER)
 
 dashboard: dashboard-install dashboard-build
 	@echo ""

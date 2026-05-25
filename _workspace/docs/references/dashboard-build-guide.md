@@ -1,24 +1,22 @@
 ---
 date: 2026-05-13
-title: Build Your Own Agentic OS
+title: comind-dashboard build guide
 audience: dual (human follow-along + Claude Code as pair-builder)
 type: guide
-template_of: chase-ai-dashboard
-status: adapted-for-comind-boilerplate
+status: comind-dashboard
 adapted: 2026-05-25
 ---
 
-> **Boilerplate-adapted reference.** This is the `dashboard-build` skill's full
-> phase-by-phase guide, adapted for the comind-skills template. The build code is
-> **vendored at `_workspace/dashboard/`** in this repo — do NOT clone the external
-> `cth9191/agentic-os-runner`. Wherever a phase says "copy from the cloned repo,"
-> copy from `_workspace/dashboard/`. Original instruction source: `_workspace/docs/agentic-os/part-3-dashboard-obsidian.md`.
+> **comind-dashboard build guide.** The full phase-by-phase guide the
+> `dashboard-build` skill pulls. The build code is **vendored at
+> `_workspace/dashboard/`** in this repo — everything ships with the template,
+> nothing to clone.
 
-# Build Your Own Agentic OS (Masterclass Part 3 · Path B)
+# Build Your Own comind-dashboard (Part 3 · Path B)
 
 You built skills in Part 1 (`/skill-architecture`), set up the memory layer in Part 2 (Phases 1–2 here). This is Part 3 — the observability dashboard, Obsidian-native plugin path. The Streamlit alternative path is not built into this template.
 
-A working template for a personal agentic operating system that lives inside Obsidian. You'll end up with: a markdown vault that doubles as your memory, a custom Obsidian plugin that surfaces the metrics + actions you care about, a background daemon that turns button clicks into headless Claude Code skill invocations, and a set of customizable skills wired to your workflow.
+A working template for a personal comind-dashboard that lives inside Obsidian. You'll end up with: a markdown vault that doubles as your memory, a custom Obsidian plugin that surfaces the metrics + actions you care about, a background daemon that turns button clicks into headless Claude Code skill invocations, and a set of customizable skills wired to your workflow.
 
 The pattern is universal. The specifics are yours to customize. This guide walks you through the universal scaffold AND the swap-points where your domain shapes the build.
 
@@ -53,7 +51,7 @@ There are two ways to follow this guide.
 
 **As a Claude Code prompt (recommended):** Open this guide in your editor. Open a Claude Code session in an empty parent directory you'll use as your vault root. Paste this entire guide into the session with the prefix:
 
-> "Help me build my personal agentic OS by following this guide. Start at Phase 0 and interview me. Pause for confirmation between phases. Don't skip the `[VERIFY]` checks. If a verify fails, branch into the `[FIX]` block and ask me before proceeding."
+> "Help me build my personal comind-dashboard by following this guide. Start at Phase 0 and interview me. Pause for confirmation between phases. Don't skip the `[VERIFY]` checks. If a verify fails, branch into the `[FIX]` block and ask me before proceeding."
 
 That turns Claude into your second pair of hands. The video walks you through what each phase looks like and why it exists; Claude executes the steps and verifies them with you in real-time.
 
@@ -79,7 +77,7 @@ That turns Claude into your second pair of hands. The video walks you through wh
 
 **Q3 — Skills / routines.**
 "Which state are you in?
-  (A) Just built skills in masterclass Part 1 → paste me the list of
+  (A) Just built skills in Part 1 → paste me the list of
       skill names + one-line descriptions. I'll wire those.
   (B) Have existing skills from before → run `ls ~/.claude/skills/` +
       paste output. I'll wire what makes sense as dashboard buttons.
@@ -177,13 +175,13 @@ Then check Obsidian:
 code companion is **already vendored at `_workspace/dashboard/`** — no external clone. Every
 subsequent phase that needs plumbing copies from `_workspace/dashboard/`.
 
-> [ACTION] **Claude: confirm `_workspace/dashboard/` exists at the repo root. DO NOT clone the external `cth9191/agentic-os-runner` repo — the files ship with this template.**
+> [ACTION] **Claude: confirm `_workspace/dashboard/` exists at the repo root. The files ship with this template — nothing to clone.**
 
 ```bash
 ls _workspace/dashboard/
 ```
 
-> [VERIFY] `ls _workspace/dashboard/` shows `runner/`, `hooks/`, `metric-scripts/`, `dashboard-template/`, `README.md`, `LICENSE`.
+> [VERIFY] `ls _workspace/dashboard/` shows `runner/`, `hooks/`, `metric-scripts/`, `dashboard-template/`, `README.md`.
 
 `_workspace/dashboard/` contains:
 - `runner/` — Node daemon + Windows/Unix launchers + package.json
@@ -193,7 +191,7 @@ ls _workspace/dashboard/
 
 Whenever a later phase says "copy `<path>` from the repo," it refers to `_workspace/dashboard/`.
 
-> [FIX] If `_workspace/dashboard/` is missing, the boilerplate clone is incomplete — re-pull this repo. As a last resort the upstream source is the public `cth9191/agentic-os-runner` repo, but the vendored copy here is the source of truth.
+> [FIX] If `_workspace/dashboard/` is missing, the boilerplate clone is incomplete — re-pull this repo.
 
 ---
 
@@ -627,22 +625,22 @@ macOS/Linux: write a crontab entry `0 */6 * * * /path/to/run_all.sh`.
 > [ACTION] Install the runner files from the cloned repo:
 
 ```bash
-mkdir -p ~/.claude/agentic-os-runner
-cp _workspace/dashboard/runner/runner.js ~/.claude/agentic-os-runner/
-cp _workspace/dashboard/runner/package.json ~/.claude/agentic-os-runner/
-cp _workspace/dashboard/runner/start-runner.vbs ~/.claude/agentic-os-runner/   # Windows
-cp _workspace/dashboard/runner/start-runner.sh ~/.claude/agentic-os-runner/    # macOS / Linux
-chmod +x ~/.claude/agentic-os-runner/start-runner.sh                                   # macOS / Linux
+mkdir -p ~/.claude/comind-dashboard-runner
+cp _workspace/dashboard/runner/runner.js ~/.claude/comind-dashboard-runner/
+cp _workspace/dashboard/runner/package.json ~/.claude/comind-dashboard-runner/
+cp _workspace/dashboard/runner/start-runner.vbs ~/.claude/comind-dashboard-runner/   # Windows
+cp _workspace/dashboard/runner/start-runner.sh ~/.claude/comind-dashboard-runner/    # macOS / Linux
+chmod +x ~/.claude/comind-dashboard-runner/start-runner.sh                                   # macOS / Linux
 ```
 
 ### Tell the runner where your vault lives
 
-The runner resolves the vault root via this priority order: `AGENTIC_OS_VAULT` environment variable → `AGENTIC_OS_VAULT` entry in `~/.claude/.env` → fallback `~/the-vault`. If your vault is at the fallback, no action needed. Otherwise:
+The runner resolves the vault root via this priority order: `COMIND_VAULT` environment variable → `COMIND_VAULT` entry in `~/.claude/.env` → fallback `~/the-vault`. If your vault is at the fallback, no action needed. Otherwise:
 
 > [ACTION] Add a line to `~/.claude/.env`:
 
 ```
-AGENTIC_OS_VAULT=/absolute/path/to/your-vault
+COMIND_VAULT=/absolute/path/to/your-vault
 ```
 
 > [ACTION] Skim `runner.js` once for context. Key constants near the top:
@@ -659,22 +657,22 @@ The `deliverablePathFor()` and `buildPrompt()` switches map each skill name to w
 > [ACTION] Wire the launcher.
 
 - **Windows:** drop `start-runner.vbs` into `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\`. Auto-launches on every login. No admin needed.
-- **macOS:** create a `~/Library/LaunchAgents/com.local.agentic-os-runner.plist` LaunchAgent that invokes `~/.claude/agentic-os-runner/start-runner.sh`. Load with `launchctl load <plist>`.
-- **Linux:** create a `~/.config/systemd/user/agentic-os-runner.service` unit. Enable with `systemctl --user enable --now agentic-os-runner.service`.
+- **macOS:** create a `~/Library/LaunchAgents/com.local.comind-dashboard-runner.plist` LaunchAgent that invokes `~/.claude/comind-dashboard-runner/start-runner.sh`. Load with `launchctl load <plist>`.
+- **Linux:** create a `~/.config/systemd/user/comind-dashboard-runner.service` unit. Enable with `systemctl --user enable --now comind-dashboard-runner.service`.
 
 For now, start it manually to verify:
 
 ```bash
 # Windows
-wscript.exe "$env:USERPROFILE\.claude\agentic-os-runner\start-runner.vbs"
+wscript.exe "$env:USERPROFILE\.claude\comind-dashboard-runner\start-runner.vbs"
 
 # macOS / Linux
-bash ~/.claude/agentic-os-runner/start-runner.sh
+bash ~/.claude/comind-dashboard-runner/start-runner.sh
 ```
 
 > [VERIFY] Wait ~5 seconds. Check `~/the-vault/system/runner-status.json` exists with fields `pid`, `ts`, `active: 0`, `pending: 0`, `max_concurrent: 3`.
 
-> [FIX] If `runner-status.json` doesn't appear, tail `~/.claude/agentic-os-runner/runner.log`. Common causes: wrong Node version (need 20+), `AGENTIC_OS_VAULT` points at a path that doesn't exist, or another runner is already alive holding the singleton lock (check `runner.pid` + `ps aux | grep runner.js`).
+> [FIX] If `runner-status.json` doesn't appear, tail `~/.claude/comind-dashboard-runner/runner.log`. Common causes: wrong Node version (need 20+), `COMIND_VAULT` points at a path that doesn't exist, or another runner is already alive holding the singleton lock (check `runner.pid` + `ps aux | grep runner.js`).
 
 ---
 
@@ -814,11 +812,11 @@ If your `settings.json` already has a `hooks` section, merge the `PostToolUse` a
 2. **Allowlist** — only logs `Bash`, `Edit`, `Write`, `Skill`, `Agent`, `Task`. Read/Grep/Glob are too noisy and would bury the signal.
 3. **Self-exclusion** — if the tool call's target IS today's daily note, skip it. Otherwise the hook recurses on its own appends.
 
-The hook also resolves `AGENTIC_OS_VAULT` the same way the runner does (env var → `.env` → fallback `~/the-vault`), so it auto-finds your vault.
+The hook also resolves `COMIND_VAULT` the same way the runner does (env var → `.env` → fallback `~/the-vault`), so it auto-finds your vault.
 
 > [VERIFY] In a Claude Code session inside your vault, run a Bash command (e.g. `ls`). Then open today's daily note. The `## Activity Log` section should contain a line like `- 14:32 → Bash → ls`.
 
-> [FIX] If nothing appears, tail `~/.claude/hooks/activity-log-errors.log`. Common: today's daily note doesn't exist yet (run `/plan-today` first, see Phase 7) or its `## Activity Log` heading is missing (Phase 2 schema mismatch). If errors mention path resolution, check `AGENTIC_OS_VAULT` in `~/.claude/.env`.
+> [FIX] If nothing appears, tail `~/.claude/hooks/activity-log-errors.log`. Common: today's daily note doesn't exist yet (run `/plan-today` first, see Phase 7) or its `## Activity Log` heading is missing (Phase 2 schema mismatch). If errors mention path resolution, check `COMIND_VAULT` in `~/.claude/.env`.
 
 ---
 
@@ -1005,7 +1003,7 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 ### 11.4 Verify
 
 > [VERIFY] Reload Obsidian (Ctrl+R). Open the Command Center pane via the activity ribbon icon. You should see:
-> - Header `AGENTIC OS` with a heartbeat SVG + live status pill
+> - Header `Dashboard` with a heartbeat SVG + live status pill
 > - Tabs: `overview` / `audience` / `research`
 > - Token Burn chart (overview tab) with an animated meter + ticks + projection comet
 > - Metric cards — one per `CARDS` entry, with status dot, animated number, delta arrow
@@ -1022,7 +1020,7 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 >
 > **Runner shows offline but you know it's running**: `system/runner-status.json` is stale (>5min old). Restart runner via `start-runner.vbs` and the heartbeat refreshes.
 >
-> **Buttons queue intents but nothing happens**: open `system/queue/` — if your intent JSONs sit there, the runner is consuming them but `buildPrompt()` in `runner.js` returns `null` for that skill (case missing or required args absent). Check `~/.claude/agentic-os-runner/runner.log`.
+> **Buttons queue intents but nothing happens**: open `system/queue/` — if your intent JSONs sit there, the runner is consuming them but `buildPrompt()` in `runner.js` returns `null` for that skill (case missing or required args absent). Check `~/.claude/comind-dashboard-runner/runner.log`.
 
 ---
 
@@ -1040,7 +1038,7 @@ After all 11 phases, run this validation sequence:
 7. Open Claude Code in vault root, run a Bash command → close → reopen today's daily note → `## Activity Log` has new entry.
 8. Right sidebar Bases queries render your project files + content pipeline.
 
-> [VERIFY] All 8 steps pass. Your agentic OS is live.
+> [VERIFY] All 8 steps pass. Your comind-dashboard is live.
 
 > [FIX] For any failing step, the troubleshooting section below maps symptoms → root causes.
 
@@ -1051,9 +1049,9 @@ After all 11 phases, run this validation sequence:
 | Symptom | Likely root cause |
 |---|---|
 | Dashboard boots empty / no metrics | metrics.csv has no rows yet — run the scheduled task manually once or hit the metrics-pull button |
-| Runner offline | Check `~/.claude/agentic-os-runner/runner.log` — usually a Node version issue or singleton-lock collision. Kill zombie processes + relaunch via VBS |
+| Runner offline | Check `~/.claude/comind-dashboard-runner/runner.log` — usually a Node version issue or singleton-lock collision. Kill zombie processes + relaunch via VBS |
 | `claude -p` spawn says "Need topic" or "What do?" | runner.js prompt has multi-line content + `shell: true` truncated it at first newline. Fix: `shell: false` + `claude.exe` (Windows binary path) |
-| Skill `/foo` doesn't fire from runner | Skill is project-scoped (`vault/.claude/skills/`) but runner spawned from `~/.claude/agentic-os-runner/` — fix: `cwd: VAULT_ROOT` on spawn |
+| Skill `/foo` doesn't fire from runner | Skill is project-scoped (`vault/.claude/skills/`) but runner spawned from `~/.claude/comind-dashboard-runner/` — fix: `cwd: VAULT_ROOT` on spawn |
 | Multi-line activity-log entries don't append | `## Activity Log` heading missing from daily note. Phase 2 schema requires it |
 | Bases query returns empty | Frontmatter status values don't match canonical taxonomy. Check YAML, not inline markdown |
 | Plugin can't load | Check `~/the-vault/.obsidian/plugins/my-dashboard/manifest.json` exists. Restart Obsidian |

@@ -1,8 +1,7 @@
 ---
-title: "Agentic OS — Part 1 · Skill Architecture"
+title: "comind-dashboard — Part 1 · Skill Architecture"
 type: doc
 audience: dual (human follow-along + Claude Code as orchestrator)
-origin: chase-ai masterclass (adapted)
 ---
 
 # Skill Architecture (Part 1)
@@ -39,7 +38,7 @@ Confirm it installed: type `/skill-creator` — should show the slash-command pi
 ```
 You are helping me design and build my Claude Code skill architecture.
 
-This is Part 1 of a 3-part agentic OS masterclass:
+This is Part 1 of a 3-part comind-dashboard build:
   Part 1 — Skills (this conversation)
   Part 2 — Obsidian memory layer (separate guide)
   Part 3 — Dashboard / observability (separate guide)
@@ -192,7 +191,7 @@ If wrap:
     <skill-name>: <ready-to-paste /skill-creator hand-off>
     ...
 
-- Then hand off to next masterclass parts:
+- Then hand off to next build guide parts:
 
   "Skill architecture done. You can fire any of these from any Claude Code
   conversation by typing the trigger phrase. Stop here if that's all you
@@ -202,14 +201,11 @@ If wrap:
 
   PART 2 — Obsidian memory layer. Builds the vault file structure that
   lets skills compound knowledge across sessions. Guide:
-  part-3-dashboard-obsidian.md (Phases 1-2).
+  ../references/dashboard-build-guide.md (Phases 1-2).
 
-  PART 3 — Dashboard / observability. Wires skills into a visual dashboard
-  with buttons + activity feed. Pick a path:
-    • Streamlit (distribution-friendly, easy to share with a team or
-      client): part-3-dashboard-streamlit.md
-    • Obsidian-native (most customizable, solo-operator):
-      part-3-dashboard-obsidian.md (Phases 3-10)"
+  PART 3 — Dashboard / observability. Wires skills into an Obsidian-native
+  visual dashboard with buttons + activity feed. Guide:
+  ../references/dashboard-build-guide.md (Phases 3-11)."
 
 ============================================================
 GO

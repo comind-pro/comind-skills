@@ -1,7 +1,7 @@
 {
   "name": "dashboard",
   "version": "0.1.0",
-  "description": "Obsidian plugin: agentic-OS dashboard, built in-place against this project's vault.",
+  "description": "Obsidian plugin: comind-dashboard, built in-place against this project's vault.",
   "main": "main.js",
   "type": "module",
   "scripts": {

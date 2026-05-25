@@ -9,7 +9,7 @@ export interface DashboardPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: DashboardPluginSettings = {
-	vaultSystemPath: "system",
+	vaultSystemPath: "_workspace/system",
 	claudeTokenBudget5h: 2_000_000, // Max $200 empirical default. Community trackers cite 220-440K; real ceiling observed much higher (1M+ output / 5h with no throttle).
 	metricsPullCadenceHours: 6,
 	// Path to the runner daemon. Vault-relative (in-place build) by default;
@@ -32,11 +32,12 @@ export class DashboardPluginSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("System folder path")
 			.setDesc(
-				"Vault-relative path to the system folder (metrics, queue, runs).",
+				"Vault-relative path to the runner working folder (metrics, queue, runs). " +
+					"Default keeps it under `_workspace/` so it doesn't clutter the project root.",
 			)
 			.addText((text) =>
 				text
-					.setPlaceholder("system")
+					.setPlaceholder("_workspace/system")
 					.setValue(this.plugin.settings.vaultSystemPath)
 					.onChange(async (value) => {
 						this.plugin.settings.vaultSystemPath =
@@ -89,7 +90,7 @@ export class DashboardPluginSettingTab extends PluginSettingTab {
 			.setDesc(
 				"Path to runner.js, launched by the dashboard's start/restart button. " +
 					"Vault-relative by default; absolute or ~-paths also work (e.g. the " +
-					"standalone ~/.claude/agentic-os-runner/runner.js install).",
+					"standalone ~/.claude/comind-dashboard-runner/runner.js install).",
 			)
 			.addText((text) =>
 				text

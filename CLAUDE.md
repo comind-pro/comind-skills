@@ -13,7 +13,7 @@ Claude Code loads this file automatically. Read it once per session.
 | `.claude/agents/`                   | Subagents you can delegate to via Task.   |
 | `.claude/commands/`                 | Slash commands.                            |
 | `.claude/hooks/`                    | Hook scripts wired up in `settings.json`. |
-| `_workspace/docs/`                  | All documentation Claude references: `/init-project`-generated project docs, `skill-anatomy.md` spec, `agentic-os/` guides, and `references/`. |
+| `_workspace/docs/`                  | All documentation Claude references: `/init-project`-generated project docs, `skill-anatomy.md` spec, `dashboard/` build guides, and `references/`. |
 | `_workspace/docs/references/`       | Supplementary checklists pulled in by skills on demand. |
 | `_workspace/memory/`                | Obsidian vault. Karpathy 3-zone memory. See `_index.md`. |
 | `_workspace/memory/raw/`            | Unstructured capture + primary research + working task-notes. |

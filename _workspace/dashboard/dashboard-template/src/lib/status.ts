@@ -19,8 +19,8 @@ export interface LastPullSnapshot {
 	};
 }
 
-export const RUNNER_STATUS_PATH = "system/runner-status.json";
-export const LAST_PULL_PATH = "system/metrics/last-pull.json";
+export const RUNNER_STATUS_PATH = "_workspace/system/runner-status.json";
+export const LAST_PULL_PATH = "_workspace/system/metrics/last-pull.json";
 
 export async function readRunnerStatus(app: App): Promise<RunnerStatus | null> {
 	if (!(await app.vault.adapter.exists(RUNNER_STATUS_PATH))) return null;

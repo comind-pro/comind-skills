@@ -1,7 +1,7 @@
 {
   "name": "my-dashboard",
   "version": "0.1.0",
-  "description": "Obsidian plugin: agentic-OS dashboard.",
+  "description": "Obsidian plugin: comind-dashboard.",
   "main": "main.js",
   "type": "module",
   "scripts": {

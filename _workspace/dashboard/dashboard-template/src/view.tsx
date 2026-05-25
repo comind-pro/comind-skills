@@ -3,7 +3,7 @@ import { render, h } from "preact";
 import { Dashboard } from "./components/Dashboard";
 import type DashboardPlugin from "./main";
 
-export const DASHBOARD_VIEW_TYPE = "agentic-dashboard";
+export const DASHBOARD_VIEW_TYPE = "comind-dashboard";
 
 export class DashboardView extends ItemView {
 	plugin: DashboardPlugin;

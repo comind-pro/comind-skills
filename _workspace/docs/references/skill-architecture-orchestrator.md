@@ -1,7 +1,7 @@
 # Skill Architecture — Orchestrator Script (reference)
 
 Verbatim interview script for the `skill-architecture` skill / `/skill-architecture`
-command. Source: masterclass Part 1 companion. Run this exactly when driving a
+command. Source: Part 1 companion. Run this exactly when driving a
 session — the SKILL.md is the contract, this is the wording.
 
 ## Before you start

@@ -1,7 +1,7 @@
 import type { App } from "obsidian";
 
-export const QUEUE_DIR = "system/queue";
-export const RUNS_DIR = "system/runs";
+export const QUEUE_DIR = "_workspace/system/queue";
+export const RUNS_DIR = "_workspace/system/runs";
 
 export interface Intent {
 	id: string;

@@ -22,7 +22,7 @@ export interface MetricSnapshot {
 
 const CSV_HEADER = ["timestamp", "source", "metric", "value", "status", "error"];
 
-export const METRICS_CSV_PATH = "system/metrics/metrics.csv";
+export const METRICS_CSV_PATH = "_workspace/system/metrics/metrics.csv";
 
 function parseRow(line: string): MetricRow | null {
 	// Simple CSV parser. Schema guarantees no commas inside values

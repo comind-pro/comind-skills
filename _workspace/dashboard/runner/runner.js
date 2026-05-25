@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Chase Agentic OS Runner
+ * comind-dashboard runner
  *
- * Watches `the vault/system/queue/<uuid>.json`, processes one intent at a time,
- * shells `claude -p "<prompt>"`, writes `system/runs/<uuid>.json` + `<uuid>.log`.
+ * Watches `the vault/_workspace/system/queue/<uuid>.json`, processes one intent at a time,
+ * shells `claude -p "<prompt>"`, writes `_workspace/system/runs/<uuid>.json` + `<uuid>.log`.
  *
  * Designed to be process-supervised by Windows Task Scheduler at user login.
  * Crash-safe: restarts on uncaughtException. No external deps — Node 20+.
@@ -25,8 +25,8 @@ import { watch } from "node:fs/promises";
 
 // --- Path resolution — cross-platform + env-var overridable.
 // Resolution order:
-//   1. AGENTIC_OS_VAULT env var (set in shell or ~/.claude/.env)
-//   2. ~/.claude/.env file's AGENTIC_OS_VAULT entry
+//   1. COMIND_VAULT env var (set in shell or ~/.claude/.env)
+//   2. ~/.claude/.env file's COMIND_VAULT entry
 //   3. fallback ~/the-vault (template default)
 function loadEnvFile() {
   const envPath = join(homedir(), ".claude", ".env");
@@ -49,23 +49,23 @@ function loadEnvFile() {
 
 const _env = loadEnvFile();
 const VAULT_ROOT =
-  process.env.AGENTIC_OS_VAULT ||
-  _env.AGENTIC_OS_VAULT ||
+  process.env.COMIND_VAULT ||
+  _env.COMIND_VAULT ||
   join(homedir(), "the-vault");
 // Timezone for "today"/"tomorrow" date math + calendar windows.
-// Resolution: AGENTIC_OS_TZ env → ~/.claude/.env → fallback UTC.
+// Resolution: COMIND_TZ env → ~/.claude/.env → fallback UTC.
 // Use an IANA name (e.g. "America/Chicago", "Europe/Kyiv", "Asia/Tokyo").
-const RUNNER_TZ = process.env.AGENTIC_OS_TZ || _env.AGENTIC_OS_TZ || "UTC";
+const RUNNER_TZ = process.env.COMIND_TZ || _env.COMIND_TZ || "UTC";
 // Runner state (pid + log). Vault-local by default so the dashboard is
-// self-contained in-place; override with AGENTIC_OS_RUNNER_DIR for the
-// standalone ~/.claude/agentic-os-runner layout from the build guide.
+// self-contained in-place; override with COMIND_RUNNER_DIR for the
+// standalone ~/.claude/comind-dashboard-runner layout from the build guide.
 const RUNNER_DIR =
-  process.env.AGENTIC_OS_RUNNER_DIR ||
-  _env.AGENTIC_OS_RUNNER_DIR ||
-  join(VAULT_ROOT, "system", "runner");
-const QUEUE_DIR = join(VAULT_ROOT, "system", "queue");
-const RUNS_DIR = join(VAULT_ROOT, "system", "runs");
-const STATUS_FILE = join(VAULT_ROOT, "system", "runner-status.json");
+  process.env.COMIND_RUNNER_DIR ||
+  _env.COMIND_RUNNER_DIR ||
+  join(VAULT_ROOT, "_workspace", "system", "runner");
+const QUEUE_DIR = join(VAULT_ROOT, "_workspace", "system", "queue");
+const RUNS_DIR = join(VAULT_ROOT, "_workspace", "system", "runs");
+const STATUS_FILE = join(VAULT_ROOT, "_workspace", "system", "runner-status.json");
 const RUNNER_LOG = join(RUNNER_DIR, "runner.log");
 mkdirSync(RUNNER_DIR, { recursive: true });
 
@@ -157,8 +157,8 @@ function tomorrowDate() {
  * metrics-pull PowerShell scripts complete. Pure file-read — no AI judgment needed.
  */
 function buildMetricsPullSummary() {
-  const snapshotPath = join(VAULT_ROOT, "system", "metrics", "last-pull.json");
-  const csvPath = join(VAULT_ROOT, "system", "metrics", "metrics.csv");
+  const snapshotPath = join(VAULT_ROOT, "_workspace", "system", "metrics", "last-pull.json");
+  const csvPath = join(VAULT_ROOT, "_workspace", "system", "metrics", "metrics.csv");
 
   let snap = {};
   try {
@@ -238,8 +238,7 @@ function deliverablePathFor(intent) {
  * deliverable to the path returned by `deliverablePathFor(intent)` so the
  * Activity Feed can deep-link to it.
  */
-// Standard headless preamble — mirrors the working Streamlit pattern
-// (~/agentic-os-dashboard/config.example.py). Blocks AskUserQuestion which
+// Standard headless preamble. Blocks AskUserQuestion which
 // is what stalls skills like /deep-research in non-interactive -p mode.
 //
 // Leads with "Execute" (not "Act") so caveman-mode SessionStart hooks in the
@@ -253,7 +252,7 @@ function buildPrompt(intent, deliverable) {
 
   switch (skill) {
     case "plan-today":
-      return `${AUTONOMOUS_PREFIX}\n\nTask: plan today's daily note at exactly ${deliverable}.\n\nSteps:\n1. Read the last 3 daily notes under daily-notes/ for incomplete Top 3 + Daily Drivers + EOD reflections (carryover candidates).\n2. If the Google Calendar MCP connector is configured, pull today's calendar: call mcp__claude_ai_Google_Calendar__list_events with startTime=<today>T00:00:00, endTime=<today+1>T00:00:00, timeZone=${RUNNER_TZ}, orderBy=startTime, pageSize=100. If not configured, skip the Schedule step.\n3. Glob projects/*.md for files modified in the last 14 days with status: active|in-progress|blocked|draft frontmatter or due: dates on/before today.\n4. Build suggested Top 3 from the scoring rubric in the /plan-today SKILL.md (carryover +50, due-today +40, overdue +30, calendar-prep +25, recurring-theme +20, drift +15). Pick top 3.\n5. Write the daily note using the frozen v1 schema at system/schemas/daily-note.md — exact section order. If the note already exists, MERGE only into empty Top 3 slots and replace ## Schedule content; do not overwrite user-set text.\n\nEnd your reply with: SAVED ${deliverable}`;
+      return `${AUTONOMOUS_PREFIX}\n\nTask: plan today's daily note at exactly ${deliverable}.\n\nSteps:\n1. Read the last 3 daily notes under daily-notes/ for incomplete Top 3 + Daily Drivers + EOD reflections (carryover candidates).\n2. If the Google Calendar MCP connector is configured, pull today's calendar: call mcp__claude_ai_Google_Calendar__list_events with startTime=<today>T00:00:00, endTime=<today+1>T00:00:00, timeZone=${RUNNER_TZ}, orderBy=startTime, pageSize=100. If not configured, skip the Schedule step.\n3. Glob projects/*.md for files modified in the last 14 days with status: active|in-progress|blocked|draft frontmatter or due: dates on/before today.\n4. Build suggested Top 3 from the scoring rubric in the /plan-today SKILL.md (carryover +50, due-today +40, overdue +30, calendar-prep +25, recurring-theme +20, drift +15). Pick top 3.\n5. Write the daily note using the frozen v1 schema at _workspace/system/schemas/daily-note.md — exact section order. If the note already exists, MERGE only into empty Top 3 slots and replace ## Schedule content; do not overwrite user-set text.\n\nEnd your reply with: SAVED ${deliverable}`;
     case "refresh-schedule":
       return `${AUTONOMOUS_PREFIX}\n\nTask: refresh the ## Schedule section of today's daily note at ${deliverable}.\n\nSteps:\n1. Pull today's calendar via mcp__claude_ai_Google_Calendar__list_events with startTime=<today>T00:00:00, endTime=<today+1>T00:00:00, timeZone=${RUNNER_TZ}, orderBy=startTime, pageSize=100.\n2. Edit ${deliverable} — replace the contents of the \`## Schedule\` section ONLY. Format each event as \`- HH:MM — Title\` (24h local time, sorted by start time). Prefix all-day events with \`(all-day)\` instead of a time.\n3. Leave every other section untouched.\n\nEnd with a one-line summary: how many events were written.`;
     case "morning-report":
@@ -266,7 +265,7 @@ function buildPrompt(intent, deliverable) {
       return `${AUTONOMOUS_PREFIX} Run /deep-research on: ${topic}\n\nSave the full research brief as a single markdown note at exactly this vault path: ${deliverable}. Use YAML frontmatter with \`date\`, \`topic: ${JSON.stringify(topic)}\`, \`skill: deep-research\`, \`tags: [research]\`. Include sources cited inline. End your reply with: SAVED ${deliverable}`;
     }
     case "plan-tomorrow":
-      return `${AUTONOMOUS_PREFIX}\n\nTask: draft tomorrow's daily note at exactly ${deliverable}.\n\nSteps:\n1. Read today's daily note for unfinished Top 3 + Daily Drivers (carryover).\n2. If the Google Calendar MCP connector is configured, pull tomorrow's calendar: mcp__claude_ai_Google_Calendar__list_events with startTime=<tomorrow>T00:00:00, endTime=<tomorrow+1>T00:00:00, timeZone=${RUNNER_TZ}, orderBy=startTime, pageSize=100.\n3. Glob projects/*.md for due-tomorrow or overdue items.\n4. Suggest 3 Top 3 priorities, seed Daily Drivers from defaults + open commitments.\n5. Write to disk using the frozen v1 daily-note schema at system/schemas/daily-note.md.\n\nEnd your reply with: SAVED ${deliverable}`;
+      return `${AUTONOMOUS_PREFIX}\n\nTask: draft tomorrow's daily note at exactly ${deliverable}.\n\nSteps:\n1. Read today's daily note for unfinished Top 3 + Daily Drivers (carryover).\n2. If the Google Calendar MCP connector is configured, pull tomorrow's calendar: mcp__claude_ai_Google_Calendar__list_events with startTime=<tomorrow>T00:00:00, endTime=<tomorrow+1>T00:00:00, timeZone=${RUNNER_TZ}, orderBy=startTime, pageSize=100.\n3. Glob projects/*.md for due-tomorrow or overdue items.\n4. Suggest 3 Top 3 priorities, seed Daily Drivers from defaults + open commitments.\n5. Write to disk using the frozen v1 daily-note schema at _workspace/system/schemas/daily-note.md.\n\nEnd your reply with: SAVED ${deliverable}`;
     case "weekly-review":
       return `${AUTONOMOUS_PREFIX} Run the /weekly-review skill.\n\nReview the last 7 days from the daily notes. Read all daily notes in the window, aggregate frontmatter (effort, focus_blocks, top3_done), and detect recurring themes from the EOD reflections. Write a consolidated coaching review at exactly this vault path: ${deliverable}, following the /weekly-review SKILL.md template. End your reply with: SAVED ${deliverable}`;
     case "vault-cleanup":
@@ -371,8 +370,8 @@ async function processOne(fileName) {
       status: "error",
       exit_code: -3,
       summary: `bad intent json after 5 retries: ${lastErr?.message || "empty"}`.slice(0, 200),
-      md_path: `system/runs/${runId}.md`,
-      log_path: `system/runs/${runId}.md`,
+      md_path: `_workspace/system/runs/${runId}.md`,
+      log_path: `_workspace/system/runs/${runId}.md`,
       deliverable_path: null,
     });
     writeFileSync(
@@ -408,8 +407,8 @@ async function processOne(fileName) {
       status: "error",
       exit_code: -4,
       summary: `dedupe: ${intent.skill} already in-flight`,
-      md_path: `system/runs/${runId}.md`,
-      log_path: `system/runs/${runId}.md`,
+      md_path: `_workspace/system/runs/${runId}.md`,
+      log_path: `_workspace/system/runs/${runId}.md`,
       deliverable_path: null,
     });
     writeFileSync(
@@ -437,8 +436,8 @@ async function processOne(fileName) {
     status: "running",
     exit_code: null,
     summary: "",
-    md_path: `system/runs/${runId}.md`,
-    log_path: `system/runs/${runId}.md`,
+    md_path: `_workspace/system/runs/${runId}.md`,
+    log_path: `_workspace/system/runs/${runId}.md`,
     deliverable_path: deliverable,
   };
   writeJson(runJsonPath, status);
@@ -587,12 +586,12 @@ args: ${argsJson}
           const deliverableAbs = join(VAULT_ROOT, ...deliverable.split("/"));
           const parentDir = join(deliverableAbs, "..");
           if (!existsSync(parentDir)) mkdirSync(parentDir, { recursive: true });
-          const frontmatter = `---\ndate: ${tsCompleted.slice(0, 10)}\nskill: metrics-pull\nrun_id: ${runId}\ntags: [metrics, ops]\n---\n\n# Metrics Pull — ${tsCompleted.slice(0, 10)}\n\nForce-refresh run via dashboard. PowerShell exec, no AI in the loop.\n\n## Per-source status\n\n${summaryBody}\n\n## Notes\n\n- This run wrote new rows to \`system/metrics/metrics.csv\` and updated \`system/metrics/last-pull.json\`.\n- The 6h Windows Task Scheduler does the same thing on cadence — this is the manual override.\n`;
+          const frontmatter = `---\ndate: ${tsCompleted.slice(0, 10)}\nskill: metrics-pull\nrun_id: ${runId}\ntags: [metrics, ops]\n---\n\n# Metrics Pull — ${tsCompleted.slice(0, 10)}\n\nForce-refresh run via dashboard. PowerShell exec, no AI in the loop.\n\n## Per-source status\n\n${summaryBody}\n\n## Notes\n\n- This run wrote new rows to \`_workspace/system/metrics/metrics.csv\` and updated \`_workspace/system/metrics/last-pull.json\`.\n- The 6h Windows Task Scheduler does the same thing on cadence — this is the manual override.\n`;
           writeFileSync(deliverableAbs, frontmatter, "utf8");
           // Also overwrite the firstLine summary to be more useful
-          const okCount = Object.values(JSON.parse(readFileSync(join(VAULT_ROOT, "system", "metrics", "last-pull.json"), "utf8")))
+          const okCount = Object.values(JSON.parse(readFileSync(join(VAULT_ROOT, "_workspace", "system", "metrics", "last-pull.json"), "utf8")))
             .filter((s) => s.status === "ok").length;
-          const totalCount = Object.keys(JSON.parse(readFileSync(join(VAULT_ROOT, "system", "metrics", "last-pull.json"), "utf8"))).length;
+          const totalCount = Object.keys(JSON.parse(readFileSync(join(VAULT_ROOT, "_workspace", "system", "metrics", "last-pull.json"), "utf8"))).length;
           status.summary = `Pulled ${okCount}/${totalCount} sources ok`;
           writeJson(runJsonPath, status);
         } catch (e) {

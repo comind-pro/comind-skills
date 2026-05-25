@@ -46,7 +46,7 @@ export function ActivityFeed({ app, runs }: Props) {
 	const openLog = (run: RunRecord, e: MouseEvent) => {
 		e.stopPropagation();
 		void app.workspace.openLinkText(
-			run.md_path || run.log_path || `system/runs/${run.id}.md`,
+			run.md_path || run.log_path || `_workspace/system/runs/${run.id}.md`,
 			"",
 			true,
 		);
@@ -54,7 +54,7 @@ export function ActivityFeed({ app, runs }: Props) {
 
 	const openJson = (run: RunRecord, e: MouseEvent) => {
 		e.stopPropagation();
-		void app.workspace.openLinkText(`system/runs/${run.id}.json`, "", true);
+		void app.workspace.openLinkText(`_workspace/system/runs/${run.id}.json`, "", true);
 	};
 
 	return (

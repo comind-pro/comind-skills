@@ -37,8 +37,8 @@ import { homedir } from "node:os";
 
 // --- Path resolution — cross-platform + env-var overridable.
 // Resolution order:
-//   1. AGENTIC_OS_VAULT env var
-//   2. ~/.claude/.env file's AGENTIC_OS_VAULT entry
+//   1. COMIND_VAULT env var
+//   2. ~/.claude/.env file's COMIND_VAULT entry
 //   3. fallback ~/the-vault (template default)
 function loadEnvFile() {
   const envPath = join(homedir(), ".claude", ".env");
@@ -61,8 +61,8 @@ function loadEnvFile() {
 
 const _env = loadEnvFile();
 const VAULT_ROOT =
-  process.env.AGENTIC_OS_VAULT ||
-  _env.AGENTIC_OS_VAULT ||
+  process.env.COMIND_VAULT ||
+  _env.COMIND_VAULT ||
   join(homedir(), "the-vault");
 const DAILY_DIR = join(VAULT_ROOT, "daily-notes");
 const ERROR_LOG = join(homedir(), ".claude", "hooks", "activity-log-errors.log");

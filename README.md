@@ -23,7 +23,7 @@ needs lives **inside this folder**:
 │   │   └── _obsidian-templates/task.md
 │   └── docs/               # all documentation Claude references
 │       ├── skill-anatomy.md     # skill format spec
-│       ├── agentic-os/          # masterclass build guides
+│       ├── dashboard/           # comind-dashboard build guides (skills + dashboard)
 │       └── references/          # supplementary checklists pulled in by skills on demand
 ├── CLAUDE.md / README.md
 ├── Makefile                # convenience targets (stats, tasks, validate)
@@ -106,7 +106,7 @@ runner cases that drive them differ per project. So it's wired up *after*
 
 **Guided (recommended):** run `/build-dashboard` (the `dashboard-build` skill). It
 runs a short customization interview, then builds + wires everything against this
-project as the vault. Full reference: `_workspace/docs/agentic-os/part-3-dashboard-obsidian.md`.
+project as the vault. Full reference: `_workspace/docs/references/dashboard-build-guide.md`.
 
 **Manual:**
 
@@ -336,7 +336,7 @@ comind-skills/
 │   ├── commands/                      # 11 slash commands (lifecycle + maintainer)
 │   └── hooks/                         # Session lifecycle hook scripts
 ├── _workspace/                        # Reference + working content (Claude reads on demand)
-│   ├── docs/                          # all documentation (skill-anatomy spec, agentic-os guides, references/)
+│   ├── docs/                          # all documentation (skill-anatomy spec, dashboard guides, references/)
 │   │   └── references/                # supplementary checklists pulled in by skills
 │   └── memory/                        # Obsidian vault — Karpathy 3-zone (raw / wiki / outputs)
 └── Makefile                           # Convenience targets (stats, tasks, validate)

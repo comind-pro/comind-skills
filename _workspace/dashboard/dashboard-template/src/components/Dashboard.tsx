@@ -51,7 +51,7 @@ interface CardSpec {
 
 // CUSTOMIZE — one entry per metric your metrics-pull scripts emit.
 // `key` MUST match the `<source>:<metric>` your pull_*.py emit() calls produce
-// (look at system/metrics/metrics.csv for the live keys). Cards with no matching
+// (look at _workspace/system/metrics/metrics.csv for the live keys). Cards with no matching
 // CSV row render a "no data" placeholder — safe to leave them in for metrics you
 // plan to wire later. Defaults below target a developer workflow; swap freely.
 const CARDS: CardSpec[] = [
@@ -114,9 +114,9 @@ export function Dashboard({ plugin }: Props) {
 		refresh();
 		const handler = (file: { path: string }) => {
 			if (
-				file.path === "system/metrics/metrics.csv" ||
+				file.path === "_workspace/system/metrics/metrics.csv" ||
 				file.path === TODAY_PATH ||
-				file.path.startsWith("system/runs/")
+				file.path.startsWith("_workspace/system/runs/")
 			) {
 				void refresh();
 			}

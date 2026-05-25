@@ -4,8 +4,8 @@ Every pull_*.py imports from here so CSV/snapshot writes stay consistent
 with the dashboard's reader.
 
 Vault path resolution order:
-  1. AGENTIC_OS_VAULT environment variable
-  2. AGENTIC_OS_VAULT entry inside ~/.claude/.env
+  1. COMIND_VAULT environment variable
+  2. COMIND_VAULT entry inside ~/.claude/.env
   3. fallback: ~/the-vault
 """
 
@@ -35,9 +35,9 @@ def load_env_file(path: Path = ENV_PATH) -> dict[str, str]:
 
 
 def _resolve_vault_root() -> Path:
-    if v := os.environ.get("AGENTIC_OS_VAULT"):
+    if v := os.environ.get("COMIND_VAULT"):
         return Path(v)
-    if v := load_env_file().get("AGENTIC_OS_VAULT"):
+    if v := load_env_file().get("COMIND_VAULT"):
         return Path(v)
     return Path.home() / "the-vault"
 
