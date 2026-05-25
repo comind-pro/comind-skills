@@ -68,6 +68,10 @@ into. Run them via Claude Code:
 
 - `/init-project [type-hint]` — first-run bootstrap. Analyses the codebase, generates
   docs, then domain skills/agents/commands with approval gates per phase.
+- `/reorganize-project [hint]` — post-init cleanup. Sorts the project's existing loose
+  files into the Karpathy vault zones, relocates shared docs to `_workspace/docs/`,
+  optionally splits into per-project sub-vaults, updates docs + indexes. Plan-first
+  with an approval gate; moves via `git mv`.
 - `/extend-domain <area>` — add assets for a new bounded context (e.g. "webhook
   handlers", "ML model serving").
 - `/regenerate-domain-assets <scope>` — refresh after a major refactor.

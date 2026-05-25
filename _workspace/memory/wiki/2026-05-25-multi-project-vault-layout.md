@@ -7,9 +7,9 @@ tags: [adr, vault, init-project, dashboard, architecture]
 
 # Multi-project vault layout (per-project Karpathy zones)
 
-> **Status: proposed / future direction.** Captures the intended `/init-project`
-> behavior. Not yet implemented — today the vault is single-project
-> (`memory/{raw,wiki,outputs}`).
+> **Status: partially implemented.** `/init-project` still scaffolds single-project
+> by default, but `/reorganize-project` now builds the multi-project layout below
+> on demand (post-init migration). The init-time auto-detect remains an open question.
 
 ## Idea
 
