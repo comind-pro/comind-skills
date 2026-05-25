@@ -50,7 +50,7 @@ export function parseMetricsCsv(raw: string): MetricRow[] {
 	const header = lines[0]!.split(",").map((s) => s.trim());
 	const headerOk = CSV_HEADER.every((h, i) => header[i] === h);
 	if (!headerOk) {
-		console.warn("[chase-cc] metrics.csv header mismatch", header);
+		console.warn("[dashboard] metrics.csv header mismatch", header);
 	}
 	const rows: MetricRow[] = [];
 	for (let i = 1; i < lines.length; i++) {

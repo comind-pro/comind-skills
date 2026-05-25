@@ -44,22 +44,22 @@ export function Top3Priorities({ app, path, items }: Props) {
 	};
 
 	return (
-		<div className="chase-cc-panel">
-			<div className="chase-cc-panel-head">
-				<span className="chase-cc-panel-label">Top 3 Priorities</span>
+		<div className="dash-panel">
+			<div className="dash-panel-head">
+				<span className="dash-panel-label">Top 3 Priorities</span>
 			</div>
-			<div className="chase-cc-panel-body">
-				<ol className="chase-cc-top3">
+			<div className="dash-panel-body">
+				<ol className="dash-top3">
 					{padded.slice(0, 3).map((item, i) => {
 						const isEditing = editingIdx === i;
 						const text = item?.text || "";
 						return (
 							<li
 								key={i}
-								className={`chase-cc-top3-item ${item?.done ? "chase-cc-done" : ""}`}
+								className={`dash-top3-item ${item?.done ? "dash-done" : ""}`}
 							>
 								<span
-									className="chase-cc-checkbox chase-cc-driver-clickable"
+									className="dash-checkbox dash-driver-clickable"
 									aria-hidden="true"
 									onClick={(e) => {
 										e.stopPropagation();
@@ -72,7 +72,7 @@ export function Top3Priorities({ app, path, items }: Props) {
 								{isEditing ? (
 									<input
 										type="text"
-										className="chase-cc-top3-input"
+										className="dash-top3-input"
 										autoFocus
 										value={draft}
 										onInput={(e) => setDraft((e.target as HTMLInputElement).value)}
@@ -88,12 +88,12 @@ export function Top3Priorities({ app, path, items }: Props) {
 									/>
 								) : (
 									<span
-										className="chase-cc-top3-text chase-cc-top3-clickable"
+										className="dash-top3-text dash-top3-clickable"
 										onClick={() => startEdit(i, text)}
 										title="click to edit"
 									>
 										{text || (
-											<span className="chase-cc-dim">— click to set —</span>
+											<span className="dash-dim">— click to set —</span>
 										)}
 									</span>
 								)}

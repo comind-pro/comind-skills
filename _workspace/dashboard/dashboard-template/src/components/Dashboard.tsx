@@ -25,16 +25,12 @@ import {
 	type RunnerStatus,
 	type LastPullSnapshot,
 } from "../lib/status";
-import { readLatestVideo, type LatestVideo } from "../lib/youtube";
 import { MetricCard } from "./MetricCard";
-import { LatestVideoCard } from "./LatestVideoCard";
 import { ScheduleList } from "./ScheduleList";
 import { DailyDriversChecklist } from "./DailyDriversChecklist";
-import { GithubTrendingCard } from "./GithubTrendingCard";
-import { HackerNewsCard } from "./HackerNewsCard";
+import { Top3Priorities } from "./Top3Priorities";
+import { FocusCard } from "./FocusCard";
 import { TokenBurnChart } from "./TokenBurnChart";
-import { YtWeekReviewCard } from "./YtWeekReviewCard";
-import { MorningBriefCard } from "./MorningBriefCard";
 import { ActionBar } from "./ActionBar";
 import { ActivityFeed } from "./ActivityFeed";
 
@@ -42,9 +38,7 @@ interface Props {
 	plugin: DashboardPlugin;
 }
 
-type Tab = "overview" | "audience" | "research";
-
-type Tone = "youtube" | "instagram" | "tiktok" | "neutral";
+type Tab = "overview" | "tasks" | "activity";
 
 interface CardSpec {
 	key: string;
@@ -52,20 +46,23 @@ interface CardSpec {
 	format: "currency" | "integer" | "compact" | "percent";
 	tabs: Tab[];
 	hero?: boolean;
-	tone?: Tone;
 }
 
-// CUSTOMIZE — one entry per $METRIC you wired in Phase 4.
-// `key` MUST match `<source>:<metric>` from your pull_*.py scripts'
-// emit() calls. Drop tabs you don't use; add tones for visual grouping.
-// Cards with no matching CSV rows render a "no data" placeholder.
+// CUSTOMIZE — one entry per metric your metrics-pull scripts emit.
+// `key` MUST match the `<source>:<metric>` your pull_*.py emit() calls produce
+// (look at system/metrics/metrics.csv for the live keys). Cards with no matching
+// CSV row render a "no data" placeholder — safe to leave them in for metrics you
+// plan to wire later. Defaults below target a developer workflow; swap freely.
 const CARDS: CardSpec[] = [
-	{ key: "youtube:subscribers", label: "YouTube Subs", format: "integer", tabs: ["overview", "audience"], tone: "youtube" },
-	{ key: "youtube:views_28d", label: "YouTube Views", format: "integer", tabs: ["overview", "audience"], tone: "youtube" },
-	{ key: "instagram:followers", label: "Instagram", format: "integer", tabs: ["overview", "audience"], tone: "instagram" },
-	{ key: "tiktok:followers", label: "TikTok", format: "integer", tabs: ["overview", "audience"], tone: "tiktok" },
+	{ key: "tasks:open", label: "Open Tasks", format: "integer", tabs: ["overview", "tasks"] },
+	{ key: "tasks:in_progress", label: "In Progress", format: "integer", tabs: ["overview", "tasks"] },
+	{ key: "runs:today", label: "Runs Today", format: "integer", tabs: ["overview", "activity"] },
+	{ key: "git:commits_today", label: "Commits Today", format: "integer", tabs: ["overview"] },
+	{ key: "tasks:blocked", label: "Blocked", format: "integer", tabs: ["tasks"] },
+	{ key: "tasks:done_7d", label: "Done · 7d", format: "integer", tabs: ["tasks"] },
 ];
 
+const TABS: Tab[] = ["overview", "tasks", "activity"];
 const TODAY_PATH = todayPath();
 
 export function Dashboard({ plugin }: Props) {
@@ -75,19 +72,17 @@ export function Dashboard({ plugin }: Props) {
 	const [runs, setRuns] = useState<RunRecord[]>([]);
 	const [runner, setRunner] = useState<RunnerStatus | null>(null);
 	const [lastPull, setLastPull] = useState<LastPullSnapshot | null>(null);
-	const [latestVideo, setLatestVideo] = useState<LatestVideo | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [tab, setTab] = useState<Tab>("overview");
 
 	const refresh = useCallback(async () => {
 		try {
-			const [rows, dn, recentRuns, rs, lp, lv] = await Promise.all([
+			const [rows, dn, recentRuns, rs, lp] = await Promise.all([
 				readMetricsCsv(plugin.app),
 				readDailyNote(plugin.app, TODAY_PATH),
 				listRecentRuns(plugin.app, 8),
 				readRunnerStatus(plugin.app),
 				readLastPull(plugin.app),
-				readLatestVideo(plugin.app),
 			]);
 			setSnapshots(snapshotByKey(rows));
 			setClaudeSeries(
@@ -97,7 +92,6 @@ export function Dashboard({ plugin }: Props) {
 			setRuns(recentRuns);
 			setRunner(rs);
 			setLastPull(lp);
-			setLatestVideo(lv);
 			setError(null);
 		} catch (e) {
 			setError(String(e));
@@ -109,7 +103,6 @@ export function Dashboard({ plugin }: Props) {
 		const handler = (file: { path: string }) => {
 			if (
 				file.path === "system/metrics/metrics.csv" ||
-				file.path === "system/metrics/latest-video.json" ||
 				file.path === TODAY_PATH ||
 				file.path.startsWith("system/runs/")
 			) {
@@ -145,27 +138,14 @@ export function Dashboard({ plugin }: Props) {
 		runner?.busy === true || (runner?.pending != null && runner.pending > 0);
 
 	return (
-		<div
-			className={`chase-cc-shell ${runnerBusy ? "chase-cc-shell--busy" : ""}`}
-		>
-			<header className="chase-cc-header">
-				<span className="chase-cc-heartbeat" aria-hidden="true">
-					<svg viewBox="0 0 24 12" width="32" height="16">
-						<path
-							d="M0 6 H6 L8 2 L10 10 L12 4 L14 8 L16 6 H24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="1.5"
-							strokeLinecap="square"
-						/>
-					</svg>
-				</span>
-				<h1 className="chase-cc-title">AGENTIC OS</h1>
-				<span className="chase-cc-status">
-					{error ? "ERROR" : snapshots ? "LIVE" : "BOOT"}
+		<div className={`dash-shell ${runnerBusy ? "dash-shell--busy" : ""}`}>
+			<header className="dash-header">
+				<h1 className="dash-title">Dashboard</h1>
+				<span className="dash-status">
+					{error ? "error" : snapshots ? "live" : "boot"}
 				</span>
 				<button
-					className="chase-cc-refresh"
+					className="dash-refresh"
 					type="button"
 					onClick={refresh}
 					title="refresh"
@@ -174,12 +154,12 @@ export function Dashboard({ plugin }: Props) {
 				</button>
 			</header>
 
-			<nav className="chase-cc-tabs">
-				{(["overview", "audience", "research"] as Tab[]).map((t) => (
+			<nav className="dash-tabs">
+				{TABS.map((t) => (
 					<button
 						key={t}
 						type="button"
-						className={`chase-cc-tab ${t === tab ? "chase-cc-tab-active" : ""}`}
+						className={`dash-tab ${t === tab ? "dash-tab-active" : ""}`}
 						onClick={() => setTab(t)}
 					>
 						{t}
@@ -188,9 +168,9 @@ export function Dashboard({ plugin }: Props) {
 			</nav>
 
 			{error ? (
-				<section className="chase-cc-placeholder chase-cc-error-box">
-					<p className="chase-cc-mono">&gt; read failed</p>
-					<p className="chase-cc-mono chase-cc-dim">{error}</p>
+				<section className="dash-placeholder dash-error-box">
+					<p className="dash-mono">&gt; read failed</p>
+					<p className="dash-mono dash-dim">{error}</p>
 				</section>
 			) : (
 				<>
@@ -200,43 +180,39 @@ export function Dashboard({ plugin }: Props) {
 							budget={plugin.settings.claudeTokenBudget5h}
 						/>
 					) : null}
-					<section className="chase-cc-card-row">
-						{visibleCards.map((c) => (
-							<MetricCard
-								key={c.key}
-								label={c.label}
-								snapshot={snapshots?.get(c.key) ?? null}
-								format={c.format}
-								hero={c.hero}
-								tone={c.tone}
-							/>
-						))}
-					</section>
-					{tab !== "research" && (
-						<section className="chase-cc-latest-row">
-							<LatestVideoCard video={latestVideo} />
+					{visibleCards.length > 0 ? (
+						<section className="dash-card-row">
+							{visibleCards.map((c) => (
+								<MetricCard
+									key={c.key}
+									label={c.label}
+									snapshot={snapshots?.get(c.key) ?? null}
+									format={c.format}
+									hero={c.hero}
+								/>
+							))}
 						</section>
-					)}
+					) : null}
 				</>
 			)}
 
 			<ActionBar plugin={plugin} onSubmitted={() => void refresh()} />
 
 			{dailyMissing ? (
-				<section className="chase-cc-placeholder">
-					<p className="chase-cc-mono chase-cc-dim">
+				<section className="dash-placeholder">
+					<p className="dash-mono dash-dim">
 						&gt; no daily note at {TODAY_PATH}
 					</p>
-					<p className="chase-cc-mono chase-cc-dim">
+					<p className="dash-mono dash-dim">
 						click "Open Today" above or run /today
 					</p>
 				</section>
 			) : dailyUnsupported ? (
-				<section className="chase-cc-placeholder chase-cc-error-box">
-					<p className="chase-cc-mono">
+				<section className="dash-placeholder dash-error-box">
+					<p className="dash-mono">
 						&gt; unsupported schema_version: {daily!.schemaVersion}
 					</p>
-					<p className="chase-cc-mono chase-cc-dim">
+					<p className="dash-mono dash-dim">
 						plugin supports v{SUPPORTED_SCHEMA_VERSION}. update template or bump
 						parser.
 					</p>
@@ -244,7 +220,7 @@ export function Dashboard({ plugin }: Props) {
 			) : (
 				<>
 					{tab === "overview" ? (
-						<section className="chase-cc-day-grid">
+						<section className="dash-day-grid">
 							<ScheduleList app={plugin.app} entries={daily!.schedule} />
 							<DailyDriversChecklist
 								app={plugin.app}
@@ -253,21 +229,29 @@ export function Dashboard({ plugin }: Props) {
 							/>
 						</section>
 					) : null}
-					{tab === "research" ? (
-						<section className="chase-cc-day-grid">
-							<GithubTrendingCard app={plugin.app} limit={5} />
-							<HackerNewsCard limit={5} />
-						</section>
+					{tab === "tasks" ? (
+						<>
+							<FocusCard focus={daily!.focus} />
+							<section className="dash-day-grid">
+								<Top3Priorities
+									app={plugin.app}
+									path={TODAY_PATH}
+									items={daily!.top3}
+								/>
+								<DailyDriversChecklist
+									app={plugin.app}
+									path={TODAY_PATH}
+									items={daily!.drivers}
+								/>
+							</section>
+						</>
 					) : null}
 				</>
 			)}
 
-			{tab === "audience" ? <YtWeekReviewCard app={plugin.app} /> : null}
-			{tab === "research" ? <MorningBriefCard app={plugin.app} /> : null}
+			{tab === "activity" ? <ActivityFeed app={plugin.app} runs={runs} /> : null}
 
-			<ActivityFeed app={plugin.app} runs={runs} />
-
-			<footer className="chase-cc-footer">
+			<footer className="dash-footer">
 				{(() => {
 					const online = runnerIsOnline(runner);
 					const next = nextPullDelta(
@@ -280,17 +264,13 @@ export function Dashboard({ plugin }: Props) {
 							? humanDuration(Date.now() - Date.parse(lastTs))
 							: "—";
 					return (
-						<span className="chase-cc-mono chase-cc-dim chase-cc-footer-line">
+						<span className="dash-mono dash-dim dash-footer-line">
 							<span
 								className={
-									online
-										? "chase-cc-foot-online"
-										: "chase-cc-foot-offline"
+									online ? "dash-foot-online" : "dash-foot-offline"
 								}
 								title={
-									runner
-										? `pid ${runner.pid} · ts ${runner.ts}`
-										: "no heartbeat"
+									runner ? `pid ${runner.pid} · ts ${runner.ts}` : "no heartbeat"
 								}
 							>
 								● runner {online ? "online" : "offline"}
@@ -302,9 +282,20 @@ export function Dashboard({ plugin }: Props) {
 									  ? ` (${runner.pending} queued)`
 									  : ""}
 							</span>
-							<span className="chase-cc-foot-sep">·</span>
+							{online && runner?.in_flight && runner.in_flight.length > 0 ? (
+								<>
+									<span className="dash-foot-sep">·</span>
+									<span
+										className="dash-foot-running"
+										title="skills running now"
+									>
+										▶ {runner.in_flight.join(", ")}
+									</span>
+								</>
+							) : null}
+							<span className="dash-foot-sep">·</span>
 							<span title={lastTs || ""}>last pull {lastAgo} ago</span>
-							<span className="chase-cc-foot-sep">·</span>
+							<span className="dash-foot-sep">·</span>
 							<span>
 								next{" "}
 								{next
@@ -313,7 +304,6 @@ export function Dashboard({ plugin }: Props) {
 										: `in ${humanDuration(next.ms)}`
 									: "—"}
 							</span>
-							<span className="chase-cc-cursor">█</span>
 						</span>
 					);
 				})()}

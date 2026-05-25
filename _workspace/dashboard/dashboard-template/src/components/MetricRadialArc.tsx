@@ -15,9 +15,9 @@ function formatCompact(n: number): string {
 }
 
 function pctToneClass(pct: number): string {
-	if (pct >= 90) return "chase-cc-arc-hot";
-	if (pct >= 70) return "chase-cc-arc-warm";
-	return "chase-cc-arc-cool";
+	if (pct >= 90) return "dash-arc-hot";
+	if (pct >= 70) return "dash-arc-warm";
+	return "dash-arc-cool";
 }
 
 /** Smooth animation on percentage change, matches MetricCard's tick-up vibe. */
@@ -65,9 +65,9 @@ export function MetricRadialArc({ pct, rawValue, budget }: Props) {
 	const tone = pctToneClass(clamped);
 
 	return (
-		<div className="chase-cc-arc-wrap" title={`${formatCompact(rawValue)} / ${formatCompact(budget)} tokens`}>
+		<div className="dash-arc-wrap" title={`${formatCompact(rawValue)} / ${formatCompact(budget)} tokens`}>
 			<svg
-				className={`chase-cc-arc ${tone}`}
+				className={`dash-arc ${tone}`}
 				viewBox="0 0 100 100"
 				width="100%"
 				height="100%"
@@ -84,7 +84,7 @@ export function MetricRadialArc({ pct, rawValue, budget }: Props) {
 				/>
 				{/* Progress arc — rotate -90 so 0% is at 12 o'clock */}
 				<circle
-					className="chase-cc-arc-progress"
+					className="dash-arc-progress"
 					cx="50"
 					cy="50"
 					r={r}
@@ -96,12 +96,12 @@ export function MetricRadialArc({ pct, rawValue, budget }: Props) {
 					transform="rotate(-90 50 50)"
 				/>
 			</svg>
-			<div className="chase-cc-arc-center">
-				<div className="chase-cc-arc-value">
+			<div className="dash-arc-center">
+				<div className="dash-arc-value">
 					{clamped.toFixed(0)}
-					<span className="chase-cc-arc-unit">%</span>
+					<span className="dash-arc-unit">%</span>
 				</div>
-				<div className="chase-cc-arc-sub">
+				<div className="dash-arc-sub">
 					{formatCompact(rawValue)} / {formatCompact(budget)}
 				</div>
 			</div>

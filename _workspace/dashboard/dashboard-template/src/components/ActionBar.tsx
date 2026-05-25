@@ -26,27 +26,12 @@ const BUTTONS: ButtonSpec[] = [
 	{ skill: "plan-today", label: "Plan Today" },
 	{ skill: "plan-tomorrow", label: "Plan Tomorrow" },
 	{ skill: "morning", label: "Morning Brief" },
-	{ skill: "inbox-brief", label: "Inbox Brief" },
 	{
 		skill: "deep-research",
 		label: "Deep Research…",
 		prompt: "topic",
 		promptLabel: "Deep research — topic",
 		placeholder: "e.g. claude code agent rotations 2026",
-	},
-	{
-		skill: "content-cascade",
-		label: "Content Cascade…",
-		prompt: "url",
-		promptLabel: "Content cascade — YouTube URL",
-		placeholder: "https://youtube.com/watch?v=…",
-	},
-	{
-		skill: "yt-pipeline",
-		label: "YT Pipeline…",
-		prompt: "topic",
-		promptLabel: "YouTube pipeline — search query",
-		placeholder: "e.g. claude code 2026 latest features",
 	},
 	{ skill: "weekly-review", label: "Weekly Review" },
 	{ skill: "vault-cleanup", label: "Vault Cleanup" },
@@ -84,12 +69,12 @@ export function ActionBar({ plugin, onSubmitted }: Props) {
 	};
 
 	return (
-		<div className="chase-cc-actionbar">
+		<div className="dash-actionbar">
 			{BUTTONS.map((b) => (
 				<button
 					key={b.skill}
 					type="button"
-					className="chase-cc-action-btn"
+					className="dash-action-btn"
 					disabled={busy}
 					onClick={() => void fire(b)}
 				>

@@ -10,13 +10,13 @@ interface Props {
 function statusClass(status: string): string {
 	switch (status) {
 		case "ok":
-			return "chase-cc-chip-ok";
+			return "dash-chip-ok";
 		case "error":
-			return "chase-cc-chip-error";
+			return "dash-chip-error";
 		case "running":
-			return "chase-cc-chip-running";
+			return "dash-chip-running";
 		default:
-			return "chase-cc-chip-error";
+			return "dash-chip-error";
 	}
 }
 
@@ -58,41 +58,41 @@ export function ActivityFeed({ app, runs }: Props) {
 	};
 
 	return (
-		<div className="chase-cc-panel">
-			<div className="chase-cc-panel-head">
-				<span className="chase-cc-panel-label">Activity Feed</span>
-				<span className="chase-cc-panel-count chase-cc-dim">
+		<div className="dash-panel">
+			<div className="dash-panel-head">
+				<span className="dash-panel-label">Activity Feed</span>
+				<span className="dash-panel-count dash-dim">
 					{runs.length} run{runs.length === 1 ? "" : "s"}
 				</span>
 			</div>
-			<div className="chase-cc-panel-body">
+			<div className="dash-panel-body">
 				{runs.length === 0 ? (
-					<p className="chase-cc-mono chase-cc-dim">
+					<p className="dash-mono dash-dim">
 						&gt; no runs yet — click an action button
 					</p>
 				) : (
-					<ul className="chase-cc-feed">
+					<ul className="dash-feed">
 						{runs.map((r) => (
 							<li
 								key={r.id}
-								className={`chase-cc-feed-item chase-cc-feed-item-clickable chase-cc-feed-item--${r.status}`}
+								className={`dash-feed-item dash-feed-item-clickable dash-feed-item--${r.status}`}
 								onClick={() => openDeliverable(r)}
 								title={`open ${r.deliverable_path || r.md_path || r.id}`}
 							>
 								<span
-									className={`chase-cc-chip ${statusClass(r.status)}`}
+									className={`dash-chip ${statusClass(r.status)}`}
 									title={r.exit_code != null ? `exit ${r.exit_code}` : r.status}
 								>
 									{r.status === "running" ? "…" : r.status === "ok" ? "✓" : "✕"}{" "}
 									{r.skill}
 								</span>
-								<span className="chase-cc-feed-summary">
+								<span className="dash-feed-summary">
 									{r.summary || "(running)"}
 								</span>
-								<span className="chase-cc-feed-actions">
+								<span className="dash-feed-actions">
 									<button
 										type="button"
-										className="chase-cc-feed-jsonbtn"
+										className="dash-feed-jsonbtn"
 										onClick={(e) => openLog(r, e as MouseEvent)}
 										title="open raw run log"
 									>
@@ -100,13 +100,13 @@ export function ActivityFeed({ app, runs }: Props) {
 									</button>
 									<button
 										type="button"
-										className="chase-cc-feed-jsonbtn"
+										className="dash-feed-jsonbtn"
 										onClick={(e) => openJson(r, e as MouseEvent)}
 										title="open status JSON"
 									>
 										{`{}`}
 									</button>
-									<span className="chase-cc-feed-time chase-cc-dim">
+									<span className="dash-feed-time dash-dim">
 										{relativeTime(r.ts_completed || r.ts_started)}
 									</span>
 								</span>

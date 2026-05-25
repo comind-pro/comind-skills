@@ -28,7 +28,7 @@ export class IntentArgModal extends Modal {
 	onOpen(): void {
 		const { contentEl } = this;
 		contentEl.empty();
-		contentEl.addClass("chase-cc-modal");
+		contentEl.addClass("dash-modal");
 		contentEl.createEl("h2", { text: this.heading });
 
 		const setting = new Setting(contentEl).addText((text) => {
@@ -47,7 +47,7 @@ export class IntentArgModal extends Modal {
 		});
 		setting.settingEl.style.borderTop = "none";
 
-		const buttons = contentEl.createDiv({ cls: "chase-cc-modal-buttons" });
+		const buttons = contentEl.createDiv({ cls: "dash-modal-buttons" });
 		const submitBtn = buttons.createEl("button", {
 			text: "Queue",
 			cls: "mod-cta",

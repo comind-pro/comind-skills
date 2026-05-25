@@ -56,11 +56,18 @@ const VAULT_ROOT =
 // Resolution: AGENTIC_OS_TZ env → ~/.claude/.env → fallback UTC.
 // Use an IANA name (e.g. "America/Chicago", "Europe/Kyiv", "Asia/Tokyo").
 const RUNNER_TZ = process.env.AGENTIC_OS_TZ || _env.AGENTIC_OS_TZ || "UTC";
-const RUNNER_DIR = join(homedir(), ".claude", "agentic-os-runner");
+// Runner state (pid + log). Vault-local by default so the dashboard is
+// self-contained in-place; override with AGENTIC_OS_RUNNER_DIR for the
+// standalone ~/.claude/agentic-os-runner layout from the build guide.
+const RUNNER_DIR =
+  process.env.AGENTIC_OS_RUNNER_DIR ||
+  _env.AGENTIC_OS_RUNNER_DIR ||
+  join(VAULT_ROOT, "system", "runner");
 const QUEUE_DIR = join(VAULT_ROOT, "system", "queue");
 const RUNS_DIR = join(VAULT_ROOT, "system", "runs");
 const STATUS_FILE = join(VAULT_ROOT, "system", "runner-status.json");
 const RUNNER_LOG = join(RUNNER_DIR, "runner.log");
+mkdirSync(RUNNER_DIR, { recursive: true });
 
 // Platform-aware binary names + script paths.
 const IS_WINDOWS = platform() === "win32";

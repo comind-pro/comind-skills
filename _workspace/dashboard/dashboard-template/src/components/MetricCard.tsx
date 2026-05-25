@@ -11,7 +11,6 @@ interface Props {
 	budget?: number; // required when format === "percent"
 	hero?: boolean;
 	series?: SeriesPoint[];
-	tone?: "youtube" | "instagram" | "tiktok" | "neutral";
 }
 
 /**
@@ -68,21 +67,21 @@ function formatValue(value: number, format: NonNullable<Props["format"]>): strin
 }
 
 function pctClass(pct: number): string {
-	if (pct >= 90) return "chase-cc-pct-hot";
-	if (pct >= 70) return "chase-cc-pct-warm";
-	return "chase-cc-pct-cool";
+	if (pct >= 90) return "dash-pct-hot";
+	if (pct >= 70) return "dash-pct-warm";
+	return "dash-pct-cool";
 }
 
 function statusClass(status: string): string {
 	switch (status) {
 		case "ok":
-			return "chase-cc-status-ok";
+			return "dash-status-ok";
 		case "mock":
-			return "chase-cc-status-mock";
+			return "dash-status-mock";
 		case "stale":
-			return "chase-cc-status-stale";
+			return "dash-status-stale";
 		default:
-			return "chase-cc-status-error";
+			return "dash-status-error";
 	}
 }
 
@@ -94,23 +93,19 @@ export function MetricCard({
 	budget,
 	hero,
 	series,
-	tone,
 }: Props) {
 	// IMPORTANT — hook order must be stable across renders. Always call before any early return.
 	const animatedValue = useAnimatedNumber(snapshot?.latest.value ?? 0);
 
-	const toneAttrs = tone && tone !== "neutral" ? { "data-tone": tone } : {};
-
 	if (!snapshot) {
 		return (
 			<div
-				className="chase-cc-card chase-cc-card-empty"
+				className="dash-card dash-card-empty"
 				{...(hero ? { "data-hero": "true" } : {})}
-				{...toneAttrs}
 			>
-				<div className="chase-cc-card-label">{label}</div>
-				<div className="chase-cc-card-value chase-cc-dim">—</div>
-				<div className="chase-cc-card-delta chase-cc-dim">no data</div>
+				<div className="dash-card-label">{label}</div>
+				<div className="dash-card-value dash-dim">—</div>
+				<div className="dash-card-delta dash-dim">no data</div>
 			</div>
 		);
 	}
@@ -130,7 +125,7 @@ export function MetricCard({
 				title={`${formatValue(latest.value, "compact")} / ${formatValue(budget, "compact")}`}
 			>
 				{pct.toFixed(0)}
-				<span className="chase-cc-card-unit">%</span>
+				<span className="dash-card-unit">%</span>
 			</span>
 		);
 	} else {
@@ -138,31 +133,30 @@ export function MetricCard({
 		primary = (
 			<span>
 				{value}
-				{unit ? <span className="chase-cc-card-unit">{unit}</span> : null}
+				{unit ? <span className="dash-card-unit">{unit}</span> : null}
 			</span>
 		);
 	}
 
 	let deltaText = "—";
-	let deltaClass = "chase-cc-dim";
+	let deltaClass = "dash-dim";
 	if (deltaPct !== null) {
 		const arrow = deltaPct > 0 ? "▲" : deltaPct < 0 ? "▼" : "·";
 		deltaText = `${arrow} ${Math.abs(deltaPct).toFixed(1)}%`;
-		deltaClass = deltaPct > 0 ? "chase-cc-up" : deltaPct < 0 ? "chase-cc-down" : "";
+		deltaClass = deltaPct > 0 ? "dash-up" : deltaPct < 0 ? "dash-down" : "";
 	} else if (delta !== null) {
 		deltaText = `${delta > 0 ? "+" : ""}${delta}`;
 	}
 
 	return (
 		<div
-			className={`chase-cc-card ${isStaleish ? "chase-cc-card-dim" : ""}`}
+			className={`dash-card ${isStaleish ? "dash-card-dim" : ""}`}
 			{...(hero ? { "data-hero": "true" } : {})}
-			{...toneAttrs}
 		>
-			<div className="chase-cc-card-head">
-				<span className="chase-cc-card-label">{label}</span>
+			<div className="dash-card-head">
+				<span className="dash-card-label">{label}</span>
 				<span
-					className={`chase-cc-status-dot ${statusClass(latest.status)}`}
+					className={`dash-status-dot ${statusClass(latest.status)}`}
 					title={`${latest.status}${latest.error ? ` — ${latest.error}` : ""}`}
 				/>
 			</div>
@@ -173,9 +167,9 @@ export function MetricCard({
 					budget={budget!}
 				/>
 			) : (
-				<div className={`chase-cc-card-value ${pctClassName}`}>{primary}</div>
+				<div className={`dash-card-value ${pctClassName}`}>{primary}</div>
 			)}
-			<div className={`chase-cc-card-delta ${deltaClass}`}>{deltaText}</div>
+			<div className={`dash-card-delta ${deltaClass}`}>{deltaText}</div>
 		</div>
 	);
 }

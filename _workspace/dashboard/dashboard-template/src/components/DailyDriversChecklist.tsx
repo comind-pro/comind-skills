@@ -37,35 +37,35 @@ export function DailyDriversChecklist({ app, path, items }: Props) {
 	};
 
 	return (
-		<div className="chase-cc-panel">
-			<div className="chase-cc-panel-head">
-				<span className="chase-cc-panel-label">Daily Tasks</span>
-				<span className="chase-cc-panel-count chase-cc-dim">
+		<div className="dash-panel">
+			<div className="dash-panel-head">
+				<span className="dash-panel-label">Daily Tasks</span>
+				<span className="dash-panel-count dash-dim">
 					{doneCount}/{items.length}
 				</span>
 			</div>
-			<div className="chase-cc-gauge" aria-hidden="true">
+			<div className="dash-gauge" aria-hidden="true">
 				<div
-					className="chase-cc-gauge-fill"
+					className="dash-gauge-fill"
 					style={{ width: `${pct}%` }}
 				/>
 			</div>
-			<div className="chase-cc-panel-body">
+			<div className="dash-panel-body">
 				{items.length === 0 ? (
-					<p className="chase-cc-mono chase-cc-dim">&gt; no tasks</p>
+					<p className="dash-mono dash-dim">&gt; no tasks</p>
 				) : (
 					<ul
-						className={`chase-cc-drivers ${items.length > 5 ? "chase-cc-drivers-wide" : ""}`}
+						className={`dash-drivers ${items.length > 5 ? "dash-drivers-wide" : ""}`}
 					>
 						{items.map((d, i) => (
 							<li
 								key={`${i}-${d.text}`}
-								className={`chase-cc-driver-item chase-cc-driver-clickable ${d.done ? "chase-cc-done" : ""}`}
+								className={`dash-driver-item dash-driver-clickable ${d.done ? "dash-done" : ""}`}
 								onClick={() => void toggle(d.text)}
 								role="button"
 								tabIndex={0}
 							>
-								<span className="chase-cc-checkbox" aria-hidden="true">
+								<span className="dash-checkbox" aria-hidden="true">
 									{d.done ? "■" : "□"}
 								</span>
 								<span>{d.text}</span>
@@ -74,10 +74,10 @@ export function DailyDriversChecklist({ app, path, items }: Props) {
 					</ul>
 				)}
 				{adding ? (
-					<form className="chase-cc-quickadd" onSubmit={submitAdd}>
+					<form className="dash-quickadd" onSubmit={submitAdd}>
 						<input
 							type="text"
-							className="chase-cc-quickadd-input"
+							className="dash-quickadd-input"
 							autoFocus
 							placeholder="new task…"
 							value={newTask}
@@ -89,14 +89,14 @@ export function DailyDriversChecklist({ app, path, items }: Props) {
 								}
 							}}
 						/>
-						<button type="submit" className="chase-cc-quickadd-btn">
+						<button type="submit" className="dash-quickadd-btn">
 							+
 						</button>
 					</form>
 				) : (
 					<button
 						type="button"
-						className="chase-cc-quickadd-trigger"
+						className="dash-quickadd-trigger"
 						onClick={() => setAdding(true)}
 					>
 						+ add task

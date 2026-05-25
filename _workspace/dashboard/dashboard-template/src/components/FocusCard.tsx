@@ -6,15 +6,15 @@ interface Props {
 
 export function FocusCard({ focus }: Props) {
 	return (
-		<div className="chase-cc-panel">
-			<div className="chase-cc-panel-head">
-				<span className="chase-cc-panel-label">Current Focus</span>
+		<div className="dash-panel">
+			<div className="dash-panel-head">
+				<span className="dash-panel-label">Current Focus</span>
 			</div>
-			<div className="chase-cc-panel-body">
+			<div className="dash-panel-body">
 				{focus ? (
-					<p className="chase-cc-focus-text">{focus}</p>
+					<p className="dash-focus-text">{focus}</p>
 				) : (
-					<p className="chase-cc-mono chase-cc-dim">
+					<p className="dash-mono dash-dim">
 						&gt; no focus set today
 					</p>
 				)}

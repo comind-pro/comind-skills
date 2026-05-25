@@ -20,36 +20,36 @@ export function ScheduleList({ app, entries }: Props) {
 	};
 
 	return (
-		<div className="chase-cc-panel">
-			<div className="chase-cc-panel-head">
-				<span className="chase-cc-panel-label">Schedule</span>
-				<span className="chase-cc-panel-actions">
+		<div className="dash-panel">
+			<div className="dash-panel-head">
+				<span className="dash-panel-label">Schedule</span>
+				<span className="dash-panel-actions">
 					<button
 						type="button"
-						className="chase-cc-refresh chase-cc-refresh-inline"
+						className="dash-refresh dash-refresh-inline"
 						onClick={refresh}
 						title="pull calendar via Google Calendar MCP"
 					>
 						↻
 					</button>
-					<span className="chase-cc-panel-count chase-cc-dim">
+					<span className="dash-panel-count dash-dim">
 						{entries.length} event{entries.length === 1 ? "" : "s"}
 					</span>
 				</span>
 			</div>
-			<div className="chase-cc-panel-body">
+			<div className="dash-panel-body">
 				{entries.length === 0 ? (
-					<p className="chase-cc-mono chase-cc-dim">
+					<p className="dash-mono dash-dim">
 						&gt; no events — click ↻ to pull
 					</p>
 				) : (
 					<ul
-						className={`chase-cc-schedule ${entries.length > 5 ? "chase-cc-schedule-wide" : ""}`}
+						className={`dash-schedule ${entries.length > 5 ? "dash-schedule-wide" : ""}`}
 					>
 						{entries.map((e, i) => (
-							<li key={i} className="chase-cc-schedule-item">
-								<span className="chase-cc-schedule-time">{e.time}</span>
-								<span className="chase-cc-schedule-title">{e.title}</span>
+							<li key={i} className="dash-schedule-item">
+								<span className="dash-schedule-time">{e.time}</span>
+								<span className="dash-schedule-title">{e.title}</span>
 							</li>
 						))}
 					</ul>

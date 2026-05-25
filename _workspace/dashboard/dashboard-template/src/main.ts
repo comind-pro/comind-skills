@@ -13,13 +13,13 @@ export default class DashboardPlugin extends Plugin {
 			(leaf: WorkspaceLeaf) => new DashboardView(leaf, this),
 		);
 
-		this.addRibbonIcon("activity", "Open Command Center", () => {
+		this.addRibbonIcon("activity", "Open Dashboard", () => {
 			this.activateView();
 		});
 
 		this.addCommand({
 			id: "open-command-center",
-			name: "Open Command Center",
+			name: "Open Dashboard",
 			callback: () => this.activateView(),
 		});
 

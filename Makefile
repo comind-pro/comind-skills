@@ -1,20 +1,34 @@
 # Makefile — comind-skills boilerplate
 #
-# Markdown-only project. Targets are conveniences for inspecting the
-# vault and validating template structure. No dashboards, no cron,
-# no databases — if you want infrastructure, build a project on top
-# of this template, don't bake it into the template itself.
+# Markdown-first project. Most targets just inspect the vault and validate
+# template structure. The optional agentic-OS dashboard (an Obsidian plugin +
+# queue runner) is internal infra: it builds in-place against THIS project as
+# its vault — `make dashboard`. The vault root is the project root (where
+# `.obsidian/` lives); override with `VAULT=/path make dashboard`.
 
-.PHONY: help stats tasks validate
+# Dashboard wiring. VAULT defaults to the project root (this repo = the vault).
+VAULT      ?= $(CURDIR)
+PLUGIN_SRC := _workspace/dashboard/dashboard-template
+PLUGIN_OUT := $(VAULT)/.obsidian/plugins/dashboard
+RUNNER     := _workspace/dashboard/runner/runner.js
+
+.PHONY: help stats tasks validate dashboard dashboard-install dashboard-build dashboard-dev dashboard-runner
 
 help:
 	@echo "Usage: make <target>"
 	@echo ""
 	@echo "Targets:"
-	@echo "  help      List available targets (default)"
-	@echo "  stats     Vault note counts by type"
-	@echo "  tasks     List in-progress task notes"
-	@echo "  validate  Sanity-check SKILL.md frontmatter on every skill"
+	@echo "  help              List available targets (default)"
+	@echo "  stats             Vault note counts by type"
+	@echo "  tasks             List in-progress task notes"
+	@echo "  validate          Sanity-check SKILL.md frontmatter on every skill"
+	@echo ""
+	@echo "Dashboard (Obsidian plugin + queue runner, vault = this project):"
+	@echo "  dashboard         Install deps + build the plugin into .obsidian/plugins/"
+	@echo "  dashboard-install npm install the plugin's build deps"
+	@echo "  dashboard-build   Production build → \$$(VAULT)/.obsidian/plugins/dashboard/"
+	@echo "  dashboard-dev     esbuild watch mode (hot reload while editing the plugin)"
+	@echo "  dashboard-runner  Start the queue runner daemon against this vault"
 
 stats:
 	@printf "Vault:\n"
@@ -39,3 +53,27 @@ validate:
 		head -10 "$$f" | grep -qE '^description:' || { echo "  ✗ $$f — missing description"; broken=$$((broken+1)); }; \
 	done; \
 	echo "Checked $$found SKILL.md files; broken: $$broken"
+
+# ── Dashboard ───────────────────────────────────────────────────────────────
+# The plugin builds in-place: VAULT (default = project root) is the Obsidian
+# vault, output lands in $(PLUGIN_OUT). The runner watches $(VAULT)/system/queue
+# and creates the dirs it needs on first run.
+
+dashboard-install:
+	@cd $(PLUGIN_SRC) && npm install
+
+dashboard-build:
+	@cd $(PLUGIN_SRC) && DASHBOARD_PLUGIN_DIR="$(PLUGIN_OUT)" npm run build
+
+dashboard-dev:
+	@cd $(PLUGIN_SRC) && DASHBOARD_PLUGIN_DIR="$(PLUGIN_OUT)" npm run dev
+
+dashboard-runner:
+	@AGENTIC_OS_VAULT="$(VAULT)" node $(RUNNER)
+
+dashboard: dashboard-install dashboard-build
+	@echo ""
+	@echo "Plugin built → $(PLUGIN_OUT)"
+	@echo "Next:"
+	@echo "  1. Open this project as an Obsidian vault, enable the 'Dashboard' plugin."
+	@echo "  2. Start the queue runner:  make dashboard-runner"

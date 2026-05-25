@@ -3,7 +3,7 @@ import { render, h } from "preact";
 import { Dashboard } from "./components/Dashboard";
 import type DashboardPlugin from "./main";
 
-export const DASHBOARD_VIEW_TYPE = "chase-command-center";
+export const DASHBOARD_VIEW_TYPE = "agentic-dashboard";
 
 export class DashboardView extends ItemView {
 	plugin: DashboardPlugin;
@@ -19,7 +19,7 @@ export class DashboardView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return "Command Center";
+		return "Dashboard";
 	}
 
 	getIcon(): string {
@@ -29,8 +29,8 @@ export class DashboardView extends ItemView {
 	async onOpen() {
 		const container = this.containerEl.children[1] as HTMLElement;
 		container.empty();
-		container.addClass("chase-cc-root");
-		this.mountEl = container.createDiv({ cls: "chase-cc-mount" });
+		container.addClass("dash-root");
+		this.mountEl = container.createDiv({ cls: "dash-mount" });
 		render(h(Dashboard, { plugin: this.plugin }), this.mountEl);
 	}
 

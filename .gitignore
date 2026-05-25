@@ -23,6 +23,12 @@ node_modules/
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 
+# Dashboard plugin build output (built by `make dashboard`)
+.obsidian/plugins/dashboard/
+
+# Runner working dirs (created on first run, vault-local)
+/system/
+
 # Python
 __pycache__/
 *.pyc

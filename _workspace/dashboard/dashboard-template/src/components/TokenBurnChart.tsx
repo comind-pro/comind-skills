@@ -105,43 +105,43 @@ export function TokenBurnChart({ series, budget }: Props) {
 
 	return (
 		<section
-			className={`chase-cc-tokenburn chase-cc-tokenburn--tone-${tone}`}
+			className={`dash-tokenburn dash-tokenburn--tone-${tone}`}
 		>
-			<span className="chase-cc-tokenburn-corner chase-cc-tokenburn-corner--tl" />
-			<span className="chase-cc-tokenburn-corner chase-cc-tokenburn-corner--tr" />
-			<span className="chase-cc-tokenburn-corner chase-cc-tokenburn-corner--bl" />
-			<span className="chase-cc-tokenburn-corner chase-cc-tokenburn-corner--br" />
+			<span className="dash-tokenburn-corner dash-tokenburn-corner--tl" />
+			<span className="dash-tokenburn-corner dash-tokenburn-corner--tr" />
+			<span className="dash-tokenburn-corner dash-tokenburn-corner--bl" />
+			<span className="dash-tokenburn-corner dash-tokenburn-corner--br" />
 
-			<header className="chase-cc-tokenburn-head">
-				<span className="chase-cc-tokenburn-title">
+			<header className="dash-tokenburn-head">
+				<span className="dash-tokenburn-title">
 					§ TOKEN BURN · 5H WINDOW
 				</span>
-				<span className="chase-cc-tokenburn-pulse">
-					<span className="chase-cc-tokenburn-pulse-dot" />
+				<span className="dash-tokenburn-pulse">
+					<span className="dash-tokenburn-pulse-dot" />
 					LIVE
 				</span>
-				<span className="chase-cc-tokenburn-meta">
+				<span className="dash-tokenburn-meta">
 					{lastPullAgoMs !== null
 						? `last pull ${humanDur(lastPullAgoMs)} ago`
 						: "no pulls yet"}
 				</span>
 			</header>
 
-			<div className="chase-cc-tokenburn-meter">
-				<div className="chase-cc-tokenburn-pct">
-					<span className="chase-cc-tokenburn-pct-num">
+			<div className="dash-tokenburn-meter">
+				<div className="dash-tokenburn-pct">
+					<span className="dash-tokenburn-pct-num">
 						{animatedPct.toFixed(0)}
 					</span>
-					<span className="chase-cc-tokenburn-pct-unit">%</span>
+					<span className="dash-tokenburn-pct-unit">%</span>
 				</div>
 
-				<div className="chase-cc-tokenburn-bar-wrap">
-					<div className="chase-cc-tokenburn-bar">
-						<div className="chase-cc-tokenburn-bar-track" />
-						<div className="chase-cc-tokenburn-bar-ticks" />
+				<div className="dash-tokenburn-bar-wrap">
+					<div className="dash-tokenburn-bar">
+						<div className="dash-tokenburn-bar-track" />
+						<div className="dash-tokenburn-bar-ticks" />
 						{projection && projectionWidth > 0 ? (
 							<div
-								className="chase-cc-tokenburn-bar-projection"
+								className="dash-tokenburn-bar-projection"
 								style={{
 									left: `${pct}%`,
 									width: `${projectionWidth}%`,
@@ -149,36 +149,36 @@ export function TokenBurnChart({ series, budget }: Props) {
 							/>
 						) : null}
 						<div
-							className="chase-cc-tokenburn-bar-fill"
+							className="dash-tokenburn-bar-fill"
 							style={{ width: `${pct}%` }}
 						>
-							<span className="chase-cc-tokenburn-bar-scan" />
-							<span className="chase-cc-tokenburn-bar-comet" />
+							<span className="dash-tokenburn-bar-scan" />
+							<span className="dash-tokenburn-bar-comet" />
 						</div>
 						<div
-							className="chase-cc-tokenburn-bar-endpoint"
+							className="dash-tokenburn-bar-endpoint"
 							style={{ left: `${pct}%` }}
 						>
-							<span className="chase-cc-tokenburn-bar-endpoint-pulse" />
-							<span className="chase-cc-tokenburn-bar-endpoint-core" />
+							<span className="dash-tokenburn-bar-endpoint-pulse" />
+							<span className="dash-tokenburn-bar-endpoint-core" />
 						</div>
 					</div>
-					<div className="chase-cc-tokenburn-scale">
+					<div className="dash-tokenburn-scale">
 						{ticks.map((t) => (
 							<span key={`tk-${t}`}>{compact(budget * t)}</span>
 						))}
 					</div>
 				</div>
 
-				<div className="chase-cc-tokenburn-raw">
-					<span className="chase-cc-tokenburn-raw-elapsed">
+				<div className="dash-tokenburn-raw">
+					<span className="dash-tokenburn-raw-elapsed">
 						{compact(animatedElapsed)}
 					</span>
-					<span className="chase-cc-tokenburn-raw-of">
+					<span className="dash-tokenburn-raw-of">
 						/ {compact(budget)}
 					</span>
 					{projection ? (
-						<span className="chase-cc-tokenburn-raw-proj">
+						<span className="dash-tokenburn-raw-proj">
 							→ {compact(projection.projectedTotal)} proj
 						</span>
 					) : null}
