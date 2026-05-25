@@ -52,10 +52,10 @@ Source guides:
   `dashboard/` and adapted to boilerplate structure.
 - 2026-05-25 DONE Part 1: `.claude/skills/skill-architecture/SKILL.md` +
   `.claude/commands/skill-architecture.md` +
-  `_workspace/references/skill-architecture-orchestrator.md`. Registered, visible.
+  `_workspace/docs/references/skill-architecture-orchestrator.md`. Registered, visible.
 - 2026-05-25 DONE Dashboard assets: `.claude/skills/dashboard-build/SKILL.md` +
   `.claude/commands/build-dashboard.md` +
-  `_workspace/references/dashboard-build-guide.md` (adapted: external clone →
+  `_workspace/docs/references/dashboard-build-guide.md` (adapted: external clone →
   vendored `dashboard/`; Phase 0.5/11 rewritten; COMIND_REPO var for plugin copy).
 - 2026-05-25 DONE vendored upstream `cth9191/agentic-os-runner` → `dashboard/`
   (51 files: runner/ hooks/ metric-scripts/ dashboard-template/).

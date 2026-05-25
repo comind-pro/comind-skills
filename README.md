@@ -21,8 +21,10 @@ needs lives **inside this folder**:
 │   │   ├── wiki/           # structured internal reports + evergreen articles + ADRs
 │   │   ├── outputs/        # finished, shippable deliverables
 │   │   └── _obsidian-templates/task.md
-│   ├── docs/               # skill-anatomy spec
-│   └── references/         # Supplementary checklists pulled in by skills on demand
+│   └── docs/               # all documentation Claude references
+│       ├── skill-anatomy.md     # skill format spec
+│       ├── agentic-os/          # masterclass build guides
+│       └── references/          # supplementary checklists pulled in by skills on demand
 ├── CLAUDE.md / README.md
 ├── Makefile                # convenience targets (stats, tasks, validate)
 └── .gitignore
@@ -79,6 +81,7 @@ make validate  # sanity-check SKILL.md frontmatter on every skill
 - `make` (GNU or BSD — both work for the targets in this Makefile)
 - `claude` CLI (Claude Code) for agent runs
 - Obsidian (optional, for graph view + backlinks over `_workspace/memory/`)
+- Node 20+ / npm — only if you build the dashboard (`make dashboard`)
 
 ## What `/init-project` does
 
@@ -93,6 +96,41 @@ questions), then customizes:
 
 After `/init-project` you have a workspace tailored to your project, while
 the underlying mechanics (Karpathy vault → skills → agents) stay generic.
+
+## Setting up the dashboard (after `/init-project`)
+
+The dashboard (an Obsidian plugin + queue runner) is **optional and
+project-specific** — the metrics it shows, the skills its buttons fire, and the
+runner cases that drive them differ per project. So it's wired up *after*
+`/init-project`, not bootstrapped by it. Two ways:
+
+**Guided (recommended):** run `/build-dashboard` (the `dashboard-build` skill). It
+runs a short customization interview, then builds + wires everything against this
+project as the vault. Full reference: `_workspace/docs/agentic-os/part-3-dashboard-obsidian.md`.
+
+**Manual:**
+
+```bash
+make dashboard          # install deps + build the plugin → .obsidian/plugins/dashboard/
+make dashboard-runner   # start the queue runner daemon (keep this terminal open)
+```
+
+Then enable the **Dashboard** plugin in Obsidian (Settings → Community plugins) and
+open it from the ribbon. Use the footer **▶ start / ↻ restart** button (or the
+`Start/Restart runner daemon` commands) to manage the runner from inside Obsidian.
+
+**What to customize per project** (all in `_workspace/dashboard/`):
+
+| Edit | File | What it controls |
+|------|------|------------------|
+| `CARDS` | `dashboard-template/src/components/Dashboard.tsx` | which metrics show (keys match your metrics-pull `<source>:<metric>`) |
+| `BUTTONS` | `dashboard-template/src/components/ActionBar.tsx` | which skills get one-click buttons |
+| `buildPrompt` / `deliverablePathFor` | `runner/runner.js` | which skills the runner can actually run + where output lands |
+| metric scripts | `metric-scripts/pull_*.py` | what numbers get pulled into `system/metrics/metrics.csv` |
+
+Each button's `skill` must match a `case` in `runner.js` `buildPrompt()`, or the
+intent is queued and rejected. After editing, re-run `make dashboard-build` (it
+auto-reloads via Hot Reload). Template details: `_workspace/dashboard/dashboard-template/README.md`.
 
 # Agent Skills
 
@@ -226,10 +264,10 @@ Quick-reference material that skills pull in when needed:
 
 | Reference | Covers |
 |-----------|--------|
-| [testing-patterns.md](_workspace/references/testing-patterns.md) | Test structure, naming, mocking, React/API/E2E examples, anti-patterns |
-| [security-checklist.md](_workspace/references/security-checklist.md) | Pre-commit checks, auth, input validation, headers, CORS, OWASP Top 10 |
-| [performance-checklist.md](_workspace/references/performance-checklist.md) | Core Web Vitals targets, frontend/backend checklists, measurement commands |
-| [accessibility-checklist.md](_workspace/references/accessibility-checklist.md) | Keyboard nav, screen readers, visual design, ARIA, testing tools |
+| [testing-patterns.md](_workspace/docs/references/testing-patterns.md) | Test structure, naming, mocking, React/API/E2E examples, anti-patterns |
+| [security-checklist.md](_workspace/docs/references/security-checklist.md) | Pre-commit checks, auth, input validation, headers, CORS, OWASP Top 10 |
+| [performance-checklist.md](_workspace/docs/references/performance-checklist.md) | Core Web Vitals targets, frontend/backend checklists, measurement commands |
+| [accessibility-checklist.md](_workspace/docs/references/accessibility-checklist.md) | Keyboard nav, screen readers, visual design, ARIA, testing tools |
 
 ---
 
@@ -298,8 +336,8 @@ comind-skills/
 │   ├── commands/                      # 11 slash commands (lifecycle + maintainer)
 │   └── hooks/                         # Session lifecycle hook scripts
 ├── _workspace/                        # Reference + working content (Claude reads on demand)
-│   ├── docs/                          # skill-anatomy spec
-│   ├── references/                    # 4 supplementary checklists used by skills
+│   ├── docs/                          # all documentation (skill-anatomy spec, agentic-os guides, references/)
+│   │   └── references/                # supplementary checklists pulled in by skills
 │   └── memory/                        # Obsidian vault — Karpathy 3-zone (raw / wiki / outputs)
 └── Makefile                           # Convenience targets (stats, tasks, validate)
 ```

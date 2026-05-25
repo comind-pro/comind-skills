@@ -7,7 +7,7 @@ Invoke the `dashboard-build` skill.
 This is Part 3 of the agentic-OS build. Run Part 1 (`/skill-architecture`) first
 — the dashboard's action bar invokes the skills it produces.
 
-Load the full adapted guide at `_workspace/references/dashboard-build-guide.md` and
+Load the full adapted guide at `_workspace/docs/references/dashboard-build-guide.md` and
 follow it phase by phase. Start at **Phase 0** and run the customization
 interview before writing any code. Pause for confirmation between phases. Do NOT
 skip the `[VERIFY]` checks — if a verify fails, branch into the matching `[FIX]`

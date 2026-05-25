@@ -15,7 +15,7 @@ hands off to it):
 ```
 
 Then load the verbatim orchestrator script at
-`_workspace/references/skill-architecture-orchestrator.md` and run it exactly:
+`_workspace/docs/references/skill-architecture-orchestrator.md` and run it exactly:
 work in cycles (one workflow area at a time), reflect back tasks → candidate
 skills, triage each (on-demand / local routine / cloud routine), then hand off
 each confirmed skill to `/skill-creator`. Loop until the user wraps, then produce

@@ -2,7 +2,7 @@
 
 Vendored build code for the `dashboard-build` skill (`/build-dashboard`, agentic-OS
 Part 3). The full phase-by-phase build guide lives at
-`_workspace/references/dashboard-build-guide.md`; this directory holds the code
+`_workspace/docs/references/dashboard-build-guide.md`; this directory holds the code
 each phase installs.
 
 Adapted from the upstream `cth9191/agentic-os-runner` (MIT) and neutralized for

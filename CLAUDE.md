@@ -13,8 +13,8 @@ Claude Code loads this file automatically. Read it once per session.
 | `.claude/agents/`                   | Subagents you can delegate to via Task.   |
 | `.claude/commands/`                 | Slash commands.                            |
 | `.claude/hooks/`                    | Hook scripts wired up in `settings.json`. |
-| `_workspace/docs/`                  | `/init-project`-generated project docs (architecture, conventions, …) + `skill-anatomy.md` spec. |
-| `_workspace/references/`            | Supplementary checklists pulled in by skills on demand. |
+| `_workspace/docs/`                  | All documentation Claude references: `/init-project`-generated project docs, `skill-anatomy.md` spec, `agentic-os/` guides, and `references/`. |
+| `_workspace/docs/references/`       | Supplementary checklists pulled in by skills on demand. |
 | `_workspace/memory/`                | Obsidian vault. Karpathy 3-zone memory. See `_index.md`. |
 | `_workspace/memory/raw/`            | Unstructured capture + primary research + working task-notes. |
 | `_workspace/memory/wiki/`           | Structured internal reports + evergreen articles + ADRs. |
@@ -98,7 +98,7 @@ This is the agent-skills project — a collection of production-grade engineerin
 .claude/agents/         → Reusable agent personas (code-reviewer, test-engineer, security-auditor)
 .claude/commands/       → Slash commands (/spec, /plan, /build, /test, /review, /code-simplify, /ship)
 .claude/hooks/          → Session lifecycle hook scripts (wired up via .claude/settings.json)
-_workspace/references/  → Supplementary checklists (testing, performance, security, accessibility)
+_workspace/docs/references/  → Supplementary checklists (testing, performance, security, accessibility)
 _workspace/docs/        → `/init-project`-generated project docs (architecture, conventions, …) + skill-anatomy spec
 ```
 
@@ -117,7 +117,7 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 - YAML frontmatter with `name` and `description` fields
 - Description starts with what the skill does (third person), followed by trigger conditions ("Use when...")
 - Every skill has: Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification
-- References are in `_workspace/references/`, not inside skill directories
+- References are in `_workspace/docs/references/`, not inside skill directories
 - Supporting files only created when content exceeds 100 lines
 
 ## Commands

@@ -10,7 +10,7 @@ origin: chase-ai masterclass (adapted)
 > **Where this fits.** Part 1 is `part-1-skill-architecture.md` (build the skills).
 > This is Part 3, the observability dashboard. The template's operational,
 > boilerplate-adapted version of this guide — the one the `dashboard-build` skill
-> pulls — is `_workspace/references/dashboard-build-guide.md`, and the build code is
+> pulls — is `_workspace/docs/references/dashboard-build-guide.md`, and the build code is
 > vendored at `_workspace/dashboard/`. This doc is the original masterclass
 > instruction set the reference was derived from.
 

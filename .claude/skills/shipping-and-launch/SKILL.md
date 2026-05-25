@@ -265,9 +265,9 @@ Every deployment needs a rollback plan before it happens:
 ```
 ## See Also
 
-- For security pre-launch checks, see `_workspace/references/security-checklist.md`
-- For performance pre-launch checklist, see `_workspace/references/performance-checklist.md`
-- For accessibility verification before launch, see `_workspace/references/accessibility-checklist.md`
+- For security pre-launch checks, see `_workspace/docs/references/security-checklist.md`
+- For performance pre-launch checklist, see `_workspace/docs/references/performance-checklist.md`
+- For accessibility verification before launch, see `_workspace/docs/references/accessibility-checklist.md`
 
 ## Common Rationalizations
 

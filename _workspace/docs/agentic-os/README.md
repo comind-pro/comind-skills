@@ -22,6 +22,6 @@ operational assets the agent actually runs:
 
 | Doc | Operational asset |
 |---|---|
-| `part-1-skill-architecture.md` | `/skill-architecture` command + `skill-architecture` skill + `_workspace/references/skill-architecture-orchestrator.md` |
-| `part-3-dashboard-obsidian.md` | `/build-dashboard` command + `dashboard-build` skill + `_workspace/references/dashboard-build-guide.md` + vendored code at `_workspace/dashboard/` |
+| `part-1-skill-architecture.md` | `/skill-architecture` command + `skill-architecture` skill + `_workspace/docs/references/skill-architecture-orchestrator.md` |
+| `part-3-dashboard-obsidian.md` | `/build-dashboard` command + `dashboard-build` skill + `_workspace/docs/references/dashboard-build-guide.md` + vendored code at `_workspace/dashboard/` |
 | `part-3-dashboard-streamlit.md` | none — alternative path, not built into the template |

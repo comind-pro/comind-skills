@@ -61,7 +61,7 @@ guide says "copy `<path>` from the cloned repo," read it as "copy from
 | `~/projects/agentic-os-runner/dashboard-template/` | `_workspace/dashboard/dashboard-template/` |
 
 The full adapted phase-by-phase guide — every `[ACTION]`, `[VERIFY]`, `[FIX]`
-block — lives in `_workspace/references/dashboard-build-guide.md`. Load it and
+block — lives in `_workspace/docs/references/dashboard-build-guide.md`. Load it and
 follow it exactly. The stages below are the contract.
 
 ## Vault Path

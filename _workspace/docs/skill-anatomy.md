@@ -132,7 +132,7 @@ If a skill does not need runnable helpers, do not create an empty `scripts/` dir
 - Skill directories: `lowercase-hyphen-separated`
 - Skill files: `SKILL.md` (always uppercase)
 - Supporting files: `lowercase-hyphen-separated.md`
-- References: stored in `_workspace/references/` at the project root, not inside skill directories
+- References: stored in `_workspace/docs/references/` at the project root, not inside skill directories
 
 ## Cross-Skill References
 

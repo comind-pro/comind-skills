@@ -70,7 +70,7 @@ Verify by typing `/skill-creator` — the slash-command picker should appear.
 Work in **cycles, not phases**. One workflow area per cycle. The full verbatim
 orchestrator script (rules of engagement, exact question wording, hand-off
 message format) lives in
-`_workspace/references/skill-architecture-orchestrator.md` — load it and follow
+`_workspace/docs/references/skill-architecture-orchestrator.md` — load it and follow
 it exactly when running a session. The stages below are the contract.
 
 ### Stage 1 — Cycle start (dump)

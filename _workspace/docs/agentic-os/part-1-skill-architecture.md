@@ -13,7 +13,7 @@ origin: chase-ai masterclass (adapted)
 > are additive — they make the skills more powerful but you can stop here and already
 > have leverage. The template's operational version of this interview — what the
 > `/skill-architecture` command / `skill-architecture` skill runs — is
-> `_workspace/references/skill-architecture-orchestrator.md`. This doc is the original
+> `_workspace/docs/references/skill-architecture-orchestrator.md`. This doc is the original
 > instruction set it was derived from.
 
 Drop the prompt below into Claude Code in any folder. The agent walks you through a conversational interview, **one workflow area at a time**. Each cycle: you describe an area, Claude reflects back which tasks should become skills, you confirm, Claude tags each (on-demand / local routine / cloud routine), then offers to build them via Anthropic's `skill-creator`. Loop until you've covered everything you want.
