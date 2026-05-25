@@ -15,23 +15,29 @@ Claude Code loads this file automatically. Read it once per session.
 | `.claude/hooks/`                    | Hook scripts wired up in `settings.json`. |
 | `_workspace/docs/`                  | `/init-project`-generated project docs (architecture, conventions, …) + `skill-anatomy.md` spec. |
 | `_workspace/references/`            | Supplementary checklists pulled in by skills on demand. |
-| `_workspace/memory/`                | Obsidian vault. Long-term memory.         |
-| `_workspace/memory/tasks/`          | Tasks as `.md`. See `planning-and-task-breakdown` skill. |
-| `_workspace/memory/decisions/`      | ADRs.                                      |
-| `_workspace/memory/research/`       | Researcher agent output.                   |
-| `_workspace/memory/daily/`          | Daily journal.                             |
-| `Makefile`                          | Convenience targets (vault stats, task list, SKILL.md validation). |
+| `_workspace/memory/`                | Obsidian vault. Karpathy 3-zone memory. See `_index.md`. |
+| `_workspace/memory/raw/`            | Unstructured capture + primary research + working task-notes. |
+| `_workspace/memory/wiki/`           | Structured internal reports + evergreen articles + ADRs. |
+| `_workspace/memory/outputs/`        | Finished, shippable deliverables.          |
+| `Makefile`                          | Convenience targets (vault stats, SKILL.md validation). |
 
 ## Conventions
 
 1. **Memory is markdown.** Source of truth = the `.md` files in
    `_workspace/memory/`. Read them with Read/Glob/Grep; write them
    with Write/Edit. No agent-only indirection layer.
-2. **Tasks are notes, not rows.** Status changes mean editing the
-   frontmatter of `_workspace/memory/tasks/<file>.md`. See the
-   `planning-and-task-breakdown` skill for the full schema.
-3. **Wikilinks matter.** Use `[[other-note]]` between vault notes.
-   Obsidian's graph view depends on it; isolated notes are wasted.
+2. **Karpathy 3-zone flow.** Notes move `raw → wiki → outputs`:
+   capture/research lands in `raw/`, gets distilled into structured
+   `wiki/` articles + ADRs, and finished deliverables graduate to
+   `outputs/`. Working task-notes live in `raw/` (status in frontmatter).
+3. **Obsidian format.** Use `[[other-note]]` wikilinks between notes
+   (graph view depends on it; isolated notes are wasted), `![[note]]`
+   / `![[note#Heading]]` embeds to compose instead of copy-paste, and
+   a small consistent `tags:` vocabulary in frontmatter. Each zone
+   (`raw/`, `wiki/`, `outputs/`) carries a master `_index.md` — read it
+   before globbing, update it when you add a note. The structure +
+   indexes exist so navigation costs one small read, not a full-vault
+   glob; it's a token-budget tool.
 4. **Match model to task.** Haiku for cheap polls and reconciliation.
    Sonnet for real work and digests. Opus only on explicit request.
 5. **Quiet by default.** Daily and weekly cadence first. Hourly only
@@ -78,10 +84,8 @@ unchanged — domain assets are added on top.
 ## What to read on session start
 
 - This file.
-- The MOC: `_workspace/memory/index/README.md`.
-- The most recent daily note (for context): newest in
-  `_workspace/memory/daily/`.
-- Any in-progress tasks: `grep -l 'status: in_progress' _workspace/memory/tasks/*.md`.
+- The memory master index: `_workspace/memory/_index.md` (+ each zone's `_index.md`).
+- Any in-progress work: `grep -l 'status: in_progress' _workspace/memory/raw/*.md`.
 
 # agent-skills
 

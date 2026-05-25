@@ -5,12 +5,16 @@ export interface DashboardPluginSettings {
 	vaultSystemPath: string;
 	claudeTokenBudget5h: number;
 	metricsPullCadenceHours: number;
+	runnerScriptPath: string;
 }
 
 export const DEFAULT_SETTINGS: DashboardPluginSettings = {
 	vaultSystemPath: "system",
 	claudeTokenBudget5h: 2_000_000, // Max $200 empirical default. Community trackers cite 220-440K; real ceiling observed much higher (1M+ output / 5h with no throttle).
 	metricsPullCadenceHours: 6,
+	// Path to the runner daemon. Vault-relative (in-place build) by default;
+	// accepts an absolute or ~-path for the standalone build-guide install.
+	runnerScriptPath: "_workspace/dashboard/runner/runner.js",
 };
 
 export class DashboardPluginSettingTab extends PluginSettingTab {
@@ -76,6 +80,24 @@ export class DashboardPluginSettingTab extends PluginSettingTab {
 						const n = Number(value);
 						if (!Number.isFinite(n) || n <= 0) return;
 						this.plugin.settings.metricsPullCadenceHours = n;
+						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Runner script path")
+			.setDesc(
+				"Path to runner.js, launched by the dashboard's start/restart button. " +
+					"Vault-relative by default; absolute or ~-paths also work (e.g. the " +
+					"standalone ~/.claude/agentic-os-runner/runner.js install).",
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("_workspace/dashboard/runner/runner.js")
+					.setValue(this.plugin.settings.runnerScriptPath)
+					.onChange(async (value) => {
+						this.plugin.settings.runnerScriptPath =
+							value.trim() || "_workspace/dashboard/runner/runner.js";
 						await this.plugin.saveSettings();
 					}),
 			);

@@ -227,22 +227,41 @@ Then create the vault conventions doc.
 ```markdown
 # Vault Conventions
 
+> **Why a fixed structure.** At thousands of notes, an agent that has to glob the
+> whole vault to find anything burns tokens fast. A logical layout + per-folder
+> index files let Claude navigate by reading one small index instead of scanning
+> the tree. Structure is a token-budget tool, not bureaucracy.
+
 ## Vault Structure
 
 Mental model — Karpathy 3-stage: `inbox → projects → content` (staging → working → output) plus `wiki` for evergreen distillation + utility folders.
 
-- `inbox/` — Stage 1 staging
+- `inbox/` — Stage 1 staging (raw, unstructured capture)
 - `projects/` — Stage 2 working (frontmatter `status:` required)
-- `content/` — Stage 3 output
-- `wiki/` — Evergreen distilled knowledge
+- `content/` — Stage 3 output (finished, shippable)
+- `wiki/` — Evergreen distilled knowledge (internal reports)
 - `daily-notes/` — Schema-locked daily rhythm
 - `ops/` — Business operations
 - `system/` — Machine-readable plumbing
 - `_archive-vault/` — Cold storage
 
-## Conventions
+## Index files
 
-- Wiki-links short-form `[[filename]]` by default.
+Every folder has an `_index.md` (table of contents) naming what lives there and
+its conventions. Read the index first when navigating — it's cheaper than globbing.
+When you add a note to a folder, update that folder's `_index.md`.
+
+## Obsidian file format (write notes this way)
+
+- **Wikilinks** — short-form `[[filename]]` between notes. Link liberally; the
+  graph view + backlinks depend on it, and isolated notes are dead weight.
+- **Embeds** — `![[other-note]]` to transclude a note, `![[other-note#Heading]]`
+  for a section. Use embeds to compose (e.g. a weekly review embedding daily notes)
+  instead of copy-pasting.
+- **Tags** — `#area/topic` in frontmatter (`tags: [...]`) or inline. Use a small,
+  consistent tag vocabulary so Bases/search stay useful.
+- **Frontmatter** — every note opens with YAML (`type`, `date`, `tags` minimum).
+  Bases queries read frontmatter, not inline text.
 - File names `YYYY-MM-DD-slug.md` (lowercase, hyphens). Wiki articles use slug only.
 - Brain dumps split: tasks → `projects/`, ideas → `inbox/notes/`, research → `inbox/research/`.
 
@@ -274,7 +293,26 @@ Then create the root index.
 - system/ — plumbing
 ```
 
-> [VERIFY] Run `ls ~/the-vault/` and confirm 8 folders + 2 .md files (CLAUDE.md + _index.md).
+Then drop a per-folder index into each top-level content folder.
+
+> [ACTION] Write a minimal `_index.md` in `inbox/`, `projects/`, `content/`, and `wiki/`. Each names what lives in that folder + its local conventions, so Claude reads one small file instead of globbing the directory. Template:
+
+```markdown
+---
+type: index
+tags: [moc]
+---
+
+# <folder> — index
+
+What lives here: <one line>. Convention: <filename pattern, required frontmatter>.
+
+<!-- list notable notes as [[wikilinks]]; keep updated when you add files -->
+```
+
+Keep each `_index.md` updated as you add notes to that folder — a stale index costs more than no index.
+
+> [VERIFY] Run `ls ~/the-vault/` and confirm 8 folders + 2 root `.md` files (CLAUDE.md + _index.md), and that `inbox/`, `projects/`, `content/`, `wiki/` each contain an `_index.md`.
 
 > [FIX] If a mkdir failed, check parent directory write permissions. On Windows, ensure no path contains `OneDrive` redirects.
 

@@ -32,10 +32,9 @@ help:
 
 stats:
 	@printf "Vault:\n"
-	@printf "  Decisions: %s\n" "$$(find _workspace/memory/decisions -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
-	@printf "  Research:  %s\n" "$$(find _workspace/memory/research -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
-	@printf "  Tasks:     %s\n" "$$(find _workspace/memory/tasks -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
-	@printf "  Daily:     %s\n" "$$(find _workspace/memory/daily -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+	@printf "  raw/:      %s\n" "$$(find _workspace/memory/raw -name '*.md' ! -name '_index.md' 2>/dev/null | wc -l | tr -d ' ')"
+	@printf "  wiki/:     %s\n" "$$(find _workspace/memory/wiki -name '*.md' ! -name '_index.md' 2>/dev/null | wc -l | tr -d ' ')"
+	@printf "  outputs/:  %s\n" "$$(find _workspace/memory/outputs -name '*.md' ! -name '_index.md' 2>/dev/null | wc -l | tr -d ' ')"
 	@printf "\nClaude Code:\n"
 	@printf "  Skills:    %s\n" "$$(find .claude/skills -name 'SKILL.md' 2>/dev/null | wc -l | tr -d ' ')"
 	@printf "  Agents:    %s (project)\n" "$$(find .claude/agents -maxdepth 1 -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ')"
@@ -43,7 +42,7 @@ stats:
 	@printf "  Commands:  %s\n" "$$(find .claude/commands -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
 
 tasks:
-	@grep -l 'status: in_progress' _workspace/memory/tasks/*.md 2>/dev/null || echo "  (no in-progress tasks)"
+	@grep -l 'status: in_progress' _workspace/memory/raw/*.md 2>/dev/null || echo "  (no in-progress work)"
 
 validate:
 	@found=0; broken=0; \
@@ -64,6 +63,7 @@ dashboard-install:
 
 dashboard-build:
 	@cd $(PLUGIN_SRC) && DASHBOARD_PLUGIN_DIR="$(PLUGIN_OUT)" npm run build
+	@touch "$(PLUGIN_OUT)/.hotreload" 2>/dev/null || true   # Hot Reload auto-reloads the plugin
 
 dashboard-dev:
 	@cd $(PLUGIN_SRC) && DASHBOARD_PLUGIN_DIR="$(PLUGIN_OUT)" npm run dev

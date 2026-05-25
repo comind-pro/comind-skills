@@ -1,6 +1,7 @@
 import { Plugin, WorkspaceLeaf } from "obsidian";
 import { DashboardView, DASHBOARD_VIEW_TYPE } from "./view";
 import { DEFAULT_SETTINGS, DashboardPluginSettings, DashboardPluginSettingTab } from "./settings";
+import { startRunner, restartRunner } from "./lib/runnerControl";
 
 export default class DashboardPlugin extends Plugin {
 	settings!: DashboardPluginSettings;
@@ -21,6 +22,22 @@ export default class DashboardPlugin extends Plugin {
 			id: "open-command-center",
 			name: "Open Dashboard",
 			callback: () => this.activateView(),
+		});
+
+		this.addCommand({
+			id: "start-runner",
+			name: "Start runner daemon",
+			callback: () => {
+				void startRunner(this.app, this.settings.runnerScriptPath);
+			},
+		});
+
+		this.addCommand({
+			id: "restart-runner",
+			name: "Restart runner daemon",
+			callback: () => {
+				void restartRunner(this.app, this.settings.runnerScriptPath);
+			},
 		});
 
 		this.addSettingTab(new DashboardPluginSettingTab(this.app, this));

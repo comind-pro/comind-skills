@@ -13,7 +13,7 @@ const opts = {
   format: "cjs",
   target: "es2018",
   platform: "browser",
-  external: ["obsidian", "electron"],
+  external: ["obsidian", "electron", "child_process"],
   outfile: join(VAULT_PLUGIN_DIR, "main.js"),
   jsxFactory: "h",
   jsxFragment: "Fragment",

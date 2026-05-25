@@ -25,7 +25,7 @@ interface ButtonSpec {
 const BUTTONS: ButtonSpec[] = [
 	{ skill: "plan-today", label: "Plan Today" },
 	{ skill: "plan-tomorrow", label: "Plan Tomorrow" },
-	{ skill: "morning", label: "Morning Brief" },
+	{ skill: "morning-report", label: "Morning Brief" },
 	{
 		skill: "deep-research",
 		label: "Deep Research…",

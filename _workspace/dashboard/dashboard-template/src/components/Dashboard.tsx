@@ -33,6 +33,7 @@ import { FocusCard } from "./FocusCard";
 import { TokenBurnChart } from "./TokenBurnChart";
 import { ActionBar } from "./ActionBar";
 import { ActivityFeed } from "./ActivityFeed";
+import { startRunner, restartRunner } from "../lib/runnerControl";
 
 interface Props {
 	plugin: DashboardPlugin;
@@ -97,6 +98,17 @@ export function Dashboard({ plugin }: Props) {
 			setError(String(e));
 		}
 	}, [plugin]);
+
+	const handleRunnerToggle = useCallback(async () => {
+		const script = plugin.settings.runnerScriptPath;
+		if (runnerIsOnline(runner)) {
+			await restartRunner(plugin.app, script);
+		} else {
+			await startRunner(plugin.app, script);
+		}
+		// Give the daemon a moment to write its first heartbeat, then refresh.
+		window.setTimeout(() => void refresh(), 1500);
+	}, [plugin, runner, refresh]);
 
 	useEffect(() => {
 		refresh();
@@ -282,6 +294,18 @@ export function Dashboard({ plugin }: Props) {
 									  ? ` (${runner.pending} queued)`
 									  : ""}
 							</span>
+							<button
+								className="dash-runner-btn"
+								type="button"
+								onClick={handleRunnerToggle}
+								title={
+									online
+										? "restart runner daemon"
+										: "start runner daemon"
+								}
+							>
+								{online ? "↻ restart" : "▶ start"}
+							</button>
 							{online && runner?.in_flight && runner.in_flight.length > 0 ? (
 								<>
 									<span className="dash-foot-sep">·</span>

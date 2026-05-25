@@ -15,12 +15,11 @@ needs lives **inside this folder**:
 │   ├── commands/           # 7 lifecycle + 4 meta (/init-project, /extend-domain, …)
 │   └── hooks/              # session-start, sdd-cache, simplify-ignore
 ├── _workspace/             # Everything Claude REFERENCES (not auto-loaded by harness)
-│   ├── memory/             # Obsidian vault — long-term project memory
-│   │   ├── tasks/          # one .md per task, frontmatter `status`
-│   │   ├── decisions/      # ADRs
-│   │   ├── research/       # researcher agent output
-│   │   ├── daily/          # daily journal
-│   │   ├── index/          # MOC notes
+│   ├── memory/             # Obsidian vault — Karpathy 3-zone (raw → wiki → outputs)
+│   │   ├── _index.md       # master index (read before globbing)
+│   │   ├── raw/            # unstructured capture + primary research + working notes
+│   │   ├── wiki/           # structured internal reports + evergreen articles + ADRs
+│   │   ├── outputs/        # finished, shippable deliverables
 │   │   └── _obsidian-templates/task.md
 │   ├── docs/               # skill-anatomy spec
 │   └── references/         # Supplementary checklists pulled in by skills on demand
@@ -63,9 +62,11 @@ make validate  # sanity-check SKILL.md frontmatter on every skill
    Obsidian for graph view, backlinks, and Templater. Filenames follow
    `YYYY-MM-DD-kebab-slug.md`. Every note has YAML frontmatter.
 
-2. **Tasks** are markdown notes in `_workspace/memory/tasks/` with
-   frontmatter that includes `status:`. The full schema is in the
-   `task-management` skill.
+2. **Karpathy 3-zone vault.** Notes flow `raw → wiki → outputs`:
+   capture + primary research in `raw/`, distilled into structured
+   `wiki/` articles + ADRs, finished deliverables in `outputs/`. Each
+   zone has a master `_index.md` — read it before globbing the folder.
+   Working task-notes live in `raw/` (`status:` in frontmatter).
 
 3. **No agent-only indirection layer.** Claude reads vault notes with
    the same Read/Glob/Grep tools you use; writes them with Write/Edit.
@@ -88,11 +89,10 @@ questions), then customizes:
 - `CLAUDE.md` — replacing the placeholder "What this project is" with a real description.
 - `.claude/settings.json` — adding MCP servers for the project's external systems.
 - `README.md` — replacing the boilerplate intro with your real one.
-- `_workspace/memory/index/README.md` — the vault MOC, tailored to project terminology.
+- `_workspace/memory/_index.md` — the vault master index, tailored to project terminology.
 
 After `/init-project` you have a workspace tailored to your project, while
-the underlying mechanics (vault → SQLite → dashboard → cron) stay
-generic.
+the underlying mechanics (Karpathy vault → skills → agents) stay generic.
 
 # Agent Skills
 
@@ -300,7 +300,7 @@ comind-skills/
 ├── _workspace/                        # Reference + working content (Claude reads on demand)
 │   ├── docs/                          # skill-anatomy spec
 │   ├── references/                    # 4 supplementary checklists used by skills
-│   └── memory/                        # Obsidian vault (tasks, decisions, research, daily)
+│   └── memory/                        # Obsidian vault — Karpathy 3-zone (raw / wiki / outputs)
 └── Makefile                           # Convenience targets (stats, tasks, validate)
 ```
 

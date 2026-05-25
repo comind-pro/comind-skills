@@ -2670,3 +2670,21 @@
 	color: var(--cc-accent);
 	font-weight: 600;
 }
+
+/* Footer — start/restart runner button */
+.dash-runner-btn {
+	margin-left: 8px;
+	font-family: var(--cc-mono);
+	font-size: 11px;
+	line-height: 1.4;
+	padding: 1px 8px;
+	border-radius: 4px;
+	border: 1px solid var(--cc-ring);
+	background: var(--cc-bg-2);
+	color: var(--cc-fg-1);
+	cursor: pointer;
+}
+.dash-runner-btn:hover {
+	color: var(--cc-fg-0);
+	border-color: var(--cc-accent);
+}

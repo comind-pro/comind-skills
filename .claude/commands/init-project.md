@@ -130,7 +130,7 @@ Use **Write** and **Edit**, not Bash heredocs.
 - **`README.md`** at project root — replace the template description
   with the project's real intro. Remove the "Use this template"
   section (the template has been used).
-- **`_workspace/memory/index/README.md`** — vault homepage (the MOC
+- **`_workspace/memory/_index.md`** — vault homepage (the MOC
   Obsidian opens to). Replace the generic intro with one tied to this
   project. Mention project-specific terms readers should know. Keep
   the "Folders" and "Conventions" sections; only the intro changes.
@@ -139,7 +139,7 @@ Use **Write** and **Edit**, not Bash heredocs.
 
 Write a first **decision** capturing the bootstrap:
 
-`_workspace/memory/decisions/<today>-bootstrap.md`:
+`_workspace/memory/wiki/<today>-bootstrap.md`:
 
 ```markdown
 ---
@@ -168,8 +168,8 @@ This project is <name>: <pitch>.
 ```
 
 **Delete** the two example files from the template:
-- `_workspace/memory/decisions/2026-05-13-example-decision.md`
-- `_workspace/memory/research/2026-05-13-example-research.md`
+- `_workspace/memory/wiki/2026-05-13-example-decision.md`
+- `_workspace/memory/raw/2026-05-13-example-research.md`
 
 (Verify they exist first with `ls`; some users may have already
 deleted them by hand.)
@@ -185,18 +185,17 @@ Customized:
   CLAUDE.md
   .claude/settings.json   (+N MCP servers, if any)
   README.md
-  _workspace/memory/index/README.md
-  _workspace/memory/decisions/<today>-bootstrap.md  (new)
+  _workspace/memory/_index.md
+  _workspace/memory/wiki/<today>-bootstrap.md  (new)
 
 Removed:
-  _workspace/memory/decisions/2026-05-13-example-decision.md
-  _workspace/memory/research/2026-05-13-example-research.md
+  _workspace/memory/wiki/2026-05-13-example-decision.md
+  _workspace/memory/raw/2026-05-13-example-research.md
 
 Next:
-  → /note "first impressions"   (add to today's daily)
-  → /task new "<first task>"
-  → /research "<first question>" (delegates to researcher)
-  → /decision "<title>"          (open an ADR draft)
+  → /note "first impressions"   (capture into raw/)
+  → /research "<first question>" (delegates to researcher → raw/)
+  → /decision "<title>"          (open an ADR draft → wiki/)
 ```
 
 ## Rules
@@ -207,8 +206,8 @@ Next:
 - **No new agents or skills** unless the user explicitly asked. Stick
   with the templated set. New ones are easy to add later via
   `/extend-domain`.
-- **No new directories** in `_workspace/`. The five
-  (decisions/research/daily/notes/tasks + docs) are enough.
+- **No new directories** in `_workspace/`. The Karpathy zones
+  (raw / wiki / outputs + docs) are enough.
 - **No code, no scripts, no daemons, no sub-agents, no git branches.**
   This is a markdown boilerplate. Anything beyond markdown is out of
   scope.
