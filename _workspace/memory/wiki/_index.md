@@ -17,3 +17,4 @@ Filename `YYYY-MM-DD-kebab-slug.md`; frontmatter `type`, `date`, `tags`.
 <!-- link articles/ADRs/reports as [[wikilinks]]; keep updated -->
 - [[2026-05-25-comind-dashboard-build]] — comind-dashboard build report (cockpit→dashboard rename, docs migration, dashboard redesign, Karpathy memory)
 - [[2026-05-25-multi-project-vault-layout]] — ADR (proposed): per-project Karpathy zones, single vs multi-project vault chosen at `/init-project`
+- [[2026-07-02-dashboard-config-redesign]] — ADR: config-driven widget registry for the dashboard plugin

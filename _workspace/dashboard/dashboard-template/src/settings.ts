@@ -2,6 +2,9 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type DashboardPlugin from "./main";
 
 export interface DashboardPluginSettings {
+	// ponytail: only the config path + metrics.csv honor this setting;
+	// queue/runs/status paths assume the default _workspace/system layout —
+	// thread through if relocation ever matters
 	vaultSystemPath: string;
 	claudeTokenBudget5h: number;
 	metricsPullCadenceHours: number;

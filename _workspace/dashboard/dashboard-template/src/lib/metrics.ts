@@ -60,10 +60,13 @@ export function parseMetricsCsv(raw: string): MetricRow[] {
 	return rows;
 }
 
-export async function readMetricsCsv(app: App): Promise<MetricRow[]> {
-	const exists = await app.vault.adapter.exists(METRICS_CSV_PATH);
+export async function readMetricsCsv(
+	app: App,
+	csvPath: string = METRICS_CSV_PATH,
+): Promise<MetricRow[]> {
+	const exists = await app.vault.adapter.exists(csvPath);
 	if (!exists) return [];
-	const raw = await app.vault.adapter.read(METRICS_CSV_PATH);
+	const raw = await app.vault.adapter.read(csvPath);
 	return parseMetricsCsv(raw);
 }
 

@@ -908,7 +908,7 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 
 ## Phase 11 — Dashboard UI (the visual payoff)
 
-**Goal:** Replace the Phase 3 placeholder Dashboard.tsx with the full HUD pane. Pulls a Preact + esbuild template from `dashboard-template/` inside the companion repo, drops it into your plugin folder, and customizes three swap-points per your Phase 0 answers. End state: a metric-card grid, a token-burn chart with live projection, an action bar with clickable skill buttons, a daily-note panel with click-to-toggle drivers, an activity feed showing recent runs, and a pulsing runner-status footer — all in a dark warm HUD aesthetic.
+**Goal:** Replace the Phase 3 placeholder Dashboard.tsx with the full HUD pane. Pulls a Preact + esbuild template from `dashboard-template/` inside the companion repo, drops it into your plugin folder, wires the build path, then composes the dashboard by editing the vault-resident `dashboard.config.json` per your Phase 0 answers — no TSX edits, no rebuild per tweak. End state: a metric-card grid, a token-burn chart with live projection, an action bar with clickable skill buttons, a daily-note panel with click-to-toggle drivers, an activity feed showing recent runs, and a pulsing runner-status footer — all in a dark warm HUD aesthetic.
 
 **Why this exists:** Phases 1-10 build the data layer (vault schema, runner queue, metrics pipeline, hook, bases, icons). Without Phase 11 the pane shows literal "Dashboard boots." Phase 11 is where the dashboard becomes a dashboard.
 
@@ -929,6 +929,7 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 > cd ~/projects/my-dashboard
 > rm -rf src
 > cp -r "$COMIND_REPO"/_workspace/dashboard/dashboard-template/src ./src
+> cp -r "$COMIND_REPO"/_workspace/dashboard/dashboard-template/scripts ./scripts   # config validator CLI
 > cp "$COMIND_REPO"/_workspace/dashboard/dashboard-template/styles.css ./styles.css
 > cp "$COMIND_REPO"/_workspace/dashboard/dashboard-template/tsconfig.json ./tsconfig.json
 > cp "$COMIND_REPO"/_workspace/dashboard/dashboard-template/manifest.json.template ./manifest.json
@@ -938,7 +939,7 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 
 > [VERIFY] `ls ~/projects/my-dashboard/src/components/` shows 17 `.tsx` / `.ts` files (Dashboard, MetricCard, TokenBurnChart, ActionBar, etc).
 
-### 11.2 Customize the four swap-points
+### 11.2 Customize the three swap-points
 
 > [ACTION] **Swap-point 1 — `esbuild.config.mjs`**: `VAULT_PLUGIN_DIR` resolves automatically from the project root (`process.env.COMIND_VAULT || process.cwd()`), so when you build from the project root there's nothing to edit. Only override if the plugin must land in a vault outside the project — then hardcode an absolute path. On Windows use double-backslashes; on macOS/Linux use forward slashes.
 >
@@ -948,42 +949,48 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 > // Override example (Windows): const VAULT_PLUGIN_DIR = "C:\\path\\to\\vault\\.obsidian\\plugins\\my-dashboard";
 > ```
 
-> [ACTION] **Swap-point 2 — `src/components/Dashboard.tsx` `CARDS` array**: one entry per `$METRIC` from Phase 0 Q2. The `key` field MUST match the `<source>:<metric>` your `pull_*.py` scripts emit (look at `system/metrics/metrics.csv` for the actual keys). Drop entries for metrics you don't have; add new ones in the same shape.
+> [ACTION] **Swap-point 2 — `dashboard.config.json`**: all dashboard composition — tabs, metric cards, action buttons, chart bindings — lives in `<vaultSystemPath>/dashboard.config.json` (default `_workspace/system/dashboard.config.json`), NOT in TSX. On first launch the plugin writes a default config there if the file is missing, so you always have a file to edit. Compose it from your Phase 0 answers:
 >
-> Example, search for `// CUSTOMIZE` in the file. Default template ships with YouTube + Instagram + TikTok cards because that's the reference dashboard. Replace with your set, e.g.:
+> - one `cards` entry (in the `metric-grid` widget) per `$METRIC` from Phase 0 Q2 — the `key` MUST match the `<source>:<metric>` your `pull_*.py` scripts emit (look at `system/metrics/metrics.csv` for the actual keys)
+> - one `buttons` entry (in the `action-bar` widget) per `$SKILL` from Phase 0 Q3 that you wired in Phase 7 — the `skill` MUST match a `case` in your `runner.js` `buildPrompt()` switch; skills needing string args get `prompt: "topic"` or `prompt: "url"` (clicking the button opens `IntentArgModal`)
 >
-> ```typescript
-> const CARDS: CardSpec[] = [
->   { key: "claude_code:tokens_5h", label: "Claude 5h", format: "compact", tabs: ["overview"] },
->   { key: "youtube:subscribers", label: "YouTube Subs", format: "integer", tabs: ["overview", "audience"], tone: "youtube" },
->   { key: "github:stars_total", label: "Stars", format: "integer", tabs: ["overview"] },
->   // … one per metric
-> ];
+> ```json
+> {
+>   "version": 1,
+>   "tabs": [
+>     { "id": "overview", "label": "Overview" },
+>     { "id": "activity", "label": "Activity" }
+>   ],
+>   "widgets": [
+>     {
+>       "type": "metric-grid",
+>       "tabs": ["overview"],
+>       "cards": [
+>         { "key": "tasks:open", "label": "Open Tasks", "format": "integer", "hero": false }
+>       ]
+>     },
+>     { "type": "token-burn-chart", "tabs": ["overview"], "source": "claude_code", "metric": "tokens_5h" },
+>     {
+>       "type": "action-bar",
+>       "tabs": ["overview"],
+>       "buttons": [
+>         { "skill": "metrics-pull", "label": "Pull Metrics" },
+>         { "skill": "deep-research", "label": "Deep Research…", "prompt": "topic",
+>           "promptLabel": "Deep research — topic", "placeholder": "e.g. agent rotations" }
+>       ]
+>     },
+>     { "type": "activity-feed", "tabs": ["activity"], "limit": 8 }
+>   ]
+> }
 > ```
+>
+> `format` is one of `"currency" | "integer" | "compact" | "percent"`. Widgets render in config order; every widget's `tabs` must reference declared tab ids. Other widget types (`focus`, `top3`, `daily-drivers`, `schedule`, `runs`) take no extra props.
+>
+> After editing `dashboard.config.json`, run `npm run validate:config` from your plugin dir (the copied dashboard-template). Exit 0 + "OK" = valid; exit 1 prints path-precise errors (e.g. `widgets[2].cards[0].format: unknown value "money"`). The plugin watches the config file and re-renders live on save — no rebuild, no reload.
 >
 > Cards whose `key` has no matching CSV row render an empty "no data" placeholder — safe to leave entries in for metrics you plan to wire later.
 
-> [ACTION] **Swap-point 3 — `src/components/ActionBar.tsx` `BUTTONS` array**: one entry per `$SKILL` from Phase 0 Q3 that you wired in Phase 7. The `skill` field MUST match a `case` in your `runner.js` `buildPrompt()` switch. Skills needing string args get a `prompt: "topic"` or `prompt: "url"` field — clicking the button opens `IntentArgModal` for input.
->
-> Search for `// CUSTOMIZE` near the top of the file. Default template ships with the reference dashboard's 10 buttons. Replace with your set, e.g.:
->
-> ```typescript
-> const BUTTONS: ButtonSpec[] = [
->   { skill: "plan-today", label: "Plan Today" },
->   { skill: "metrics-pull", label: "Pull Metrics" },
->   { skill: "ai-trend-scan", label: "Trend Scan" },
->   {
->     skill: "angle-brainstorm",
->     label: "Angle Brainstorm…",
->     prompt: "topic",
->     promptLabel: "Seed (URL / headline / sentence)",
->     placeholder: "e.g. anthropic ships sub-agents",
->   },
->   // … one per wired skill
-> ];
-> ```
-
-> [ACTION] **Swap-point 4 (optional) — `styles.css` palette**: edit the `:root` block at the top to swap colors per `$PALETTE` from Phase 0 Q7. The reference uses dark warm (Near Black + Terracotta). If you picked a different palette, change `--accent`, `--bg`, `--text` etc.
+> [ACTION] **Swap-point 3 (optional) — `styles.css` palette**: edit the `:root` block at the top to swap colors per `$PALETTE` from Phase 0 Q7. The reference uses dark warm (Near Black + Terracotta). If you picked a different palette, change `--accent`, `--bg`, `--text` etc.
 
 ### 11.3 Install + build
 
@@ -1005,10 +1012,10 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 
 > [VERIFY] Reload Obsidian (Ctrl+R). Open the Command Center pane via the activity ribbon icon. You should see:
 > - Header `Dashboard` with a heartbeat SVG + live status pill
-> - Tabs: `overview` / `audience` / `research`
+> - Tabs — one per `tabs` entry in `dashboard.config.json`
 > - Token Burn chart (overview tab) with an animated meter + ticks + projection comet
-> - Metric cards — one per `CARDS` entry, with status dot, animated number, delta arrow
-> - Action bar — one button per `BUTTONS` entry
+> - Metric cards — one per `cards` entry in the config's `metric-grid` widget, with status dot, animated number, delta arrow
+> - Action bar — one button per `buttons` entry in the config's `action-bar` widget
 > - Daily Drivers checklist + Schedule list (if a daily note exists for today)
 > - Activity Feed showing recent `system/runs/*.json` entries
 > - Footer: pulsing online/offline runner status, last-pull "Xm ago", next-pull ETA
@@ -1017,7 +1024,9 @@ Use the colors from your `$PALETTE` (Phase 0 Q7). The Karpathy 3-stage (inbox/pr
 
 > [FIX] **Blank pane**: open DevTools (Ctrl+Shift+I) → Console. Common: missing `preact/hooks` import (your `tsconfig.json` needs `"jsx": "react"` + `"jsxFactory": "h"` + `"jsxFragmentFactory": "Fragment"` — the template's tsconfig already has these, so if you replaced it with something else you broke it).
 >
-> **Metric values show "—" but CSV has rows**: your `CARDS` keys don't match the `<source>:<metric>` your pull scripts emit. Open `system/metrics/metrics.csv` → look at the actual `source,metric` column values → align your `CARDS` entries to those exact strings (with a colon separator).
+> **Metric values show "—" but CSV has rows**: your `cards` keys in `dashboard.config.json` don't match the `<source>:<metric>` your pull scripts emit. Open `system/metrics/metrics.csv` → look at the actual `source,metric` column values → align your `cards` entries to those exact strings (with a colon separator), then run `npm run validate:config` and save — the pane re-renders live.
+>
+> **Banner listing config errors at the top of the pane**: `dashboard.config.json` failed validation — the dashboard keeps rendering the last-good config (or the default). A single widget with an unknown type or bad props renders an inline error card in its slot; other widgets are unaffected. Fix the config, run `npm run validate:config` until it exits 0, save — the banner clears on the next re-render.
 >
 > **Runner shows offline but you know it's running**: `system/runner-status.json` is stale (>5min old). Restart runner via `start-runner.vbs` and the heartbeat refreshes.
 >

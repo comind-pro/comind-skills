@@ -8,7 +8,7 @@ of the build guide) still works too.
 ## What you get
 
 - **Header** — title, live status (`boot`/`live`/`error`), refresh button
-- **Tabs** — `overview` / `tasks` / `activity`
+- **Tabs** — defined in `dashboard.config.json` (default `overview` / `tasks` / `activity`)
 - **Token-burn chart** — animated meter against your Claude 5h budget, with projection ray (overview tab)
 - **Metric cards** — animated numbers, status dots, delta arrows, optional radial-arc hero. Default set targets a developer workflow (open/in-progress/blocked tasks, runs today, commits today)
 - **Schedule list** — today's events from the daily note's `## Schedule` section (overview)
@@ -35,35 +35,45 @@ make dashboard-runner   # start the queue runner daemon against this vault
 Then open the project as an Obsidian vault and enable the **Dashboard** plugin.
 `make dashboard-dev` runs esbuild in watch mode for hot reload while editing.
 
-## Customize (2 swap-points)
+## Customize (config-driven, no rebuild)
 
-### 1. `src/components/Dashboard.tsx` — pick which metrics show
+All composition — tabs, metric cards, action buttons, chart bindings — lives in
+`<vaultSystemPath>/dashboard.config.json` (default
+`_workspace/system/dashboard.config.json`), not in TSX. The workflow:
 
-Find the `CARDS` array (search `// CUSTOMIZE`). Each entry's `key` MUST match a
-`<source>:<metric>` your pull scripts emit (see `_workspace/system/metrics/metrics.csv`).
-Drop cards you don't have; add new ones. Each card also lists which `tabs` it shows on.
+1. Edit `dashboard.config.json` (the plugin writes a default one on first launch
+   if the file is missing).
+2. After editing, run `npm run validate:config` from this directory — exit 0 +
+   "OK", or exit 1 with path-precise errors.
+3. The plugin watches the file and re-renders live on save — no rebuild.
 
-```typescript
-const CARDS: CardSpec[] = [
-  { key: "tasks:open", label: "Open Tasks", format: "integer", tabs: ["overview", "tasks"] },
-  // … more
-];
-```
+Card `key`s MUST match a `<source>:<metric>` your pull scripts emit (see
+`_workspace/system/metrics/metrics.csv`); cards with no matching CSV row render
+an empty-state ("no data") — safe to leave in. Button `skill`s MUST match a
+`case` in your `runner.js` `buildPrompt()` switch (Phase 7 of the build guide).
 
-Cards with no matching CSV row render an empty-state ("no data") — safe to leave in.
+### Adapting the dashboard (for agents)
 
-### 2. `src/components/ActionBar.tsx` — pick which skills get buttons
+Schema (v1) — `dashboard.config.json`:
 
-Find the `BUTTONS` array. Each entry's `skill` MUST match a `case` in your
-`runner.js` `buildPrompt()` switch (Phase 7 of the build guide). Skills needing
-args get a `prompt` field — opens `IntentArgModal` on click.
+- `version` — integer, must be `1`.
+- `tabs` — 1..8 of `{ id, label }`; `id` `[a-z0-9-]+` unique; `label` non-empty.
+- `widgets` — array; render order = config order. Every widget has `type`
+  (registry key) and `tabs` (non-empty array of declared tab ids). Per-type props:
+  - `metric-grid`: `cards` (1..24) of `{ key, label, format: "currency"|"integer"|"compact"|"percent", hero?: boolean }`
+  - `token-burn-chart`: `source` (string), `metric` (string) — the metrics.csv series to plot
+  - `activity-feed`: `limit` (int 1..50, default 8)
+  - `action-bar`: `buttons` (1..16) of `{ skill, label, prompt?: "topic"|"url", promptLabel?, placeholder? }`
+  - `focus` / `top3` / `daily-drivers` / `schedule` / `runs`: no extra props
+- Unknown top-level keys, unknown widget `type`, or unknown per-widget props are
+  validation errors.
 
-```typescript
-const BUTTONS: ButtonSpec[] = [
-  { skill: "plan-today", label: "Plan Today" },
-  // … more
-];
-```
+After editing `dashboard.config.json`, run `npm run validate:config` (optionally
+pass a path) from this directory. Error behavior at runtime: an invalid config
+shows a banner in the pane listing the exact errors and the dashboard keeps
+rendering the last-good config (or the default); a single widget with an unknown
+type or bad props renders an inline error card in its slot while the rest render
+normally. A missing config file is replaced with the written default plus a notice.
 
 ### (optional) restyle
 
@@ -92,11 +102,14 @@ dashboard-template/
 │   │   ├── FocusCard.tsx           # current focus
 │   │   └── ActivityFeed.tsx        # recent runs
 │   └── lib/
+│       ├── config.ts        # dashboard.config.json types, defaults, validateConfig
 │       ├── metrics.ts       # CSV parser, snapshot grouping, series
 │       ├── vault.ts         # daily-note parser (focus/top3/drivers/schedule)
 │       ├── vault-writer.ts  # toggles daily-note checkboxes
 │       ├── queue.ts         # intent writer + run-record reader
 │       └── status.ts        # runner heartbeat + next-pull math
+├── scripts/
+│   └── validate-config.mjs  # npm run validate:config — CLI config validator
 ├── styles.css
 ├── tsconfig.json
 ├── esbuild.config.mjs       # in-place build (reads DASHBOARD_PLUGIN_DIR)
@@ -115,6 +128,7 @@ All classes use the `dash-` prefix. Functional — won't collide with anything.
 
 The dashboard reads these paths (the runner + a metrics-pull skill create them):
 
+- `_workspace/system/dashboard.config.json` — dashboard composition (written with defaults on first launch if missing)
 - `_workspace/system/metrics/metrics.csv` — metric rows
 - `_workspace/system/metrics/last-pull.json` — pull snapshot
 - `_workspace/system/runner-status.json` — runner heartbeat

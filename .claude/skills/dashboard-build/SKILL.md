@@ -18,6 +18,11 @@ The architecture is universal; the specifics swap per user:
   between every writer (skills, hook, plugin) and reader (plugin, Bases).
 - **Plugin** — Obsidian plugin shell (Preact + esbuild + Hot Reload) rendering
   the dashboard: metric cards, action bar, daily-note panel, activity feed.
+  Composition (tabs, cards, buttons) is config-driven: edit
+  `<vaultSystemPath>/dashboard.config.json` (default
+  `_workspace/system/dashboard.config.json`), then run `npm run validate:config`
+  from the dashboard-template dir — the plugin watches the file and re-renders
+  live, no TSX edits, no rebuild.
 - **Runner** — Node daemon watching `system/queue/`, spawning headless
   `claude -p` subprocesses per intent, writing run records to `system/runs/`.
 - **Metrics** — one skill, one pull-script per metric (API / scrape / local),
@@ -95,7 +100,7 @@ ask the user before proceeding.
 | 8 | PostToolUse activity-log hook → daily note's `## Activity Log`. |
 | 9 | Bases sidebar — frontmatter-driven project + pipeline queries. |
 | 10 | Iconize aesthetic pass — color-code the folder model per `$PALETTE`. |
-| 11 | Full dashboard UI — replace the placeholder with the HUD pane. |
+| 11 | Full dashboard UI — replace the placeholder with the HUD pane; compose tabs/cards/buttons by editing `dashboard.config.json` + `npm run validate:config`. |
 
 Finish with the end-to-end smoke test (8 steps) from the reference.
 
@@ -121,6 +126,8 @@ discipline. Treat `system/schemas/daily-note.md` as immutable once frozen.
 - Editing a frozen daily-note heading
 - Skipping a `[VERIFY]` block or proceeding past a failed one without the `[FIX]`
 - Hardcoding example metrics/skills instead of the user's `$METRICS` / `$SKILLS`
+- Editing TSX arrays to change tabs/cards/buttons — that's `dashboard.config.json`
+  (edit, then run `npm run validate:config`; the plugin re-renders live)
 - Putting wallet keys / API keys in files instead of `~/.claude/.env`
 
 ## Verification
@@ -135,5 +142,6 @@ After the build:
 - [ ] Metrics-pull writes rows to `system/metrics/metrics.csv` with `status: ok`
 - [ ] Activity-log hook appends to the daily note's `## Activity Log`
 - [ ] Each Part-1 skill wired into the action bar has a `buildPrompt` case
+- [ ] `npm run validate:config` exits 0 on the final `dashboard.config.json`
 - [ ] The 8-step end-to-end smoke test passes
 - [ ] All installs read from `_workspace/dashboard/`, no external clone

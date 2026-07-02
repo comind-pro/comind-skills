@@ -2,43 +2,21 @@ import { h } from "preact";
 import { useState } from "preact/hooks";
 import { Notice } from "obsidian";
 import type DashboardPlugin from "../main";
+import type { ButtonSpec } from "../lib/config";
 import { writeIntent } from "../lib/queue";
 import { askForArg } from "./IntentArgModal";
 
 interface Props {
 	plugin: DashboardPlugin;
+	buttons: ButtonSpec[];
 	onSubmitted?: () => void;
 }
 
-interface ButtonSpec {
-	skill: string;
-	label: string;
-	prompt?: "topic" | "url";
-	promptLabel?: string;
-	placeholder?: string;
-}
-
-// CUSTOMIZE — one entry per $SKILL you wired in Phase 7.
-// `skill` MUST match a `case` in your runner.js buildPrompt switch.
-// Use `prompt: "topic" | "url"` for skills that need a string arg (opens IntentArgModal).
-// Skills NOT in the runner switch will still queue but produce no output.
-const BUTTONS: ButtonSpec[] = [
-	{ skill: "plan-today", label: "Plan Today" },
-	{ skill: "plan-tomorrow", label: "Plan Tomorrow" },
-	{ skill: "morning-report", label: "Morning Brief" },
-	{
-		skill: "deep-research",
-		label: "Deep Research…",
-		prompt: "topic",
-		promptLabel: "Deep research — topic",
-		placeholder: "e.g. claude code agent rotations 2026",
-	},
-	{ skill: "weekly-review", label: "Weekly Review" },
-	{ skill: "vault-cleanup", label: "Vault Cleanup" },
-	{ skill: "metrics-pull", label: "Pull Metrics" },
-];
-
-export function ActionBar({ plugin, onSubmitted }: Props) {
+// CUSTOMIZE — buttons come from the `action-bar` widget in
+// <vaultSystemPath>/dashboard.config.json (one entry per $SKILL you wired in
+// Phase 7; `skill` MUST match a `case` in your runner.js buildPrompt switch).
+// Edit the JSON, run `npm run validate:config` — no rebuild needed.
+export function ActionBar({ plugin, buttons, onSubmitted }: Props) {
 	const [busy, setBusy] = useState(false);
 
 	const fire = async (spec: ButtonSpec) => {
@@ -70,7 +48,7 @@ export function ActionBar({ plugin, onSubmitted }: Props) {
 
 	return (
 		<div className="dash-actionbar">
-			{BUTTONS.map((b) => (
+			{buttons.map((b) => (
 				<button
 					key={b.skill}
 					type="button"

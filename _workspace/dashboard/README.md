@@ -40,6 +40,15 @@ metric-scripts/
 dashboard-template/        # Obsidian plugin (Preact + esbuild) — installed in Phase 11
 ```
 
+## Customizing the dashboard
+
+Dashboard composition (tabs, metric cards, action buttons, chart bindings) is
+config-driven: edit `<vaultSystemPath>/dashboard.config.json` (default
+`_workspace/system/dashboard.config.json`), then run `npm run validate:config`
+from `dashboard-template/`. The plugin watches the file and re-renders live —
+no TSX edits, no rebuild. Schema + error behavior: see
+`dashboard-template/README.md` ("Adapting the dashboard").
+
 ## Configuration
 
 Both `runner.js` and `activity-log.js` resolve the vault root in this order:
