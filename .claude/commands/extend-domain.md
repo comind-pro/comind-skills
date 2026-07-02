@@ -32,5 +32,5 @@ A short summary listing:
 
 ## Constraints
 - Do not modify assets outside the new area unless `setup-validator` finds a real conflict
-- Runtime budget: $2 (Sonnet) for the typical area; more for areas requiring extensive research
+- Runtime budget: $3–4 (Opus) for the typical area; more for areas requiring extensive research
 - The area description must be specific enough that a generator can write concrete rules — if `$ARGUMENTS` is too vague, ask the user to refine before generating anything

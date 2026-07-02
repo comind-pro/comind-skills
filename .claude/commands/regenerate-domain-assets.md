@@ -37,4 +37,4 @@ A short summary at the end:
 ## Constraints
 - Never delete user-edited files without explicit approval
 - Preserve any sections marked `<!-- comind:user-edit -->` in regenerated files
-- Runtime budget: $3 (Sonnet) default, scale with scope
+- Runtime budget: $5 (Opus) default, scale with scope

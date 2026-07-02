@@ -2,7 +2,6 @@
 name: setup-validator
 description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Validates the template's own consistency (frontmatter, cross-references, coverage) when shipping template changes. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Grep, Glob, Bash
-model: sonnet
 ---
 
 # Setup Validator
@@ -18,7 +17,7 @@ You verify that a generated Claude Code setup is internally consistent and funct
 
 ### 2. Frontmatter validity
 - [ ] All skills have valid YAML frontmatter with `name` and `description`
-- [ ] All agents have valid frontmatter with `name`, `description`, `tools` (and ideally `model`)
+- [ ] All agents have valid frontmatter with `name`, `description`, `tools` (`model` is optional — usually omitted so the agent inherits the session model; flag invalid values or unjustified pins, not its absence)
 - [ ] All commands have valid frontmatter with `description` (and `argument-hint` when accepting arguments)
 
 ### 3. Cross-references
@@ -37,10 +36,9 @@ You verify that a generated Claude Code setup is internally consistent and funct
 - [ ] Commands have approval gates where appropriate
 
 ### 6. Smoke tests
-For each generated agent, attempt a minimal invocation:
-- Spawn the agent with a trivial task
-- Verify it doesn't error
-- Verify the output matches the declared format
+You have no Agent tool — report which agents need a smoke test and let the invoker (main session) run them:
+- For each generated agent, list a minimal trivial task the invoker should spawn it with
+- The invoker verifies it doesn't error and the output matches the declared format
 
 ## Output
 

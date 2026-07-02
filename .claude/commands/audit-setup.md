@@ -6,13 +6,12 @@ description: "MAINTAINER-ONLY for the comind-skills template. Audit current Clau
 
 Periodically evaluate whether the generated Claude Code assets still match the project. Recommended monthly or after any major refactor.
 
-Use the agent at `.claude/agents/_meta/setup-validator.md` first for structural checks (frontmatter, cross-references, smoke tests), then a separate review pass for quality and coverage.
+Spawn the agents at `.claude/agents/_meta/setup-validator.md` (structural checks: frontmatter, cross-references, smoke tests) and `.claude/agents/_meta/project-analyzer.md` (fresh project profile) **in parallel — both Agent calls in a single message**; they are independent. Then run the quality and coverage review below against both reports.
 
 ## Checks
 
 ### 1. Skill freshness
-- Use the agent at `.claude/agents/_meta/project-analyzer.md` to get a fresh profile
-- Compare against the assumptions baked into each `.claude/skills/<name>/SKILL.md`
+- Compare the fresh `project-analyzer` profile against the assumptions baked into each `.claude/skills/<name>/SKILL.md`
 - Flag skills referencing modules, frameworks, or conventions that no longer exist in the codebase
 - Flag new patterns in code that aren't covered by any skill
 
@@ -44,5 +43,5 @@ Each item links to specific evidence (file paths, line numbers, commit hashes) s
 
 ## Constraints
 - Read-only — the audit reports, it does not modify any asset
-- Runtime budget: $1–2 (Sonnet) — this is a survey, not a deep analysis
+- Runtime budget: $2–4 (Opus) — keep it survey-depth; don't let it grow into a deep analysis
 - Run via `/loop` or cron for periodic execution (typical cadence: monthly)

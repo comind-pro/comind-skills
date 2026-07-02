@@ -38,13 +38,21 @@ Claude Code loads this file automatically. Read it once per session.
    before globbing, update it when you add a note. The structure +
    indexes exist so navigation costs one small read, not a full-vault
    glob; it's a token-budget tool.
-4. **Match model to task.** Haiku for cheap polls and reconciliation.
-   Sonnet for real work and digests. Opus only on explicit request.
-5. **Quiet by default.** Daily and weekly cadence first. Hourly only
+4. **Match model to task.** The session model (typically Opus) for
+   real work — subagents inherit it unless pinned. Haiku for cheap
+   polls and reconciliation. Sonnet for bulk mechanical digests.
+5. **Delegate deliberately.** Don't wait for an explicit ask — when a
+   trigger below matches, delegate. Fan independent subtasks out as
+   parallel Agent calls in a single message; work directly for
+   single-file reads and sequential edits. Triggers: external lookup →
+   `researcher`; decomposition of fuzzy scope → `planner`; broad repo
+   sweeps → `Explore`; pre-merge → `/review`; production-bound →
+   `/ship` fan-out.
+6. **Quiet by default.** Daily and weekly cadence first. Hourly only
    when warranted.
-6. **No secrets in files.** Use env vars (`${GITHUB_TOKEN}`) or a
+7. **No secrets in files.** Use env vars (`${GITHUB_TOKEN}`) or a
    separate secret manager.
-7. **MCP filesystem is scoped to this project.** Never broaden it.
+8. **MCP filesystem is scoped to this project.** Never broaden it.
    Project sealing is the point.
 
 ## How to run things
@@ -54,7 +62,8 @@ Run `make help` to see all available targets (`stats`, `tasks`, `validate`).
 ## How to add things
 
 - **New agent.** Drop `.claude/agents/<name>.md` with frontmatter
-  (`name`, `description`, `tools`, `model`). It's instantly available
+  (`name`, `description`, `tools`; `model` only to pin a cheaper tier —
+  omit it to inherit the session model). It's instantly available
   to other agents via Task.
 - **New skill.** Drop `.claude/skills/<name>/SKILL.md`. Skills should
   describe *how* to do a thing; agents describe *who* does it.

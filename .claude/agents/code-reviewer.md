@@ -89,6 +89,7 @@ Categorize every finding:
 4. Don't approve code with Critical issues
 5. Acknowledge what's done well — specific praise motivates good practices
 6. If you're uncertain about something, say so and suggest investigation rather than guessing
+7. Report every issue you find, including ones you are uncertain about or consider low-severity — do not silently drop findings. Your goal is coverage; the severity categories (and the `/ship` merge phase) do the filtering. Mark uncertain findings with your confidence level.
 
 ## Composition
 

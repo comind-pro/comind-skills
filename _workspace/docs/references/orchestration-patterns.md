@@ -172,11 +172,15 @@ Don't redefine these. Layer your specialist personas (code-reviewer, security-au
 
 Plugin subagents do **not** support the `hooks`, `mcpServers`, or `permissionMode` frontmatter fields — these are silently ignored. If a future persona needs any of those, the user must copy the file into `.claude/agents/` or `~/.claude/agents/` instead.
 
-The fields that DO work in plugin agents are: `name`, `description`, `tools`, `disallowedTools`, `model`, `maxTurns`, `skills`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. Use `model` per-persona if you want to optimize cost (e.g. Haiku for `test-engineer` coverage scans, Sonnet for `code-reviewer`, Opus for `security-auditor`).
+The fields that DO work in plugin agents are: `name`, `description`, `tools`, `disallowedTools`, `model`, `maxTurns`, `skills`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. Omit `model` so a persona inherits the session model (typically Opus); pin it per-persona only to cut cost (e.g. Haiku for `test-engineer` coverage scans, Sonnet for bulk mechanical passes).
 
 ### Spawning multiple subagents in parallel
 
 In Claude Code, parallel fan-out (Pattern 3) requires issuing **multiple Agent tool calls in a single assistant turn**. Sequential turns serialize execution. `/ship` calls this out explicitly. Any new orchestrator command should do the same.
+
+Opus-family models are conservative about reaching for subagents: they won't delegate unless told *when* delegation applies. Every orchestrator command must state its delegation triggers explicitly ("spawn X when Y") and repeat the single-message rule — "use subagents where useful" is too weak to fire.
+
+One invariant travels with that guidance: **writes to `.claude/**` always require a human approval gate and never run from `/loop` or cron.** Files under `.claude/` are auto-loaded as instructions, so an unattended write there is self-modifying config. `/reorganize-project`'s plan-first gate is the reference pattern.
 
 ---
 
@@ -271,7 +275,7 @@ Always cleanup through the lead, not a teammate (per the docs: teammates lack fu
 
 ### Cost expectation
 
-Three Sonnet teammates running for ~10–15 minutes of investigation costs noticeably more than the same three personas spawned as subagents by `/ship`. The justification is *quality of conclusion* — for production debugging where the wrong fix is expensive, the extra tokens are a bargain. For a routine PR review, stick with `/ship`.
+Three Opus teammates running for ~10–15 minutes of investigation costs noticeably more than the same three personas spawned as subagents by `/ship`. The justification is *quality of conclusion* — for production debugging where the wrong fix is expensive, the extra tokens are a bargain. For a routine PR review, stick with `/ship`.
 
 ### Anti-pattern in this scenario
 

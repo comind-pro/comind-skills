@@ -2,7 +2,6 @@
 name: skills-generator
 description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Scaffolds new SKILL.md files when adding skills to the template. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Write, Grep, Glob
-model: sonnet
 ---
 
 # Skills Generator

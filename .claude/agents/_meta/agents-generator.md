@@ -2,7 +2,6 @@
 name: agents-generator
 description: "MAINTAINER-ONLY for the comind-skills boilerplate repo itself. Scaffolds new agent .md files when adding agents to the template. NOT for project work — if you are editing a real project (not the comind-skills template repo), do NOT invoke this agent."
 tools: Read, Write, Grep, Glob
-model: sonnet
 ---
 
 # Agents Generator
@@ -30,7 +29,7 @@ Sub-agents perform focused work with constrained context. Generate agents that:
 name: <agent-name>
 description: <One-line description of when to use this agent.>
 tools: <comma-separated tool list>
-model: <haiku | sonnet | opus>
+# model: optional — omit to inherit the session model (typically Opus); pin haiku/sonnet only to cut cost
 ---
 
 # <Agent Name>
@@ -86,9 +85,9 @@ For each agent, determine the minimal tool set:
 
 ## Model selection
 
-- `haiku`: status checks, simple lookups, reconciliation
-- `sonnet`: most real work — implementation, review, analysis
-- `opus`: only when the task genuinely needs deep reasoning (architecture trade-offs, security audits with high stakes)
+- **Default: omit `model`** — the agent inherits the session model (typically Opus). Right for real work: implementation, review, analysis, architecture.
+- `haiku`: pin for cheap polls, status checks, reconciliation
+- `sonnet`: pin for bulk mechanical passes where Opus cost isn't justified
 
 ## Default required agents
 

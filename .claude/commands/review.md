@@ -13,4 +13,5 @@ Review the current changes (staged or recent commits) across all five axes:
 5. **Performance** — No N+1 queries? No unbounded ops? (Use performance-optimization skill)
 
 Categorize findings as Critical, Important, or Suggestion.
+Report every finding, including uncertain or low-severity ones, with a confidence level — do not self-filter; the severity labels do the filtering.
 Output a structured review with specific file:line references and fix recommendations.

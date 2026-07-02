@@ -51,7 +51,24 @@ validate:
 		head -10 "$$f" | grep -qE '^name:' || { echo "  ✗ $$f — missing name"; broken=$$((broken+1)); continue; }; \
 		head -10 "$$f" | grep -qE '^description:' || { echo "  ✗ $$f — missing description"; broken=$$((broken+1)); }; \
 	done; \
-	echo "Checked $$found SKILL.md files; broken: $$broken"
+	echo "Checked $$found SKILL.md files; broken: $$broken"; \
+	afound=0; abroken=0; \
+	for f in .claude/agents/*.md .claude/agents/_meta/*.md; do \
+		case "$$f" in */README.md) continue;; esac; \
+		afound=$$((afound+1)); \
+		head -10 "$$f" | grep -qE '^name:' || { echo "  ✗ $$f — missing name"; abroken=$$((abroken+1)); continue; }; \
+		head -10 "$$f" | grep -qE '^description:' || { echo "  ✗ $$f — missing description"; abroken=$$((abroken+1)); }; \
+	done; \
+	echo "Checked $$afound agent files; broken: $$abroken"; \
+	cfound=0; cbroken=0; \
+	for f in .claude/commands/*.md; do \
+		cfound=$$((cfound+1)); \
+		head -10 "$$f" | grep -qE '^description:' || { echo "  ✗ $$f — missing description"; cbroken=$$((cbroken+1)); }; \
+	done; \
+	echo "Checked $$cfound command files; broken: $$cbroken"; \
+	if grep -rn '^model: \(sonnet\|haiku\|opus\)' .claude/agents/ 2>/dev/null; then \
+		echo "  ✗ pinned model in agent frontmatter — omit to inherit the session model"; \
+	fi
 
 # ── Dashboard ───────────────────────────────────────────────────────────────
 # The plugin builds in-place: VAULT (default = project root) is the Obsidian

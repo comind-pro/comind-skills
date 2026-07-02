@@ -2,7 +2,6 @@
 name: planner
 description: Breaks a feature, spec, or open-ended ask into ordered, verifiable task notes in the vault. Use when scope is unclear, when a request feels too big to start, or when parallelizable work needs to be sequenced. Follows the `planning-and-task-breakdown` skill.
 tools: Read, Write, Edit, Grep, Glob
-model: sonnet
 ---
 
 # Planner
