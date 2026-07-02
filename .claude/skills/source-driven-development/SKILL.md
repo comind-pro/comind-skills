@@ -58,7 +58,7 @@ STACK DETECTED:
 → Fetching official docs for the relevant patterns.
 ```
 
-If versions are missing or ambiguous, **ask the user**. Don't guess — the version determines which patterns are correct.
+If versions are missing or ambiguous, resolve from the lockfile or installed packages first (`package-lock.json`, `poetry.lock`, `node_modules/<pkg>/package.json`); **ask the user** only if genuinely unresolvable. Don't guess — the version determines which patterns are correct.
 
 ### Step 2: Fetch Official Documentation
 

@@ -18,8 +18,8 @@ Refines raw ideas into sharp, actionable concepts worth building through structu
 This skill is primarily an interactive dialogue. Invoke it with an idea, and the agent will guide you through the process.
 
 ```bash
-# Optional: Initialize the ideas directory
-bash /mnt/skills/user/idea-refine/scripts/idea-refine.sh
+# Optional: Initialize the ideas directory (run from this skill's directory)
+bash .claude/skills/idea-refine/scripts/idea-refine.sh
 ```
 
 **Trigger Phrases:**

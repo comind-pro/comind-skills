@@ -35,7 +35,7 @@ When anything unexpected happens:
 
 ## The Triage Checklist
 
-Work through these steps in order. Do not skip steps.
+Work through these steps in order. A step whose answer is already evident from the error output (e.g. a type error naming the exact line) may be noted and passed through — but never skip Steps 4–6.
 
 ### Step 1: Reproduce
 

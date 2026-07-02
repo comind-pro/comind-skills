@@ -159,7 +159,9 @@ isn't right.
   entry.
 - **One vault index → project index → zone index.** Keep the index discipline so
   navigation stays one small read, not a full-tree glob.
-- **Ask, don't assume**, when a file's zone or a sub-project boundary is unclear.
+- **Ask, don't assume**, when a sub-project boundary is unclear. (Ambiguous
+  *zones* don't need a question — they default to `raw/` and are flagged in the
+  plan for review at the approval gate.)
 
 Begin with Step 0 (preconditions). If they pass, run the read-only inventory and
 present findings before asking the layout question.

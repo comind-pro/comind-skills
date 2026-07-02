@@ -114,8 +114,7 @@ When tests fail or builds break, feed the specific error back to the agent:
 Long conversations accumulate stale context. Manage this:
 
 - **Start fresh sessions** when switching between major features
-- **Summarize progress** when context is getting long: "So far we've completed X, Y, Z. Now working on W."
-- **Compact deliberately** — if the tool supports it, compact/summarize before critical work
+- **Compact deliberately** — if the tool supports it, compact/summarize before critical work; otherwise start a fresh session and carry over only the task-relevant state
 
 ## Context Packing Strategies
 
@@ -254,7 +253,7 @@ This catches wrong directions before you've built on them. It's a 30-second inve
 | Anti-Pattern | Problem | Fix |
 |---|---|---|
 | Context starvation | Agent invents APIs, ignores conventions | Load rules file + relevant source files before each task |
-| Context flooding | Agent loses focus when loaded with >5,000 lines of non-task-specific context. More files does not mean better output. | Include only what is relevant to the current task. Aim for <2,000 lines of focused context per task. |
+| Context flooding | Agent loses focus when loaded with thousands of lines of non-task-specific context. More files does not mean better output. | Include only files the task actually touches — large files are fine when the task genuinely needs them. |
 | Stale context | Agent references outdated patterns or deleted code | Start fresh sessions when context drifts |
 | Missing examples | Agent invents a new style instead of following yours | Include one example of the pattern to follow |
 | Implicit knowledge | Agent doesn't know project-specific rules | Write it down in rules files — if it's not written, it doesn't exist |

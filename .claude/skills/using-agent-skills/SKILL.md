@@ -44,7 +44,7 @@ These behaviors apply at all times, across all skills. They are non-negotiable.
 
 ### 1. Surface Assumptions
 
-Before implementing anything non-trivial, explicitly state your assumptions:
+When requirements are genuinely ambiguous, state your key assumptions once at task start (skip the block entirely when the ask is unambiguous):
 
 ```
 ASSUMPTIONS I'M MAKING:
@@ -58,12 +58,14 @@ Don't silently fill in ambiguous requirements. The most common failure mode is m
 
 ### 2. Manage Confusion Actively
 
-When you encounter inconsistencies, conflicting requirements, or unclear specifications:
+When an inconsistency, conflicting requirement, or unclear specification would change the design:
 
 1. **STOP.** Do not proceed with a guess.
 2. Name the specific confusion.
 3. Present the tradeoff or ask the clarifying question.
 4. Wait for resolution before continuing.
+
+Minor ambiguities that don't change the design: resolve using the codebase's existing pattern and note the choice — don't block on them.
 
 **Bad:** Silently picking one interpretation and hoping it's right.
 **Good:** "I see X in the spec but Y in the existing code. Which takes precedence?"
@@ -130,7 +132,7 @@ These are the subtle errors that look like productivity but create problems:
 
 3. **Multiple skills can apply.** A feature implementation might involve `idea-refine` → `spec-driven-development` → `planning-and-task-breakdown` → `incremental-implementation` → `test-driven-development` → `code-review-and-quality` → `shipping-and-launch` in sequence.
 
-4. **When in doubt, start with a spec.** If the task is non-trivial and there's no spec, begin with `spec-driven-development`.
+4. **Start with a spec when the change spans multiple files or sessions and no written requirements exist** — begin with `spec-driven-development`. One-file fixes and mechanical changes don't need one.
 
 ## Lifecycle Sequence
 

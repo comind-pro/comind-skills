@@ -190,7 +190,7 @@ This pattern means you never lose more than one increment of work. If an agent g
 
 ## Change Summaries
 
-After any modification, provide a structured summary. This makes review easier, documents scope discipline, and surfaces unintended changes:
+Provide a structured summary once per completed task (or in the PR description) — not after every individual edit. This makes review easier, documents scope discipline, and surfaces unintended changes:
 
 ```
 CHANGES MADE:

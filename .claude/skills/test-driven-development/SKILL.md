@@ -328,7 +328,7 @@ For detailed DevTools setup instructions and workflows, see `browser-testing-wit
 
 ## When to Use Subagents for Testing
 
-For complex bug fixes, spawn a subagent to write the reproduction test:
+When the root cause is unknown or the bug spans 2+ modules, spawn a subagent to write the reproduction test before you look at the fix:
 
 ```
 Main agent: "Spawn a subagent to write a test that reproduces this bug:

@@ -109,17 +109,17 @@ Arrange tasks so that:
 
 1. Dependencies are satisfied (build foundation first)
 2. Each task leaves the system in a working state
-3. Verification checkpoints occur after every 2-3 tasks
+3. Verification checkpoints sit at phase boundaries and before risky or irreversible steps
 4. High-risk tasks are early (fail fast)
 
-Add explicit checkpoints:
+Add explicit checkpoints (human review at phase ends, not after every task):
 
 ```markdown
-## Checkpoint: After Tasks 1-3
+## Checkpoint: End of Phase 1
 - [ ] All tests pass
 - [ ] Application builds without errors
 - [ ] Core user flow works end-to-end
-- [ ] Review with human before proceeding
+- [ ] Review with human before starting the next phase
 ```
 
 ## Task Sizing Guidelines
@@ -187,7 +187,7 @@ If a task is L or larger, it should be broken into smaller tasks. An agent perfo
 
 ## Parallelization Opportunities
 
-When multiple agents or sessions are available:
+When 2+ tasks share no files and no dependency edge, dispatch them as parallel subagents in one message; otherwise run sequentially:
 
 - **Safe to parallelize:** Independent feature slices, tests for already-implemented features, documentation
 - **Must be sequential:** Database migrations, shared state changes, dependency chains

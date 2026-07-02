@@ -31,7 +31,7 @@ Simplify code by reducing complexity while preserving exact behavior. The goal i
 
 ### 1. Preserve Behavior Exactly
 
-Don't change what the code does — only how it expresses it. All inputs, outputs, side effects, error behavior, and edge cases must remain identical. If you're not sure a simplification preserves behavior, don't make it.
+Don't change what the code does — only how it expresses it. All inputs, outputs, side effects, error behavior, and edge cases must remain identical. If you're not sure a simplification preserves behavior, don't apply it — list it as an uncertain candidate with the check that would confirm behavior-preservation, instead of dropping it silently.
 
 ```
 ASK BEFORE EVERY CHANGE:

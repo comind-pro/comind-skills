@@ -113,15 +113,15 @@ In Claude Code, the role-based reviewers in `agents/` start with isolated contex
 
 A single-model reviewer shares blind spots with the original author — a colder, different-architecture model catches them. Doubt-driven is already opt-in for non-trivial decisions, so within that scope offering cross-model is part of the skill's value, not optional friction.
 
-**Interactive sessions: always offer. Never silently skip.**
+**Interactive sessions: offer visibly on high-stakes artifacts. Never silently skip.**
 
 **Step 1: Ask the user**
 
-After the single-model review in Step 3 above, but before RECONCILE, pause and ask:
+After the single-model review in Step 3 above, but before RECONCILE — when the artifact is high-stakes (production, security-sensitive logic, irreversible operations) — pause and ask:
 
 > *"Single-model review complete. Want a cross-model second opinion? Options: Gemini CLI, Codex CLI, manual external review (you paste it elsewhere), or skip."*
 
-This question is mandatory in every interactive doubt cycle — even on artifacts that feel low-stakes. The user — not the agent — decides whether the cost is worth it. The agent's job is to surface the choice.
+For lower-stakes artifacts, mention the cross-model option once per session and proceed without pausing. The user — not the agent — decides whether the cost is worth it; the agent's job is to keep the choice visible, not to interrupt every cycle.
 
 **Step 2: If the user picks a CLI — verify, then invoke**
 
@@ -215,7 +215,7 @@ If 3 cycles is "obviously insufficient" because the artifact is large: the artif
 - **Doubt theater (checkable signal)**: across 2 or more cycles where the reviewer surfaced substantive findings, zero findings were classified as actionable. You are validating, not doubting. Stop and escalate.
 - Doubting only after committing — that's `/review`, not doubt-driven development
 - Hardcoding an external CLI invocation without confirming with the user that the tool exists, is configured, and accepts that exact syntax
-- **Silently skipping cross-model in an interactive doubt cycle.** Even when not recommending it, the offer must be visible. Skipping is fine; silent skipping is not.
+- **Silently skipping cross-model on a high-stakes artifact.** Even when not recommending it, the offer must be visible (a once-per-session mention covers lower-stakes cycles). Skipping is fine; silent skipping is not.
 - Falling back silently when an external CLI errors or is missing — surface the failure and let the user redirect
 - Stripping the contract from the reviewer's input
 - Passing the CLAIM to the reviewer (biases toward agreement)
@@ -238,6 +238,6 @@ After applying doubt-driven development:
 - [ ] The reviewer's prompt was adversarial ("find issues"), not validating ("is it good")
 - [ ] Findings were classified against the artifact text (not rubber-stamped) using the precedence: contract misread / actionable / trade-off / noise
 - [ ] A stop condition was met (trivial findings, 3 cycles, or user override)
-- [ ] In interactive mode, cross-model was **explicitly offered** to the user (regardless of artifact stakes) and the response was acknowledged in the output
+- [ ] In interactive mode, cross-model was **explicitly offered** on high-stakes artifacts (and mentioned at least once per session otherwise), with the response acknowledged in the output
 - [ ] In non-interactive mode, cross-model was skipped and the skip was announced
 - [ ] Any external CLI invocation was preceded by a PATH check, a working-binary test, syntax confirmation with the user, and explicit authorization to run

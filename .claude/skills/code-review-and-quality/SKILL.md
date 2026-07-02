@@ -180,7 +180,7 @@ Check the author's verification story:
 
 ## Multi-Model Review Pattern
 
-Use different models for different review perspectives:
+When the diff is large (>300 lines), security-sensitive, or self-authored, spawn `code-reviewer` / `security-auditor` subagents — in parallel, in one message — alongside your own pass. Different perspectives for different review axes:
 
 ```
 Model A writes the code
@@ -212,7 +212,7 @@ After any refactoring or implementation change, check for orphaned code:
 2. List it explicitly
 3. **Ask before deleting:** "Should I remove these now-unused elements: [list]?"
 
-Don't leave dead code lying around — it confuses future readers and agents. But don't silently delete things you're not sure about. When in doubt, ask.
+Don't leave dead code lying around — it confuses future readers and agents. If unsure whether code is truly dead, include it in the deletion list with a confidence note rather than dropping it silently.
 
 ```
 DEAD CODE IDENTIFIED:

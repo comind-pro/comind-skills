@@ -17,5 +17,6 @@ Critical: the build code is **vendored in `_workspace/dashboard/`** in this repo
 everything ships with the template, nothing to clone. Wherever the guide says
 "copy from the cloned repo," copy from `_workspace/dashboard/` instead.
 
-Set the vault root via the `COMIND_VAULT` env var (or `~/.claude/.env`) so
-the runner and hook find the user's vault.
+The vault root resolves automatically when scripts run in place; set the
+`COMIND_VAULT` env var (or `~/.claude/.env`) only if scripts are relocated
+outside the project.
