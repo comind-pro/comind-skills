@@ -63,18 +63,32 @@ export class IntentArgModal extends Modal {
 		}, 30);
 	}
 
+	private resolved = false;
+
+	/** Resolve exactly once, whatever the close path. */
+	private settle(value: string | null): void {
+		if (this.resolved) return;
+		this.resolved = true;
+		this.resolve(value);
+	}
+
 	private submit(): void {
 		const v = (this.inputEl?.value || "").trim();
-		this.resolve(v.length > 0 ? v : null);
+		this.settle(v.length > 0 ? v : null);
 		this.close();
 	}
 
 	private cancel(): void {
-		this.resolve(null);
-		this.close();
+		this.close(); // settle(null) happens in onClose
 	}
 
 	onClose(): void {
+		// Runs on EVERY close path — Cancel, the X button, backdrop click,
+		// and Obsidian's own Escape handling. Without settling here, any
+		// close path other than our buttons left the askForArg promise
+		// pending forever, so ActionBar's `busy` never reset and every
+		// button stayed disabled ("dashboard hangs after cancel").
+		this.settle(null);
 		this.contentEl.empty();
 	}
 }
