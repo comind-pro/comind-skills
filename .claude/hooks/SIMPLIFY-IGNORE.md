@@ -24,18 +24,18 @@ result[3] = buf[3] ^ key[3];
     "PreToolUse": [
       {
         "matcher": "Read",
-        "hooks": [{ "type": "command", "command": "bash ${CLAUDE_PROJECT_DIR}/hooks/simplify-ignore.sh" }]
+        "hooks": [{ "type": "command", "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/simplify-ignore.sh" }]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": [{ "type": "command", "command": "bash ${CLAUDE_PROJECT_DIR}/hooks/simplify-ignore.sh" }]
+        "hooks": [{ "type": "command", "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/simplify-ignore.sh" }]
       }
     ],
     "Stop": [
       {
-        "hooks": [{ "type": "command", "command": "bash ${CLAUDE_PROJECT_DIR}/hooks/simplify-ignore.sh" }]
+        "hooks": [{ "type": "command", "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/simplify-ignore.sh" }]
       }
     ]
   }
@@ -73,7 +73,7 @@ Any comment style works (`//`, `/*`, `#`, `<!--`). Multiple blocks per file and 
 If Claude Code crashes without triggering the Stop hook, files on disk may still have `BLOCK_<hash>` placeholders. To restore manually:
 
 ```bash
-echo '{}' | bash hooks/simplify-ignore.sh
+echo '{}' | bash .claude/hooks/simplify-ignore.sh
 ```
 
 Backups are stored in `.claude/.simplify-ignore-cache/` within your project directory.

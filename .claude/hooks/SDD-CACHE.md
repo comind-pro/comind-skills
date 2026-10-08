@@ -21,7 +21,7 @@ This hook caches fetched content on disk, but **revalidates with the origin serv
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PROJECT_DIR}/hooks/sdd-cache-pre.sh",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/sdd-cache-pre.sh",
             "timeout": 10
           }
         ]
@@ -33,7 +33,7 @@ This hook caches fetched content on disk, but **revalidates with the origin serv
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PROJECT_DIR}/hooks/sdd-cache-post.sh",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/sdd-cache-post.sh",
             "async": true,
             "timeout": 10
           }
@@ -44,7 +44,7 @@ This hook caches fetched content on disk, but **revalidates with the origin serv
 }
 ```
 
-   `${CLAUDE_PROJECT_DIR}` resolves to the directory you launched Claude Code from. The snippet above works when the hooks live inside the same project. If you installed `agent-skills` elsewhere (e.g. as a shared plugin under `~/agent-skills`), replace `${CLAUDE_PROJECT_DIR}/hooks/...` with the absolute path to each script.
+   `${CLAUDE_PROJECT_DIR}` resolves to the directory you launched Claude Code from. The snippet above works when the hooks live inside the same project. If you installed `agent-skills` elsewhere (e.g. as a shared plugin under `~/agent-skills`), replace `${CLAUDE_PROJECT_DIR}/.claude/hooks/...` with the absolute path to each script.
 
 2. Make sure `.claude/sdd-cache/` is in your `.gitignore` (already included in this repo).
 
@@ -90,7 +90,7 @@ echo '{
     "prompt": "extract the signature"
   },
   "tool_response": "useActionState(action, initialState) returns [state, formAction, isPending]"
-}' | bash hooks/sdd-cache-post.sh
+}' | bash .claude/hooks/sdd-cache-post.sh
 
 # Inspect the stored entry
 ls .claude/sdd-cache/
@@ -102,7 +102,7 @@ echo '{
     "url": "https://react.dev/reference/react/useActionState",
     "prompt": "extract the signature"
   }
-}' | bash hooks/sdd-cache-pre.sh
+}' | bash .claude/hooks/sdd-cache-pre.sh
 echo "exit=$?"
 ```
 
@@ -132,7 +132,7 @@ ENTRY=.claude/sdd-cache/e49c9f378670cfbb1d7d871b6dee16d9.json
 jq '.etag = "W/\"stale-etag-forced\""' "$ENTRY" > "$ENTRY.tmp" && mv "$ENTRY.tmp" "$ENTRY"
 
 # Next PreToolUse should miss (server returns 200, not 304)
-echo '{"tool_input":{"url":"...", "prompt":"..."}}' | bash hooks/sdd-cache-pre.sh
+echo '{"tool_input":{"url":"...", "prompt":"..."}}' | bash .claude/hooks/sdd-cache-pre.sh
 echo "exit=$?"   # expect 0 (fetch allowed through)
 ```
 

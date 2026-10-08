@@ -2,7 +2,7 @@
 description: Run the pre-launch checklist via parallel fan-out to specialist personas, then synthesize a go/no-go decision
 ---
 
-Invoke the agent-skills:shipping-and-launch skill.
+Invoke the `shipping-and-launch` skill.
 
 `/ship` is a **fan-out orchestrator**. It runs three specialist personas in parallel against the current change, then merges their reports into a single go/no-go decision with a rollback plan. The personas operate independently — no shared state, no ordering — which is what makes parallel execution safe and useful here.
 
@@ -25,7 +25,7 @@ Constraints (from Claude Code's subagent model):
 - Each subagent gets its own context window and returns only its report to this main session.
 - If you need teammates that talk to each other instead of just reporting back, use Claude Code Agent Teams and reference these personas as teammate types (see `_workspace/docs/references/orchestration-patterns.md`).
 
-**Persona resolution.** If you've defined your own `code-reviewer`, `security-auditor`, or `test-engineer` in `.claude/agents/` or `~/.claude/agents/`, those take precedence over this plugin's versions — `/ship` picks up your customizations automatically. This is intentional: plugin subagents sit at the bottom of Claude Code's scope priority table, so user-level definitions win by design.
+**Persona resolution.** The personas live project-locally in `.claude/agents/`, which outranks same-named personas in `~/.claude/agents/` — edit them here to customize what `/ship` runs.
 
 ## Phase B — Merge in main context
 

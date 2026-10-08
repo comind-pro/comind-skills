@@ -784,7 +784,7 @@ cp _workspace/dashboard/hooks/package.json ~/.claude/hooks/
 
 ### Wire the hook into Claude Code settings
 
-The repo includes `hooks/settings.example.json` as a reference snippet.
+The repo includes `_workspace/dashboard/hooks/settings.example.json` as a reference snippet.
 
 > [ACTION] Open `~/.claude/settings.json` (create if missing). Merge this `hooks` block into the existing JSON:
 

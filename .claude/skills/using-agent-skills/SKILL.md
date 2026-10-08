@@ -40,7 +40,9 @@ Task arrives
     ├── Deprecating/migrating? ────────→ deprecation-and-migration
     ├── Writing docs/ADRs? ───────────→ documentation-and-adrs
     ├── Adding logs/metrics/alerts? ───→ observability-and-instrumentation
-    └── Deploying/launching? ─────────→ shipping-and-launch
+    ├── Deploying/launching? ─────────→ shipping-and-launch
+    ├── Designing a skill library? ───→ skill-architecture
+    └── Building the vault dashboard? → dashboard-build
 ```
 
 ## Core Operating Behaviors
@@ -149,19 +151,20 @@ For a complete feature, the typical skill sequence is:
 1.  interview-me                → Extract what the user actually wants
 2.  idea-refine                 → Refine vague ideas
 3.  spec-driven-development     → Define what we're building
-4.  planning-and-task-breakdown → Break into verifiable chunks
-5.  context-engineering         → Load the right context
-6.  source-driven-development   → Verify against official docs
-7.  incremental-implementation  → Build slice by slice
-8.  observability-and-instrumentation → Instrument as you build (runs parallel with 7-9, not after)
-9.  doubt-driven-development    → Cross-examine non-trivial decisions in-flight
-10. test-driven-development     → Prove each slice works
-11. code-review-and-quality     → Review before merge
-12. code-simplification         → Reduce unnecessary complexity while preserving behavior
-13. git-workflow-and-versioning → Clean commit history
-14. documentation-and-adrs      → Document decisions
-15. deprecation-and-migration   → Retire old systems and move users safely when needed
-16. shipping-and-launch         → Deploy safely
+4.  constraint-driven-development → Write down the quality bar
+5.  planning-and-task-breakdown → Break into verifiable chunks
+6.  context-engineering         → Load the right context
+7.  source-driven-development   → Verify against official docs
+8.  incremental-implementation  → Build slice by slice
+9.  observability-and-instrumentation → Instrument as you build (runs parallel with 8-10, not after)
+10. doubt-driven-development    → Cross-examine non-trivial decisions in-flight
+11. test-driven-development     → Prove each slice works
+12. code-review-and-quality     → Review before merge
+13. code-simplification         → Reduce unnecessary complexity while preserving behavior
+14. git-workflow-and-versioning → Clean commit history
+15. documentation-and-adrs      → Document decisions
+16. deprecation-and-migration   → Retire old systems and move users safely when needed
+17. shipping-and-launch         → Deploy safely
 ```
 
 Not every task needs every skill. A bug fix might only need: `debugging-and-error-recovery` → `test-driven-development` → `code-review-and-quality`.
@@ -173,6 +176,7 @@ Not every task needs every skill. A bug fix might only need: `debugging-and-erro
 | Define | interview-me | Surface what the user actually wants before any plan, spec, or code exists |
 | Define | idea-refine | Refine ideas through structured divergent and convergent thinking |
 | Define | spec-driven-development | Requirements and acceptance criteria before code |
+| Plan | constraint-driven-development | Explicit, enforced quality bar before building |
 | Plan | planning-and-task-breakdown | Decompose into small, verifiable tasks |
 | Build | incremental-implementation | Thin vertical slices, test each before expanding |
 | Build | source-driven-development | Verify against official docs before implementing |
@@ -180,6 +184,7 @@ Not every task needs every skill. A bug fix might only need: `debugging-and-erro
 | Build | context-engineering | Right context at the right time |
 | Build | frontend-ui-engineering | Production-quality UI with accessibility |
 | Build | api-and-interface-design | Stable interfaces with clear contracts |
+| Parallel | parallel-agents-in-cdock | Fan work out to visible worker panes inside comind-dock |
 | Verify | test-driven-development | Failing test first, then make it pass |
 | Verify | browser-testing-with-devtools | Chrome DevTools MCP for runtime verification |
 | Verify | debugging-and-error-recovery | Reproduce → localize → fix → guard |
@@ -193,3 +198,5 @@ Not every task needs every skill. A bug fix might only need: `debugging-and-erro
 | Ship | documentation-and-adrs | Document the why, not just the what |
 | Ship | observability-and-instrumentation | Structured logs, RED metrics, traces, symptom-based alerts |
 | Ship | shipping-and-launch | Pre-launch checklist, monitoring, rollback plan |
+| Workspace | skill-architecture | Design the skill library one workflow area at a time |
+| Workspace | dashboard-build | Build + wire the comind-dashboard against this vault |

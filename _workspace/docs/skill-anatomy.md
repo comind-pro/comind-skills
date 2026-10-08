@@ -15,10 +15,10 @@ This document describes the structure and format of agent-skills skill files. Us
 
 ## File Location
 
-Every skill lives in its own directory under `skills/`:
+Every skill lives in its own directory under `.claude/skills/`:
 
 ```
-skills/
+.claude/skills/
   skill-name/
     SKILL.md           # Required: The skill definition
     scripts/           # Optional: Runnable helpers used by the skill workflow
@@ -149,7 +149,7 @@ Don't duplicate content between skills — reference and link instead.
 
 Required:
 
-- A `skills/<skill-name>/SKILL.md` file
+- A `.claude/skills/<skill-name>/SKILL.md` file
 - Valid YAML frontmatter with `name` and `description`
 - A description that includes both what the skill does and when to use it
 

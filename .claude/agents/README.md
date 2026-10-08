@@ -7,6 +7,9 @@ Specialist personas that play a single role with a single perspective. Each pers
 | [code-reviewer](code-reviewer.md) | Senior Staff Engineer | Five-axis review before merge |
 | [security-auditor](security-auditor.md) | Security Engineer | Vulnerability detection, OWASP-style audit |
 | [test-engineer](test-engineer.md) | QA Engineer | Test strategy, coverage analysis, Prove-It pattern |
+| [web-performance-auditor](web-performance-auditor.md) | Web Performance Engineer | Core Web Vitals, loading/rendering/network audits (`/webperf`) |
+| [planner](planner.md) | Planner | Decompose fuzzy scope into ordered task notes in the vault |
+| [researcher](researcher.md) | Researcher | External lookup, written up as a citable vault note |
 
 ## How personas relate to skills and commands
 
@@ -104,12 +107,12 @@ Why this fails:
 
 The personas in this repo are designed to work as Claude Code subagents and as Agent Teams teammates without modification:
 
-- **As subagents:** auto-discovered when this plugin is enabled (no path config needed). Use the Agent tool with `subagent_type: code-reviewer` (or `security-auditor`, `test-engineer`). `/ship` is the canonical example.
+- **As subagents:** auto-discovered from `.claude/agents/` (no path config needed). Use the Agent tool with `subagent_type: code-reviewer` (or `security-auditor`, `test-engineer`). `/ship` is the canonical example.
 - **As Agent Teams teammates** (experimental, requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`): reference the same persona name when spawning a teammate. The persona's body is **appended to** the teammate's system prompt as additional instructions (not a replacement), so your persona text sits on top of the team-coordination instructions the lead installs (SendMessage, task-list tools, etc.).
 
 Subagents only report results back to the main agent. Agent Teams let teammates message each other directly. Use subagents when reports are enough; use Agent Teams when sub-agents need to challenge each other's findings (e.g. competing-hypothesis debugging). See [_workspace/docs/references/orchestration-patterns.md](../../_workspace/docs/references/orchestration-patterns.md) for the full mapping.
 
-Plugin agents do not support `hooks`, `mcpServers`, or `permissionMode` frontmatter — those fields are silently ignored. Avoid relying on them when authoring new personas here.
+If these personas are ever repackaged as a plugin: plugin agents ignore `hooks`, `mcpServers`, and `permissionMode` frontmatter, so avoid relying on them when authoring new personas here.
 
 ## Adding a new persona
 

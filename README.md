@@ -10,9 +10,9 @@ needs lives **inside this folder**:
 .
 ├── .claude/                # standard Claude Code config — ONLY system assets Claude discovers
 │   ├── settings.json       # hooks + permissions
-│   ├── skills/             # 25 lifecycle skills + project-generated skills
-│   ├── agents/             # 4 personas + 6 meta-agents + project-generated agents
-│   ├── commands/           # 9 lifecycle + 4 meta (/init-project, /extend-domain, …)
+│   ├── skills/             # 28 skills (lifecycle + meta + workspace) + project-generated
+│   ├── agents/             # 6 personas + 6 meta-agents + project-generated agents
+│   ├── commands/           # 9 lifecycle + 5 meta (/init-project, /extend-domain, …) + 2 dashboard
 │   └── hooks/              # session-start, sdd-cache, simplify-ignore
 ├── _workspace/             # Everything Claude REFERENCES (not auto-loaded by harness)
 │   ├── memory/             # Obsidian vault — Karpathy 3-zone (raw → wiki → outputs)
@@ -151,16 +151,18 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 
 ## Commands
 
-7 slash commands that map to the development lifecycle. Each one activates the right skills automatically.
+9 slash commands that map to the development lifecycle. Each one activates the right skills automatically.
 
 | What you're doing | Command | Key principle |
 |-------------------|---------|---------------|
 | Define what to build | `/spec` | Spec before code |
 | Plan how to build it | `/plan` | Small, atomic tasks |
+| Write down the quality bar | `/constraints` | Explicit, enforced constraints |
 | Build incrementally | `/build` | One slice at a time |
 | Prove it works | `/test` | Tests are proof |
 | Review before merge | `/review` | Improve code health |
 | Simplify the code | `/code-simplify` | Clarity over cleverness |
+| Audit web performance | `/webperf` | Measure before optimizing |
 | Ship to production | `/ship` | Faster is safer |
 
 Skills also activate automatically based on what you're doing — designing an API triggers `api-and-interface-design`, building UI triggers `frontend-ui-engineering`, and so on.
@@ -183,9 +185,9 @@ claude
 
 ---
 
-## All 23 Skills
+## All 28 Skills
 
-The commands above are entry points. The pack includes 23 skills total — 21 lifecycle skills plus the `using-agent-skills` meta-skill and the `interview-me` Define-phase skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
+The commands above are entry points. The pack includes 28 skills total — 24 lifecycle skills (incl. `parallel-agents-in-cdock`), the `using-agent-skills` meta-skill, and 2 workspace skills (`skill-architecture`, `dashboard-build`). Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
 
 ### Meta - Discover which skill applies
 
@@ -197,6 +199,7 @@ The commands above are entry points. The pack includes 23 skills total — 21 li
 
 | Skill | What It Does | Use When |
 |-------|-------------|----------|
+| [interview-me](.claude/skills/interview-me/SKILL.md) | One-question-at-a-time interview until the underlying intent is clear | An ask is underspecified or you don't yet know what you want |
 | [idea-refine](.claude/skills/idea-refine/SKILL.md) | Structured divergent/convergent thinking to turn vague ideas into concrete proposals | You have a rough concept that needs exploration |
 | [spec-driven-development](.claude/skills/spec-driven-development/SKILL.md) | Write a PRD covering objectives, commands, structure, code style, testing, and boundaries before any code | Starting a new project, feature, or significant change |
 
@@ -205,6 +208,7 @@ The commands above are entry points. The pack includes 23 skills total — 21 li
 | Skill | What It Does | Use When |
 |-------|-------------|----------|
 | [planning-and-task-breakdown](.claude/skills/planning-and-task-breakdown/SKILL.md) | Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering | You have a spec and need implementable units |
+| [constraint-driven-development](.claude/skills/constraint-driven-development/SKILL.md) | Turn the quality bar into a written, enforced contract agents can't quietly lower | No quality bar is written down, or agents keep lowering it |
 
 ### Build - Write the code
 
@@ -217,6 +221,12 @@ The commands above are entry points. The pack includes 23 skills total — 21 li
 | [doubt-driven-development](.claude/skills/doubt-driven-development/SKILL.md) | Adversarial fresh-context review of every non-trivial decision in-flight - CLAIM → EXTRACT → DOUBT → RECONCILE → STOP, with optional user-authorized cross-model escalation | Stakes are high (production, security, irreversible), working in unfamiliar code, or a confident output is cheaper to verify now than to debug later |
 | [frontend-ui-engineering](.claude/skills/frontend-ui-engineering/SKILL.md) | Component architecture, design systems, state management, responsive design, WCAG 2.1 AA accessibility | Building or modifying user-facing interfaces |
 | [api-and-interface-design](.claude/skills/api-and-interface-design/SKILL.md) | Contract-first design, Hyrum's Law, One-Version Rule, error semantics, boundary validation | Designing APIs, module boundaries, or public interfaces |
+
+### Parallel - Fan out inside comind-dock
+
+| Skill | What It Does | Use When |
+|-------|-------------|----------|
+| [parallel-agents-in-cdock](.claude/skills/parallel-agents-in-cdock/SKILL.md) | Runs fan-out work (parallel reviews, cross-model doubt, independent build tasks) as visible worker panes | Running inside comind-dock (`CDOCK_PANE_ID` set) with independent subtasks |
 
 ### Verify - Prove it works
 
@@ -241,8 +251,16 @@ The commands above are entry points. The pack includes 23 skills total — 21 li
 | [git-workflow-and-versioning](.claude/skills/git-workflow-and-versioning/SKILL.md) | Trunk-based development, atomic commits, change sizing (~100 lines), the commit-as-save-point pattern | Making any code change (always) |
 | [ci-cd-and-automation](.claude/skills/ci-cd-and-automation/SKILL.md) | Shift Left, Faster is Safer, feature flags, quality gate pipelines, failure feedback loops | Setting up or modifying build and deploy pipelines |
 | [deprecation-and-migration](.claude/skills/deprecation-and-migration/SKILL.md) | Code-as-liability mindset, compulsory vs advisory deprecation, migration patterns, zombie code removal | Removing old systems, migrating users, or sunsetting features |
+| [observability-and-instrumentation](.claude/skills/observability-and-instrumentation/SKILL.md) | Structured logs, RED metrics, traces, symptom-based alerts | Shipping anything that runs in production |
 | [documentation-and-adrs](.claude/skills/documentation-and-adrs/SKILL.md) | Architecture Decision Records, API docs, inline documentation standards - document the *why* | Making architectural decisions, changing APIs, or shipping features |
 | [shipping-and-launch](.claude/skills/shipping-and-launch/SKILL.md) | Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup | Preparing to deploy to production |
+
+### Workspace - comind-dashboard
+
+| Skill | What It Does | Use When |
+|-------|-------------|----------|
+| [skill-architecture](.claude/skills/skill-architecture/SKILL.md) | Cyclical interview that designs your skill library one workflow area at a time (`/skill-architecture`) | Turning recurring workflows into skills |
+| [dashboard-build](.claude/skills/dashboard-build/SKILL.md) | Builds + wires the Obsidian dashboard, runner, and metric pulls (`/build-dashboard`) | Setting up the dashboard after `/init-project` |
 
 ---
 
@@ -255,6 +273,9 @@ Pre-configured specialist personas for targeted reviews:
 | [code-reviewer](.claude/agents/code-reviewer.md) | Senior Staff Engineer | Five-axis code review with "would a staff engineer approve this?" standard |
 | [test-engineer](.claude/agents/test-engineer.md) | QA Specialist | Test strategy, coverage analysis, and the Prove-It pattern |
 | [security-auditor](.claude/agents/security-auditor.md) | Security Engineer | Vulnerability detection, threat modeling, OWASP assessment |
+| [web-performance-auditor](.claude/agents/web-performance-auditor.md) | Web Performance Engineer | Core Web Vitals, loading, rendering, network |
+| [planner](.claude/agents/planner.md) | Planner | Fuzzy scope → ordered, verifiable task notes in the vault |
+| [researcher](.claude/agents/researcher.md) | Researcher | External lookup written up as a citable vault note |
 
 ---
 
@@ -268,6 +289,11 @@ Quick-reference material that skills pull in when needed:
 | [security-checklist.md](_workspace/docs/references/security-checklist.md) | Pre-commit checks, auth, input validation, headers, CORS, OWASP Top 10 |
 | [performance-checklist.md](_workspace/docs/references/performance-checklist.md) | Core Web Vitals targets, frontend/backend checklists, measurement commands |
 | [accessibility-checklist.md](_workspace/docs/references/accessibility-checklist.md) | Keyboard nav, screen readers, visual design, ARIA, testing tools |
+| [observability-checklist.md](_workspace/docs/references/observability-checklist.md) | Logging, metrics, tracing, alerting |
+| [definition-of-done.md](_workspace/docs/references/definition-of-done.md) | Project-wide bar every change must clear |
+| [orchestration-patterns.md](_workspace/docs/references/orchestration-patterns.md) | Subagents vs Agent Teams, persona fan-out |
+| [skill-architecture-orchestrator.md](_workspace/docs/references/skill-architecture-orchestrator.md) | Verbatim script for `/skill-architecture` |
+| [dashboard-build-guide.md](_workspace/docs/references/dashboard-build-guide.md) | Full comind-dashboard build reference |
 
 ---
 
@@ -308,10 +334,11 @@ Every skill follows a consistent anatomy:
 comind-skills/
 ├── .claude/
 │   ├── settings.json                  # hooks + plugin config
-│   ├── skills/                        # 23 skills (21 lifecycle + 1 meta + 1 elicitation)
+│   ├── skills/                        # 28 skills (24 lifecycle + 1 meta + 2 workspace)
 │   │   ├── interview-me/                  #   Define (elicitation)
 │   │   ├── idea-refine/                   #   Define
 │   │   ├── spec-driven-development/       #   Define
+│   │   ├── constraint-driven-development/ #   Plan
 │   │   ├── planning-and-task-breakdown/   #   Plan
 │   │   ├── incremental-implementation/    #   Build
 │   │   ├── context-engineering/           #   Build
@@ -320,6 +347,7 @@ comind-skills/
 │   │   ├── frontend-ui-engineering/       #   Build
 │   │   ├── test-driven-development/       #   Build
 │   │   ├── api-and-interface-design/      #   Build
+│   │   ├── parallel-agents-in-cdock/      #   Parallel (comind-dock)
 │   │   ├── browser-testing-with-devtools/ #   Verify
 │   │   ├── debugging-and-error-recovery/  #   Verify
 │   │   ├── code-review-and-quality/       #   Review
@@ -330,10 +358,13 @@ comind-skills/
 │   │   ├── ci-cd-and-automation/          #   Ship
 │   │   ├── deprecation-and-migration/     #   Ship
 │   │   ├── documentation-and-adrs/        #   Ship
+│   │   ├── observability-and-instrumentation/ # Ship
 │   │   ├── shipping-and-launch/           #   Ship
+│   │   ├── skill-architecture/            #   Workspace (dashboard Part 1)
+│   │   ├── dashboard-build/               #   Workspace (dashboard Parts 2-3)
 │   │   └── using-agent-skills/            #   Meta: how to use this pack
-│   ├── agents/                        # 5 project personas + 6 _meta (maintainer-only)
-│   ├── commands/                      # 11 slash commands (lifecycle + maintainer)
+│   ├── agents/                        # 6 project personas + 6 _meta (maintainer-only)
+│   ├── commands/                      # 16 slash commands (lifecycle + maintainer + dashboard)
 │   └── hooks/                         # Session lifecycle hook scripts
 ├── _workspace/                        # Reference + working content (Claude reads on demand)
 │   ├── docs/                          # all documentation (skill-anatomy spec, dashboard guides, references/)
@@ -358,7 +389,7 @@ Skills bake in best practices from Google's engineering culture — including co
 
 Skills should be **specific** (actionable steps, not vague advice), **verifiable** (clear exit criteria with evidence requirements), **battle-tested** (based on real workflows), and **minimal** (only what's needed to guide the agent).
 
-See [_workspace/docs/skill-anatomy.md](_workspace/docs/skill-anatomy.md) for the format specification and [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [_workspace/docs/skill-anatomy.md](_workspace/docs/skill-anatomy.md) for the format specification.
 
 ---
 

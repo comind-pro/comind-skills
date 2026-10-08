@@ -108,15 +108,16 @@ This is the agent-skills project — a collection of production-grade engineerin
 
 ```
 .claude/skills/         → Core skills (SKILL.md per directory) — auto-discovered
-.claude/agents/         → Reusable agent personas (code-reviewer, test-engineer, security-auditor, web-performance-auditor)
-.claude/commands/       → Slash commands (/spec, /plan, /build, /test, /review, /code-simplify, /ship)
+.claude/agents/         → Reusable agent personas (code-reviewer, test-engineer, security-auditor, web-performance-auditor, planner, researcher)
+.claude/commands/       → Slash commands (/spec, /plan, /constraints, /build, /test, /review, /code-simplify, /webperf, /ship + meta/dashboard commands)
 .claude/hooks/          → Session lifecycle hook scripts (wired up via .claude/settings.json)
-_workspace/docs/references/  → Supplementary checklists (testing, performance, security, accessibility)
+_workspace/docs/references/  → Supplementary checklists (testing, performance, security, accessibility, observability, definition-of-done) + orchestration/dashboard guides
 _workspace/docs/        → `/init-project`-generated project docs (architecture, conventions, …) + skill-anatomy spec
 ```
 
 ## Skills by Phase
 
+**Meta:** using-agent-skills
 **Define:** interview-me, idea-refine, spec-driven-development
 **Plan:** planning-and-task-breakdown, constraint-driven-development
 **Build:** incremental-implementation, test-driven-development, context-engineering, source-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
@@ -124,6 +125,7 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 **Verify:** browser-testing-with-devtools, debugging-and-error-recovery
 **Review:** code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
 **Ship:** git-workflow-and-versioning, ci-cd-and-automation, observability-and-instrumentation, deprecation-and-migration, documentation-and-adrs, shipping-and-launch
+**Workspace (comind-dashboard):** skill-architecture, dashboard-build
 
 ## Conventions
 
@@ -136,8 +138,7 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 
 ## Commands
 
-- `npm test` — Not applicable (this is a documentation project)
-- Validate: Check that all SKILL.md files have valid YAML frontmatter with name and description
+- `make validate` — checks frontmatter of every skill, agent and command
 
 ## Boundaries
 
