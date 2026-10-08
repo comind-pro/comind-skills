@@ -147,6 +147,10 @@ Claude Code has two parallelism primitives. Pattern 3 (parallel fan-out with mer
 
 One subtlety: the `skills` and `mcpServers` frontmatter fields in a persona are honored when it runs as a subagent but **ignored when it runs as a teammate** — teammates load skills and MCP servers from your project and user settings, the same as a regular session. If a persona depends on a specific skill or MCP server being loaded, configure it at the session level so it's available in both modes.
 
+### Worker panes in comind-dock
+
+When the session runs inside [comind-dock](https://comind.pro/dock) (`CDOCK_PANE_ID` is set) there is a third primitive: **worker panes**. The main agent spawns sibling panes running any agent CLI (claude, codex, gemini/agy, cline), briefs them with `pane run --file`, ends its turn, and is woken when each one reports via `cdock task done`. Workers are visible and steerable by the user, survive restarts, and can message each other (`cdock msg`) — the Agent Teams shape, with mixed models. Pattern 3 and the competing-hypothesis example below map onto it directly. Process: `.claude/skills/parallel-agents-in-cdock/SKILL.md`.
+
 ### Platform-enforced rules
 
 Two rules in this catalog aren't just convention — Claude Code enforces them:

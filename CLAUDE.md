@@ -120,6 +120,7 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 **Define:** interview-me, idea-refine, spec-driven-development
 **Plan:** planning-and-task-breakdown, constraint-driven-development
 **Build:** incremental-implementation, test-driven-development, context-engineering, source-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
+**Parallel (inside comind-dock):** parallel-agents-in-cdock
 **Verify:** browser-testing-with-devtools, debugging-and-error-recovery
 **Review:** code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
 **Ship:** git-workflow-and-versioning, ci-cd-and-automation, observability-and-instrumentation, deprecation-and-migration, documentation-and-adrs, shipping-and-launch

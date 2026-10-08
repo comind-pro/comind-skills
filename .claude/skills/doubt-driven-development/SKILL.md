@@ -121,6 +121,8 @@ After the single-model review in Step 3 above, but before RECONCILE — when the
 
 > *"Single-model review complete. Want a cross-model second opinion? Options: Gemini CLI, Codex CLI, manual external review (you paste it elsewhere), or skip."*
 
+Inside comind-dock (`CDOCK_PANE_ID` set), offer a fourth option: a read-only codex/gemini **worker pane** that returns its findings with `cdock task done` — the user can watch it and the result survives a restart. Same brief rules (ARTIFACT + CONTRACT + adversarial prompt only); see `parallel-agents-in-cdock`.
+
 For lower-stakes artifacts, mention the cross-model option once per session and proceed without pausing. The user — not the agent — decides whether the cost is worth it; the agent's job is to keep the choice visible, not to interrupt every cycle.
 
 **Step 2: If the user picks a CLI — verify, then invoke**
