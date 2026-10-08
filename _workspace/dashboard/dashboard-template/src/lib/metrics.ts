@@ -22,8 +22,6 @@ export interface MetricSnapshot {
 
 const CSV_HEADER = ["timestamp", "source", "metric", "value", "status", "error"];
 
-export const METRICS_CSV_PATH = "_workspace/system/metrics/metrics.csv";
-
 function parseRow(line: string): MetricRow | null {
 	// Simple CSV parser. Schema guarantees no commas inside values
 	// (error strings are short machine codes, snake_case only).
@@ -62,7 +60,7 @@ export function parseMetricsCsv(raw: string): MetricRow[] {
 
 export async function readMetricsCsv(
 	app: App,
-	csvPath: string = METRICS_CSV_PATH,
+	csvPath: string, // <settings.vaultSystemPath>/metrics/metrics.csv
 ): Promise<MetricRow[]> {
 	const exists = await app.vault.adapter.exists(csvPath);
 	if (!exists) return [];
@@ -117,13 +115,6 @@ export function snapshotByKey(rows: MetricRow[]): Map<string, MetricSnapshot> {
 	return out;
 }
 
-export async function readMetricSnapshots(
-	app: App,
-): Promise<Map<string, MetricSnapshot>> {
-	const rows = await readMetricsCsv(app);
-	return snapshotByKey(rows);
-}
-
 export interface SeriesPoint {
 	ts: number; // epoch ms
 	value: number;
@@ -150,14 +141,4 @@ export function seriesForKey(
 	}
 	out.sort((a, b) => a.ts - b.ts);
 	return out;
-}
-
-export async function readMetricSeries(
-	app: App,
-	source: string,
-	metric: string,
-	windowMs: number,
-): Promise<SeriesPoint[]> {
-	const rows = await readMetricsCsv(app);
-	return seriesForKey(rows, source, metric, windowMs);
 }

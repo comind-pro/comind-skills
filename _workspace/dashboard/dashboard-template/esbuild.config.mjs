@@ -1,14 +1,15 @@
 import esbuild from "esbuild";
 import { copyFileSync, mkdirSync } from "node:fs";
-import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 // In-place infra build. The Makefile passes DASHBOARD_PLUGIN_DIR pointing at
-// <project>/.obsidian/plugins/dashboard. Fallback keeps the standalone
-// ~/the-vault layout from the build guide working too.
+// <project>/.obsidian/plugins/dashboard. A bare `npm run build` falls back to
+// the same in-repo path (project root = 3 dirs up) — never a vault outside
+// this repo. Standalone vaults: set DASHBOARD_PLUGIN_DIR.
 const VAULT_PLUGIN_DIR =
   process.env.DASHBOARD_PLUGIN_DIR ||
-  join(homedir(), "the-vault", ".obsidian", "plugins", "dashboard");
+  join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", ".obsidian", "plugins", "dashboard");
 mkdirSync(VAULT_PLUGIN_DIR, { recursive: true });
 
 const opts = {

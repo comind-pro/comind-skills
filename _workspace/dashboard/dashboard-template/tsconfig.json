@@ -20,6 +20,7 @@
 		"allowSyntheticDefaultImports": true,
 		"useUnknownInCatchVariables": true,
 		"esModuleInterop": true,
+		"skipLibCheck": true,
 		"lib": [
 			"DOM",
 			"ES2018"
