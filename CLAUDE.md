@@ -108,7 +108,7 @@ This is the agent-skills project — a collection of production-grade engineerin
 
 ```
 .claude/skills/         → Core skills (SKILL.md per directory) — auto-discovered
-.claude/agents/         → Reusable agent personas (code-reviewer, test-engineer, security-auditor)
+.claude/agents/         → Reusable agent personas (code-reviewer, test-engineer, security-auditor, web-performance-auditor)
 .claude/commands/       → Slash commands (/spec, /plan, /build, /test, /review, /code-simplify, /ship)
 .claude/hooks/          → Session lifecycle hook scripts (wired up via .claude/settings.json)
 _workspace/docs/references/  → Supplementary checklists (testing, performance, security, accessibility)
@@ -118,11 +118,11 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 ## Skills by Phase
 
 **Define:** interview-me, idea-refine, spec-driven-development
-**Plan:** planning-and-task-breakdown
+**Plan:** planning-and-task-breakdown, constraint-driven-development
 **Build:** incremental-implementation, test-driven-development, context-engineering, source-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
 **Verify:** browser-testing-with-devtools, debugging-and-error-recovery
 **Review:** code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
-**Ship:** git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, shipping-and-launch
+**Ship:** git-workflow-and-versioning, ci-cd-and-automation, observability-and-instrumentation, deprecation-and-migration, documentation-and-adrs, shipping-and-launch
 
 ## Conventions
 
@@ -130,7 +130,7 @@ _workspace/docs/        → `/init-project`-generated project docs (architecture
 - YAML frontmatter with `name` and `description` fields
 - Description starts with what the skill does (third person), followed by trigger conditions ("Use when...")
 - Every skill has: Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification
-- References are in `_workspace/docs/references/`, not inside skill directories
+- Shared references are in `_workspace/docs/references/`; a skill-only deep-dive may live in `<skill>/references/` (progressive disclosure)
 - Supporting files only created when content exceeds 100 lines
 
 ## Commands

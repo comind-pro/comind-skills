@@ -10,9 +10,9 @@ needs lives **inside this folder**:
 .
 ├── .claude/                # standard Claude Code config — ONLY system assets Claude discovers
 │   ├── settings.json       # hooks + permissions
-│   ├── skills/             # 23 lifecycle skills + project-generated skills
-│   ├── agents/             # 3 personas + 6 meta-agents + project-generated agents
-│   ├── commands/           # 7 lifecycle + 4 meta (/init-project, /extend-domain, …)
+│   ├── skills/             # 25 lifecycle skills + project-generated skills
+│   ├── agents/             # 4 personas + 6 meta-agents + project-generated agents
+│   ├── commands/           # 9 lifecycle + 4 meta (/init-project, /extend-domain, …)
 │   └── hooks/              # session-start, sdd-cache, simplify-ignore
 ├── _workspace/             # Everything Claude REFERENCES (not auto-loaded by harness)
 │   ├── memory/             # Obsidian vault — Karpathy 3-zone (raw → wiki → outputs)
